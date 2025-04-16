@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Reuniones con Padres - Unidad Educativa "Dr. Camilo Gallegos Domínguez"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for input fields to look consistent */
+        input[type="text"], input[type="date"], textarea, select {
+            @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm;
+        }
+        /* Style for tables */
+        table {
+            @apply min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md mt-6 bg-white; /* Added bg-white for better contrast on gradient */
+        }
+        th {
+            @apply px-4 py-3 bg-gray-100 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border-b border-gray-300;
+        }
+        td {
+            @apply px-4 py-3 text-sm text-gray-700 border-b border-gray-200 align-top; /* Use align-top for better readability with multiline text */
+        }
+        /* Ensure textareas in table cells wrap text */
+        td textarea {
+             white-space: pre-wrap; /* Wrap text */
+             word-wrap: break-word; /* Break long words */
+             overflow-wrap: break-word; /* Standard property */
+             min-height: 40px; /* Minimum height */
+             resize: vertical; /* Allow vertical resize */
+        }
+        /* Style for delete button */
+        .delete-button {
+            @apply inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+        }
+        /* Add padding to body to prevent content touching edges */
+        body {
+            @apply p-4 md:p-8;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-100 min-h-screen">
+
+    <div class="max-w-6xl mx-auto bg-white/90 backdrop-blur-sm p-6 md:p-10 rounded-lg shadow-xl">
+
+        <header class="text-center mb-8 border-b border-gray-300 pb-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="w-20 h-20 md:w-24 md:h-24 flex-shrink-0">
+                    <img src="https://placehold.co/100x100/EBF4FF/3B82F6?text=Sello%0AUE"
+                         alt="[Sello de la Unidad Educativa]"
+                         class="w-full h-full object-contain rounded-full border border-blue-200 shadow-md"
+                         onerror="this.onerror=null; this.src='https://placehold.co/100x100/cccccc/ffffff?text=Error'; this.alt='[Error al cargar imagen]'">
+                </div>
+
+                <div class="text-center md:text-left flex-grow">
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
+                    <p class="text-lg md:text-xl font-semibold text-indigo-700 mt-1">Tercero Informática "B"</p>
+                    <p class="text-md text-gray-600 mt-1">Tutora: Mgs. Maricela Cun Rueda</p>
+                </div>
+
+                 <div class="text-center md:text-right mt-4 md:mt-0">
+                      <h2 class="text-lg font-semibold text-gray-700">Registro de Reuniones</h2>
+                      <p class="text-sm text-gray-500">con Padres de Familia</p>
+                 </div>
+            </div>
+        </header>
+
+        <section class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Añadir Nueva Reunión</h3>
+            <form id="meeting-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                <div>
+                    <label for="meeting-date" class="block text-sm font-medium text-gray-700">Fecha de la Reunión:</label>
+                    <input type="date" id="meeting-date" name="meeting-date" required>
+                </div>
+                <div>
+                    <label for="student-name" class="block text-sm font-medium text-gray-700">Nombre del Estudiante:</label>
+                    <input type="text" id="student-name" name="student-name" placeholder="Apellidos y Nombres" required>
+                </div>
+                <div>
+                    <label for="parent-name" class="block text-sm font-medium text-gray-700">Nombre del Padre/Madre/Representante:</label>
+                    <input type="text" id="parent-name" name="parent-name" placeholder="Apellidos y Nombres" required>
+                </div>
+                 <div>
+                    <label for="meeting-reason" class="block text-sm font-medium text-gray-700">Motivo de la Reunión:</label>
+                    <input type="text" id="meeting-reason" name="meeting-reason" placeholder="Ej: Rendimiento académico, Comportamiento">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="topics-discussed" class="block text-sm font-medium text-gray-700">Temas Tratados:</label>
+                    <textarea id="topics-discussed" name="topics-discussed" rows="3" placeholder="Detallar los puntos conversados"></textarea>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="agreements" class="block text-sm font-medium text-gray-700">Acuerdos / Compromisos:</label>
+                    <textarea id="agreements" name="agreements" rows="3" placeholder="Listar los acuerdos establecidos"></textarea>
+                </div>
+                 <div class="md:col-span-2">
+                    <label for="next-steps" class="block text-sm font-medium text-gray-700">Próximos Pasos / Seguimiento:</label>
+                    <textarea id="next-steps" name="next-steps" rows="2" placeholder="Ej: Nueva reunión en 1 mes, Revisión de tareas"></textarea>
+                </div>
+                <div class="md:col-span-2 text-right">
+                    <button type="submit" class="inline-flex justify-center items-center px-6 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" clip-rule="evenodd" />
+                        </svg>
+                        Guardar Reunión
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section>
+            <h3 class="text-xl font-semibold text-gray-700 mb-4 border-t border-gray-300 pt-6">Historial de Reuniones</h3>
+            <div class="overflow-x-auto shadow-md rounded-lg">
+                <table id="meetings-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Estudiante</th>
+                            <th>Representante</th>
+                            <th>Motivo</th>
+                            <th>Temas Tratados</th>
+                            <th>Acuerdos</th>
+                            <th>Seguimiento</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="meetings-tbody" class="divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="8" class="text-center text-gray-500 py-4">No hay reuniones registradas.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const meetingForm = document.getElementById('meeting-form');
+        const meetingsTbody = document.getElementById('meetings-tbody');
+        const storageKey = 'parentMeetingsLog_CamiloGallegos'; // Use a more specific key if needed
+
+        // --- Load meetings from localStorage on page load ---
+        function loadMeetings() {
+            const meetings = JSON.parse(localStorage.getItem(storageKey)) || [];
+            displayMeetings(meetings);
+            return meetings; // Return the loaded meetings
+        }
+
+        // --- Display meetings in the table ---
+        function displayMeetings(meetings) {
+            meetingsTbody.innerHTML = ''; // Clear existing table rows
+
+            if (meetings.length === 0) {
+                meetingsTbody.innerHTML = '<tr><td colspan="8" class="text-center text-gray-500 py-4">No hay reuniones registradas.</td></tr>';
+                return;
+            }
+
+            // Sort meetings by date, most recent first (optional)
+            meetings.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+
+            meetings.forEach((meeting, index) => {
+                const row = meetingsTbody.insertRow();
+                // Use backticks for template literals to easily create multiline HTML
+                row.innerHTML = `
+                    <td class="whitespace-nowrap">${meeting.date || ''}</td>
+                    <td>${meeting.studentName || ''}</td>
+                    <td>${meeting.parentName || ''}</td>
+                    <td><div class="whitespace-pre-wrap break-words max-w-xs">${meeting.reason || ''}</div></td>
+                    <td><div class="whitespace-pre-wrap break-words max-w-xs">${meeting.topics || ''}</div></td>
+                    <td><div class="whitespace-pre-wrap break-words max-w-xs">${meeting.agreements || ''}</div></td>
+                    <td><div class="whitespace-pre-wrap break-words max-w-xs">${meeting.nextSteps || ''}</div></td>
+                    <td class="whitespace-nowrap text-center">
+                        <button onclick="deleteMeeting(${index})" class="delete-button" title="Eliminar Reunión">
+                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        // --- Save meetings to localStorage ---
+        function saveMeetings(meetings) {
+            localStorage.setItem(storageKey, JSON.stringify(meetings));
+        }
+
+        // --- Delete a meeting ---
+        // The index passed here corresponds to the index in the *currently displayed* (potentially sorted) array.
+        // We need to find the original object in the stored array to delete it correctly if sorting is applied.
+        function deleteMeeting(displayIndex) {
+             if (confirm('¿Estás seguro de que deseas eliminar esta reunión del registro?')) {
+                let storedMeetings = JSON.parse(localStorage.getItem(storageKey)) || [];
+                let meetingsToDisplay = JSON.parse(localStorage.getItem(storageKey)) || []; // Get a fresh copy for display logic
+
+                // Re-sort the display array exactly as it was displayed to find the correct object
+                 meetingsToDisplay.sort((a, b) => new Date(b.date) - new Date(a.date));
+                 const meetingToDelete = meetingsToDisplay[displayIndex];
+
+                 // Find the actual index in the original stored array
+                 const originalIndex = storedMeetings.findIndex(m =>
+                    m.date === meetingToDelete.date &&
+                    m.studentName === meetingToDelete.studentName &&
+                    m.parentName === meetingToDelete.parentName && // Add more fields if needed for uniqueness
+                    m.reason === meetingToDelete.reason
+                 );
+
+                 if (originalIndex !== -1) {
+                    storedMeetings.splice(originalIndex, 1); // Remove from the original array
+                    saveMeetings(storedMeetings); // Save the modified original array
+                    displayMeetings(storedMeetings); // Refresh the table with the updated stored data
+                 } else {
+                     console.error("Could not find the meeting to delete in the original stored data. It might have been modified or deleted elsewhere.");
+                     // Optionally reload to be safe
+                     loadMeetings();
+                 }
+            }
+        }
+
+
+        // --- Handle form submission ---
+        meetingForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default page reload
+
+            // Get values from form
+            const newMeeting = {
+                date: document.getElementById('meeting-date').value,
+                studentName: document.getElementById('student-name').value,
+                parentName: document.getElementById('parent-name').value,
+                reason: document.getElementById('meeting-reason').value,
+                topics: document.getElementById('topics-discussed').value,
+                agreements: document.getElementById('agreements').value,
+                nextSteps: document.getElementById('next-steps').value,
+            };
+
+            // Add new meeting to the list
+            let meetings = JSON.parse(localStorage.getItem(storageKey)) || [];
+            meetings.push(newMeeting);
+
+            // Save updated list to localStorage
+            saveMeetings(meetings);
+
+            // Update the table display
+            displayMeetings(meetings);
+
+            // Clear the form
+            meetingForm.reset();
+        });
+
+        // --- Initial load ---
+        // Ensures the script runs after the HTML is fully parsed
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMeetings();
+        });
+
+    </script>
+
+</body>
+</html>
+
