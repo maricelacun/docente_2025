@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Seguimiento Individual - Tercero Informática B</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Inter font globally */
+         body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right, #FFB500, #0078D4); /* Gradiente de amarillo a azul */
+            color: #333;
+        }
+        /* Styles for printing */
+        @media print {
+            body {
+                font-size: 10pt; /* Adjust font size for print */
+            }
+            .no-print {
+                display: none; /* Hide buttons when printing */
+            }
+            .printable-area {
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+            }
+            input, textarea, select {
+                border: 1px solid #ccc !important; /* Ensure borders are visible */
+                background-color: #fff !important; /* Ensure background is white */
+                -webkit-print-color-adjust: exact; /* Force background colors/images in WebKit */
+                print-color-adjust: exact; /* Standard */
+            }
+            /* Ensure table borders are visible */
+            table, th, td {
+                border: 1px solid black !important;
+                border-collapse: collapse !important;
+                padding: 4px !important; /* Adjust padding for print */
+                 -webkit-print-color-adjust: exact; /* Force background colors/images in WebKit */
+                print-color-adjust: exact; /* Standard */
+            }
+            h1, h2, h3 {
+                margin-top: 0.5rem;
+                margin-bottom: 0.25rem;
+            }
+        }
+        /* Style for input fields to look consistent */
+        input[type="text"], input[type="date"], input[type="number"], input[type="email"], input[type="tel"], textarea, select {
+            @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm;
+        }
+        /* Style for tables */
+        table {
+            @apply min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md;
+        }
+        th {
+            @apply px-4 py-2 bg-gray-100 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border-b border-gray-300;
+        }
+        td {
+            @apply px-4 py-2 whitespace-nowrap text-sm text-gray-700 border border-gray-200;
+        }
+        td input[type="text"], td input[type="number"] {
+             @apply w-full px-1 py-0.5 border-none rounded-none text-center focus:ring-0 sm:text-sm; /* Minimal style for table inputs */
+             min-width: 50px; /* Ensure minimum width */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div id="form-container" class="printable-area max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-lg shadow-lg">
+        <header class="text-center mb-8 border-b pb-4">
+            <h1 class="text-2xl font-bold text-gray-800">FICHA DE SEGUIMIENTO INDIVIDUAL DEL ESTUDIANTE</h1>
+            <p class="text-md text-gray-600 mt-1"><strong>Unidad Educativa:</strong> "Dr. Camilo Gallegos Domínguez"</p>
+            <p class="text-md text-gray-600"><strong>Curso:</strong> Tercero de Bachillerato Técnico - Informática | <strong>Paralelo:</strong> "B"</p>
+            <p class="text-md text-gray-600"><strong>Tutora:</strong> Mgs. Maricela Cun Rueda</p>
+            <div class="mt-2">
+                <label for="anio_lectivo" class="text-sm font-medium text-gray-700"><strong>Año Lectivo:</strong></label>
+                <input type="text" id="anio_lectivo" name="anio_lectivo" class="inline-block w-auto px-2 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ej: 2024-2025">
+            </div>
+        </header>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">1. DATOS INFORMATIVOS DEL ESTUDIANTE</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="nombres_apellidos" class="block text-sm font-medium text-gray-700">Apellidos y Nombres:</label>
+                    <input type="text" id="nombres_apellidos" name="nombres_apellidos">
+                </div>
+                <div>
+                    <label for="cedula_estudiante" class="block text-sm font-medium text-gray-700">Número de Cédula:</label>
+                    <input type="text" id="cedula_estudiante" name="cedula_estudiante">
+                </div>
+                <div>
+                    <label for="fecha_nacimiento" class="block text-sm font-medium text-gray-700">Fecha de Nacimiento:</label>
+                    <input type="date" id="fecha_nacimiento" name="fecha_nacimiento">
+                </div>
+                <div>
+                    <label for="edad" class="block text-sm font-medium text-gray-700">Edad:</label>
+                    <input type="number" id="edad" name="edad" min="1">
+                </div>
+                <div class="md:col-span-2">
+                    <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección Domiciliaria:</label>
+                    <input type="text" id="direccion" name="direccion">
+                </div>
+                <div>
+                    <label for="telefono_estudiante" class="block text-sm font-medium text-gray-700">Teléfono Contacto (Estudiante):</label>
+                    <input type="tel" id="telefono_estudiante" name="telefono_estudiante">
+                </div>
+                <div>
+                    <label for="email_estudiante" class="block text-sm font-medium text-gray-700">Correo Electrónico (Estudiante):</label>
+                    <input type="email" id="email_estudiante" name="email_estudiante">
+                </div>
+                 <div class="md:col-span-2 flex items-center space-x-4">
+                    <span class="text-sm font-medium text-gray-700">Necesidades Educativas Especiales (NEE):</span>
+                    <label for="nee_si" class="flex items-center">
+                        <input type="radio" id="nee_si" name="nee" value="si" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500">
+                        <span class="ml-2 text-sm text-gray-700">Sí</span>
+                    </label>
+                    <label for="nee_no" class="flex items-center">
+                        <input type="radio" id="nee_no" name="nee" value="no" class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500" checked>
+                        <span class="ml-2 text-sm text-gray-700">No</span>
+                    </label>
+                </div>
+                 <div>
+                    <label for="nee_tipo" class="block text-sm font-medium text-gray-700">Tipo NEE (si aplica):</label>
+                    <input type="text" id="nee_tipo" name="nee_tipo">
+                 </div>
+                 <div>
+                     <label for="adaptacion_grado" class="block text-sm font-medium text-gray-700">Adaptación Curricular Grado:</label>
+                     <input type="text" id="adaptacion_grado" name="adaptacion_grado">
+                 </div>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">2. INFORMACIÓN DEL REPRESENTANTE LEGAL</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                    <label for="nombre_representante" class="block text-sm font-medium text-gray-700">Apellidos y Nombres:</label>
+                    <input type="text" id="nombre_representante" name="nombre_representante">
+                </div>
+                 <div>
+                    <label for="parentesco" class="block text-sm font-medium text-gray-700">Parentesco:</label>
+                    <input type="text" id="parentesco" name="parentesco">
+                </div>
+                 <div>
+                    <label for="cedula_representante" class="block text-sm font-medium text-gray-700">Número de Cédula:</label>
+                    <input type="text" id="cedula_representante" name="cedula_representante">
+                </div>
+                 <div>
+                    <label for="telefono_principal" class="block text-sm font-medium text-gray-700">Teléfono Principal:</label>
+                    <input type="tel" id="telefono_principal" name="telefono_principal">
+                </div>
+                 <div>
+                    <label for="telefono_secundario" class="block text-sm font-medium text-gray-700">Teléfono Secundario:</label>
+                    <input type="tel" id="telefono_secundario" name="telefono_secundario">
+                </div>
+                 <div>
+                    <label for="email_representante" class="block text-sm font-medium text-gray-700">Correo Electrónico:</label>
+                    <input type="email" id="email_representante" name="email_representante">
+                </div>
+                 <div class="md:col-span-2">
+                    <label for="ocupacion" class="block text-sm font-medium text-gray-700">Ocupación:</label>
+                    <input type="text" id="ocupacion" name="ocupacion">
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">3. SEGUIMIENTO ACADÉMICO</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col">Asignatura / Módulo</th>
+                            <th scope="col">P1</th>
+                            <th scope="col">P2</th>
+                            <th scope="col">EQ1</th>
+                            <th scope="col">PQ1</th>
+                            <th scope="col">P3</th>
+                            <th scope="col">P4</th>
+                            <th scope="col">EQ2</th>
+                            <th scope="col">PQ2</th>
+                            <th scope="col">PFA</th>
+                            <th scope="col">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td><input type="text" placeholder="Ej: Soporte Técnico" class="font-medium"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td> <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td> <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td> <td><input type="text"></td>
+                        </tr>
+                         <tr>
+                            <td><input type="text" placeholder="Ej: Sistemas Operativos" class="font-medium"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                             <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                         <tr>
+                            <td><input type="text" placeholder="Ej: Programación" class="font-medium"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                             <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                         <tr>
+                            <td><input type="text" placeholder="Ej: Diseño Web" class="font-medium"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                             <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                         <tr>
+                            <td><input type="text" placeholder="Tronco Común..." class="font-medium"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100"></td>
+                             <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="text"></td>
+                        </tr>
+                        <tr class="bg-gray-50 font-bold">
+                            <td>PROMEDIO GENERAL</td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                             <td><input type="number" step="0.01" min="0" max="10" readonly class="bg-gray-100 font-bold"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div>
+                    <label for="obs_q1" class="block text-sm font-medium text-gray-700">Observaciones Académicas Generales (Quimestre 1):</label>
+                    <textarea id="obs_q1" name="obs_q1" rows="3"></textarea>
+                </div>
+                 <div>
+                    <label for="obs_q2" class="block text-sm font-medium text-gray-700">Observaciones Académicas Generales (Quimestre 2):</label>
+                    <textarea id="obs_q2" name="obs_q2" rows="3"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-8">
+             <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">4. SEGUIMIENTO COMPORTAMENTAL Y ASISTENCIA</h2>
+             <div class="overflow-x-auto">
+                 <table class="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
+                     <thead class="bg-gray-50">
+                         <tr>
+                             <th scope="col">Aspecto</th>
+                             <th scope="col">P1</th>
+                             <th scope="col">P2</th>
+                             <th scope="col">Q1</th>
+                             <th scope="col">P3</th>
+                             <th scope="col">P4</th>
+                             <th scope="col">Q2</th>
+                             <th scope="col">Observaciones Generales</th>
+                         </tr>
+                     </thead>
+                     <tbody class="bg-white divide-y divide-gray-200">
+                         <tr>
+                             <td class="font-medium">Faltas Just.</td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                             <td rowspan="4"><textarea rows="5" class="w-full h-full border-none focus:ring-0"></textarea></td>
+                         </tr>
+                         <tr>
+                             <td class="font-medium">Faltas Injust.</td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                         </tr>
+                         <tr>
+                             <td class="font-medium">Atrasos</td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0"></td>
+                             <td><input type="number" min="0" readonly class="bg-gray-100"></td>
+                         </tr>
+                         <tr>
+                             <td class="font-medium">Comportamiento (Letra)</td>
+                             <td><input type="text" maxlength="1"></td> <td><input type="text" maxlength="1"></td>
+                             <td><input type="text" maxlength="1"></td>
+                             <td><input type="text" maxlength="1"></td>
+                             <td><input type="text" maxlength="1"></td>
+                             <td><input type="text" maxlength="1"></td>
+                         </tr>
+                         <tr>
+                             <td colspan="8">
+                                 <label for="obs_comportamiento" class="block text-sm font-medium text-gray-700 mb-1">Observaciones Comportamentales Específicas:</label>
+                                 <textarea id="obs_comportamiento" name="obs_comportamiento" rows="3"></textarea>
+                             </td>
+                         </tr>
+                     </tbody>
+                 </table>
+             </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">5. REGISTRO DE COMUNICACIÓN CON EL REPRESENTANTE LEGAL</h2>
+            <div class="overflow-x-auto">
+                 <table class="min-w-full divide-y divide-gray-200 border border-gray-300 rounded-md">
+                     <thead class="bg-gray-50">
+                         <tr>
+                             <th scope="col">Fecha</th>
+                             <th scope="col">Motivo</th>
+                             <th scope="col">Medio</th>
+                             <th scope="col">Acuerdos/Compromisos</th>
+                             <th scope="col">Firma Rep. (Opcional)</th>
+                         </tr>
+                     </thead>
+                     <tbody class="bg-white divide-y divide-gray-200" id="communication-log-body">
+                         <tr>
+                             <td><input type="date"></td>
+                             <td><input type="text"></td>
+                             <td><input type="text" placeholder="Llamada, Reunión..."></td>
+                             <td><textarea rows="1" class="w-full border-none focus:ring-0"></textarea></td>
+                             <td></td> </tr>
+                         <tr>
+                             <td><input type="date"></td>
+                             <td><input type="text"></td>
+                             <td><input type="text" placeholder="Llamada, Reunión..."></td>
+                             <td><textarea rows="1" class="w-full border-none focus:ring-0"></textarea></td>
+                             <td></td>
+                         </tr>
+                         </tbody>
+                 </table>
+                 </div>
+        </section>
+
+        <section class="mb-8">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2">6. OBSERVACIONES Y RECOMENDACIONES GENERALES DE LA TUTORA</h2>
+            <div>
+                <label for="obs_tutora" class="block text-sm font-medium text-gray-700">(Fortalezas, debilidades, aspectos a mejorar, estrategias de apoyo, etc.)</label>
+                <textarea id="obs_tutora" name="obs_tutora" rows="5"></textarea>
+            </div>
+        </section>
+
+        <footer class="mt-10 pt-6 border-t">
+             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                 <div>
+                     <label for="fecha_elaboracion" class="block text-sm font-medium text-gray-700 mb-1">Fecha de Elaboración/Actualización:</label>
+                     <input type="date" id="fecha_elaboracion" name="fecha_elaboracion" class="mx-auto">
+                 </div>
+                 <div>
+                     <p class="text-sm font-medium text-gray-700 mb-1">Firma del Tutor/a:</p>
+                     <div class="h-12 border-b border-gray-400 w-3/4 mx-auto mb-1"></div> <p class="text-sm text-gray-600">Mgs. Maricela Cun Rueda</p>
+                 </div>
+                 <div>
+                     <p class="text-sm font-medium text-gray-700 mb-1">Firma del Representante Legal:</p>
+                     <div class="h-12 border-b border-gray-400 w-3/4 mx-auto mb-1"></div> <p class="text-xs text-gray-500">(Opcional, según necesidad)</p>
+                 </div>
+                 </div>
+        </footer>
+
+    </div> <div class="no-print max-w-4xl mx-auto mt-6 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+        <button type="button" onclick="printForm()" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+            </svg>
+            Imprimir / Guardar PDF
+        </button>
+        <button type="button" onclick="clearForm()" class="inline-flex justify-center items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+            Limpiar Formulario
+        </button>
+         <p class="no-print text-center text-xs text-gray-500 mt-4 md:col-span-2">
+            Nota: Para exportar a Word, puedes intentar imprimir como PDF y luego convertir el PDF a Word usando herramientas online, o copiar el contenido de la página (Ctrl+A, Ctrl+C) y pegarlo (Ctrl+V) en un documento de Word.
+        </p>
+    </div>
+
+    <script>
+        // Function to trigger the browser's print dialog
+        function printForm() {
+            window.print();
+        }
+
+        // Function to clear all input fields, textareas, and reset radio buttons in the form
+        function clearForm() {
+            const formContainer = document.getElementById('form-container');
+            const inputs = formContainer.querySelectorAll('input');
+            const textareas = formContainer.querySelectorAll('textarea');
+            const selects = formContainer.querySelectorAll('select');
+
+            inputs.forEach(input => {
+                if (input.type === 'radio') {
+                    // Reset radio buttons (set 'No' for NEE as default)
+                    if (input.name === 'nee' && input.value === 'no') {
+                        input.checked = true;
+                    } else {
+                         input.checked = false; // Uncheck others if needed, though default handled above
+                    }
+                } else if (input.type === 'checkbox') {
+                    input.checked = false; // Uncheck checkboxes
+                } else if (!input.readOnly) { // Don't clear readonly fields (like calculated averages)
+                    input.value = ''; // Clear text, number, date, etc.
+                }
+            });
+
+            textareas.forEach(textarea => {
+                 if (!textarea.readOnly) {
+                    textarea.value = ''; // Clear textareas
+                 }
+            });
+
+            selects.forEach(select => {
+                 if (!select.disabled) {
+                    select.selectedIndex = 0; // Reset selects to the first option
+                 }
+            });
+
+             // Optionally scroll to the top
+             window.scrollTo(0, 0);
+        }
+
+        // --- Optional: Add basic calculations for averages ---
+        // This is a very basic example and might need adjustments based on grading rules.
+        // It assumes simple averages. Add event listeners to relevant grade inputs.
+        // Example for one row (add similar logic for all rows and overall averages):
+        /*
+        const gradeInputs = document.querySelectorAll('tbody tr:first-child input[type="number"]'); // Get inputs for the first row
+        gradeInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                // Recalculate averages for this row when an input changes
+                // Add calculation logic here...
+                // Example: Calculate Q1 average
+                const p1 = parseFloat(gradeInputs[0].value) || 0;
+                const p2 = parseFloat(gradeInputs[1].value) || 0;
+                const eq1 = parseFloat(gradeInputs[2].value) || 0;
+                const pq1Input = gradeInputs[3]; // The readonly average input
+                // Add your specific calculation logic (e.g., weighting)
+                const avgQ1 = ((p1 + p2) / 2 * 0.8) + (eq1 * 0.2); // Example weighting
+                pq1Input.value = avgQ1.toFixed(2);
+
+                // Add similar calculations for Q2 and Final Average
+            });
+        });
+        */
+
+    </script>
+
+</body>
+</html>
