@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Informe Estudiantil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #1e3a8a, #facc15); /* Azul a amarillo */
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-start py-10 px-4 font-sans">
+
+  <!-- ENCABEZADO -->
+  <div class="bg-white rounded-xl shadow-xl p-6 mb-8 w-full max-w-3xl text-center">
+    <img src="sello.jpg" alt="Sello Institucional" class="mx-auto mb-2 w-1/6">
+    <h1 class="text-2xl font-bold text-blue-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-3xl transition hover:scale-[1.01]">
+    <h2 class="text-xl font-semibold text-blue-900 mb-4">Registrar Informe Estudiantil</h2>
+    <form id="formulario" class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-medium" for="para">Para:</label>
+        <input type="text" id="Para" class="w-full px-4 py-2 rounded-lg border border-gray-300" value="Mgs. Darwing Toledo G.      Rector" readonly>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium" for="de">De:</label>
+        <input type="text" id="De" class="w-full px-4 py-2 rounded-lg border border-gray-300" value="Mgs. Maricela Cun Rueda Docente - Tutora" contenteditable="true">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium" for="nombre">Nombre del estudiante:</label>
+        <input type="text" id="nombre" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium" for="curso">Curso:</label>
+        <select id="curso" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
+          <option value="">Seleccione</option>
+          <option value="Primero">Primero de Informática</option>
+          <option value="Segundo">Segundo de Informática</option>
+          <option value="Tercero">Tercero de Informática</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium" for="asunto">Motivo del informe:</label>
+        <select id="asunto" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
+          <option value="">Seleccione</option>
+          <option value="Bajo rendimiento">Bajo rendimiento</option>
+          <option value="Comportamiento">Comportamiento</option>
+          <option value="Acumulación de faltas">Acumulación de faltas</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium" for="detalle">Detalle del informe:</label>
+        <textarea id="detalle" rows="4" class="w-full px-4 py-2 rounded-lg border border-gray-300" required></textarea>
+      </div>
+
+      <div>
+        <label class="block text-gray-700 font-medium">Fecha:</label>
+        <input type="text" id="fecha" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-100" readonly>
+      </div>
+
+      <div class="flex justify-center gap-4 mt-6">
+        <button type="button" onclick="mostrarVistaPrevia()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full">Vista previa</button>
+        <button type="button" onclick="descargarPDF()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2 rounded-full">Descargar PDF</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- VISTA PREVIA -->
+  <div id="vistaPrevia" class="bg-white rounded-xl shadow-md p-6 mt-8 w-full max-w-3xl hidden">
+    <h3 class="text-lg font-bold text-gray-800 mb-4">Vista previa del informe</h3>
+    <div class="text-left text-gray-700 space-y-2">
+      <p><strong>Estudiante:</strong> <span id="vp-nombre"></span></p>
+      <p><strong>Curso:</strong> <span id="vp-curso"></span></p>
+      <p><strong>Motivo:</strong> <span id="vp-asunto"></span></p>
+      <p><strong>Detalle:</strong> <span id="vp-detalle"></span></p>
+      <p><strong>Fecha:</strong> <span id="vp-fecha"></span></p>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    // Fecha automática
+    document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC');
+
+    function mostrarVistaPrevia() {
+      const nombre = document.getElementById("nombre").value;
+      const curso = document.getElementById("curso").value;
+      const asunto = document.getElementById("asunto").value;
+      const detalle = document.getElementById("detalle").value;
+      const fecha = document.getElementById("fecha").value;
+
+      document.getElementById("vp-nombre").textContent = nombre;
+      document.getElementById("vp-curso").textContent = curso;
+      document.getElementById("vp-asunto").textContent = asunto;
+      document.getElementById("vp-detalle").textContent = detalle;
+      document.getElementById("vp-fecha").textContent = fecha;
+
+      document.getElementById("vistaPrevia").classList.remove("hidden");
+    }
+
+    function descargarPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const nombre = document.getElementById("nombre").value;
+      const curso = document.getElementById("curso").value;
+      const asunto = document.getElementById("asunto").value;
+      const detalle = document.getElementById("detalle").value;
+      const fecha = document.getElementById("fecha").value;
+
+      // Encabezado
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', 105, 20, null, null, 'center');
+      
+      // Insertar Sello
+      const img = new Image();
+      img.src = 'sello.jpg';
+      img.onload = function() {
+        doc.addImage(img, 'JPEG', 105, 25, 30, 30, '', 'NONE');
+      };
+
+      doc.setFontSize(12);
+      doc.text(`Para: Mgs. Darwing Toledo G. Rector`, 20, 50);
+      doc.text(`De: ${document.getElementById("de").value}`, 20, 57);
+      doc.text(`\n\nNombre del estudiante: ${nombre}`, 20, 70);
+      doc.text(`Curso: ${curso}`, 20, 90);
+      doc.text(`Motivo del informe: ${asunto}`, 20, 100);
+      doc.text(`Detalle del informe:`, 20, 110);
+
+      // Aseguramos que el texto largo no se monte usando "splitTextToSize"
+      const lines = doc.splitTextToSize(detalle, 170);
+      doc.text(lines, 20, 120);
+
+      doc.text(`Fecha: ${fecha}`, 20, 155);
+
+      doc.save(`Informe_${nombre}.pdf`);
+    }
+  </script>
+
+</body>
+</html>
