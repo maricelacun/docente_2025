@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Reunión - Unidad Educativa "Dr. Camilo Gallegos Domínguez"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #facc15, #3b82f6);
+            min-height: 100vh;
+        }
+        [contenteditable="true"] {
+            border: 1px dashed #9ca3af;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            min-height: 1.5em;
+            cursor: text;
+            display: inline-block; /* Para que el borde se ajuste al texto */
+            min-width: 50px; /* Ancho mínimo */
+        }
+        [contenteditable="true"]:focus {
+            outline: 2px solid #2563eb;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: transparent;
+        }
+        .main-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .download-button, .add-item-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .download-button:hover, .add-item-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .download-button:active, .add-item-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        /* Ocultar elementos al generar PDF */
+        .no-print {
+            /* Se usará en JS y CSS para ocultar */
+        }
+        /* Estilo para el botón de eliminar item */
+        .remove-item-button {
+            background-color: #ef4444; /* red-500 */
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 18px; /* Ajustar para centrar la X */
+            text-align: center;
+            cursor: pointer;
+            margin-left: 8px;
+            display: inline-flex; /* Para alinear correctamente */
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        .remove-item-button:hover {
+            background-color: #dc2626; /* red-600 */
+        }
+        /* Ajuste para alinear el botón de eliminar con el texto editable */
+         #agenda-list li {
+            display: flex;
+            align-items: center; /* Centra verticalmente el texto y el botón */
+            margin-bottom: 5px; /* Espacio entre items */
+         }
+         #agenda-list li > [contenteditable="true"] {
+             flex-grow: 1; /* Hace que el texto editable ocupe el espacio disponible */
+         }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="main-container" id="meeting-content">
+        <header class="mb-8 p-4 border-b border-gray-300">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                <div class="flex-shrink-0">
+                    <img src="sello.jpg"
+                         alt="[Imagen del Sello de la Institución]"
+                         class="h-20 w-20 object-contain rounded-full border border-gray-300 bg-white"
+                         onerror="this.onerror=null; this.src='https://placehold.co/80x80/EBF4FF/3B82F6?text=Sello'; this.alt='[Imagen del Sello de la Institución]';"
+                         crossorigin="anonymous">
+                </div>
+                <div class="text-center sm:text-left flex-grow mx-4">
+                    <h1 class="text-xl sm:text-2xl font-bold text-blue-700">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
+                    <p class="text-sm sm:text-base text-gray-600">Curso: Tercero Informática B</p>
+                    <p class="text-sm sm:text-base text-gray-600">Tutora: Mgs. Maricela Cun Rueda</p>
+                </div>
+                <div class="text-center sm:text-right">
+                    <label for="acta-numero" class="block text-sm font-medium text-gray-700 mb-1">Acta Nro:</label>
+                    <div id="acta-numero" contenteditable="true" class="text-lg font-semibold border border-gray-300 rounded px-2 py-1 min-w-[80px] text-center">
+                        001-2025
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="space-y-6">
+            <div class="flex justify-between items-center text-sm text-gray-600 mb-4">
+                <span><strong>Fecha:</strong> <span contenteditable="true">16 de Abril de 2025</span></span>
+                <span><strong>Hora:</strong> <span contenteditable="true">10:00 AM</span></span>
+            </div>
+
+            <section>
+                <h2 class="text-lg font-semibold mb-3 border-b pb-1 border-blue-300 text-blue-600">Orden del Día</h2>
+                <ol id="agenda-list" class="list-decimal list-inside space-y-2 mb-3">
+                    <li><span contenteditable="true">Constatación del Quórum.</span></li>
+                    <li><span contenteditable="true">Análisis del rendimiento académico del primer parcial.</span></li>
+                    <li><span contenteditable="true">Socialización del cronograma de actividades extracurriculares.</span></li>
+                    <li><span contenteditable="true">Elección del comité de padres de familia del curso.</span></li>
+                    <li><span contenteditable="true">Asuntos varios (permite añadir más temas durante la reunión).</span></li>
+                    <li><span contenteditable="true">Clausura.</span></li>
+                </ol>
+                <button id="add-agenda-item-button" class="add-item-button no-print bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50">
+                    + Añadir Punto
+                </button>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-semibold mb-3 border-b pb-1 border-blue-300 text-blue-600">Desarrollo y Acuerdos</h2>
+                <div contenteditable="true" class="p-3 border border-gray-300 rounded min-h-[200px] bg-white/50">
+                    <p>Ingrese aquí los detalles de la reunión, los puntos tratados, las intervenciones y los acuerdos alcanzados...</p>
+                    <br>
+                    <p><strong>Acuerdos Principales:</strong></p>
+                    <ul>
+                        <li>Acuerdo 1...</li>
+                        <li>Acuerdo 2...</li>
+                    </ul>
+                </div>
+            </section>
+
+             <section>
+                <h2 class="text-lg font-semibold mb-3 border-b pb-1 border-blue-300 text-blue-600">Registro de Asistencia</h2>
+                <div contenteditable="true" class="p-3 border border-gray-300 rounded min-h-[100px] bg-white/50">
+                    <p>Listado de padres/madres/representantes asistentes:</p>
+                    <ul>
+                        <li>Nombre Apellido - Firma (o marcar asistencia)</li>
+                        <li>Nombre Apellido - Firma</li>
+                        <li>...</li>
+                    </ul>
+                     <p>Total Asistentes: [Número]</p>
+                     <p>Total Ausentes: [Número]</p>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="mt-10 pt-6 border-t border-gray-300 text-center space-x-4 no-print">
+             <button id="download-pdf-button" class="download-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                Guardar y Descargar PDF
+            </button>
+        </footer>
+
+    </div>
+
+    <script>
+        // Asegura que las librerías estén cargadas
+        window.jsPDF = window.jspdf.jsPDF;
+
+        const agendaList = document.getElementById('agenda-list');
+        const addAgendaItemButton = document.getElementById('add-agenda-item-button');
+
+        // --- Funcionalidad para Añadir y Eliminar Puntos del Orden del Día ---
+
+        // Función para crear el botón de eliminar
+        function createRemoveButton() {
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'X'; // Texto del botón (una X)
+            removeButton.className = 'remove-item-button no-print'; // Clases para estilo y para no imprimir
+            removeButton.type = 'button'; // Evita que envíe formularios si estuviera dentro de uno
+            removeButton.title = 'Eliminar este punto'; // Tooltip
+            return removeButton;
+        }
+
+        // Función para añadir un nuevo punto a la lista
+        function addAgendaItem(text = 'Nuevo punto...') {
+            const li = document.createElement('li');
+
+            const span = document.createElement('span');
+            span.contentEditable = true;
+            span.textContent = text;
+
+            const removeButton = createRemoveButton();
+
+            li.appendChild(span); // Añade el texto editable
+            li.appendChild(removeButton); // Añade el botón de eliminar
+            agendaList.appendChild(li); // Añade el nuevo item a la lista
+
+             // Enfocar el nuevo elemento para editarlo inmediatamente
+            span.focus();
+            // Seleccionar el texto del nuevo elemento
+            const range = document.createRange();
+            range.selectNodeContents(span);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        // Añadir botón de eliminar a los items existentes al cargar la página
+        function initializeAgendaItems() {
+            agendaList.querySelectorAll('li').forEach(li => {
+                // Si el item no tiene ya un botón de eliminar, se lo añadimos
+                if (!li.querySelector('.remove-item-button')) {
+                     // Asegurarse que el texto esté dentro de un span para alinear bien
+                     if (!(li.firstChild instanceof HTMLSpanElement) && li.firstChild?.nodeType === Node.TEXT_NODE) {
+                         const span = document.createElement('span');
+                         span.contentEditable = true;
+                         span.textContent = li.firstChild.textContent;
+                         li.removeChild(li.firstChild); // Quita el nodo de texto original
+                         li.insertBefore(span, li.firstChild); // Inserta el span al principio
+                     } else if (li.firstChild instanceof HTMLSpanElement) {
+                         li.firstChild.contentEditable = true; // Asegurar que sea editable
+                     }
+
+                    const removeButton = createRemoveButton();
+                    li.appendChild(removeButton);
+                }
+            });
+        }
+
+        // Event listener para el botón "+ Añadir Punto"
+        addAgendaItemButton.addEventListener('click', () => {
+            addAgendaItem(); // Llama a la función para añadir un nuevo item
+        });
+
+        // Event listener para los botones de eliminar (usando delegación de eventos)
+        agendaList.addEventListener('click', (event) => {
+            // Verifica si el clic fue en un botón de eliminar
+            if (event.target.classList.contains('remove-item-button')) {
+                const listItem = event.target.closest('li'); // Encuentra el elemento <li> padre
+                if (listItem) {
+                    listItem.remove(); // Elimina el elemento <li> de la lista
+                }
+            }
+        });
+
+        // Inicializar los items existentes al cargar
+        initializeAgendaItems();
+
+
+        // --- Funcionalidad para Descargar PDF (sin cambios respecto a la versión anterior) ---
+        async function downloadPDF() {
+            const content = document.getElementById('meeting-content');
+            const buttonsToHide = content.querySelectorAll('.no-print'); // Selecciona TODOS los elementos a ocultar
+
+            // Oculta los botones antes de capturar
+            buttonsToHide.forEach(btn => btn.style.display = 'none');
+
+            const activeElement = document.activeElement;
+            if (activeElement && activeElement.hasAttribute('contenteditable')) {
+                activeElement.blur();
+            }
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            try {
+                const canvas = await html2canvas(content, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                     onclone: (document) => {
+                         // Oculta los botones de eliminar dentro de los items clonados
+                         const clonedContent = document.getElementById('meeting-content');
+                         if (clonedContent) {
+                            clonedContent.style.backgroundColor = 'white';
+                            clonedContent.style.backgroundImage = 'none';
+                            // Asegurarse de ocultar los botones de eliminar en el clon también
+                            clonedContent.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+                         }
+                    }
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                let heightLeft = pdfHeight;
+                let position = 0;
+                const pageHeight = pdf.internal.pageSize.getHeight();
+
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                const actaNumeroElement = document.getElementById('acta-numero');
+                const actaNumero = actaNumeroElement ? actaNumeroElement.innerText.trim() : 'registro';
+                const filename = `Acta_Reunion_${actaNumero.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+                pdf.save(filename);
+
+            } catch (error) {
+                console.error("Error al generar el PDF:", error);
+                if (error.name === 'SecurityError') {
+                     alert("Error de seguridad al generar el PDF. Esto puede ocurrir si la imagen del sello no se puede cargar correctamente o proviene de otro dominio. Intente asegurarse de que la imagen 'sello.jpg' esté en la misma carpeta o pruebe sin la imagen.");
+                } else {
+                    alert("Hubo un error al generar el PDF. Revisa la consola del navegador (F12) para más detalles.");
+                }
+            } finally {
+                 // Muestra los botones nuevamente
+                 buttonsToHide.forEach(btn => btn.style.display = ''); // Usa display original o 'inline-flex'/'block' según corresponda
+                 // Reajuste específico para botones de eliminar items
+                 content.querySelectorAll('.remove-item-button').forEach(btn => btn.style.display = 'inline-flex');
+                 // Reajuste para el botón de añadir item
+                 addAgendaItemButton.style.display = 'inline-block'; // o 'block' si prefieres
+                 // Reajuste para el botón de descarga
+                 document.getElementById('download-pdf-button').style.display = 'inline-block'; // o 'block'
+            }
+        }
+
+        const downloadButton = document.getElementById('download-pdf-button');
+        if (downloadButton) {
+            downloadButton.addEventListener('click', downloadPDF);
+        } else {
+            console.error("Botón de descarga no encontrado.");
+        }
+
+    </script>
+
+</body>
+</html>
