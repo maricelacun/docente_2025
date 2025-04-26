@@ -1,8 +1,58 @@
-<a href="#" onclick="salir()">Salir</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasta Pronto</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+        img {
+            width: 200px;
+            margin-bottom: 30px;
+        }
+        .boton-volver {
+            background-color: #ff4b2b;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+        .boton-volver:hover {
+            background-color: #ff416c;
+        }
+    </style>
+</head>
+<body>
 
-<script>
-function salir() {
-    alert("¡Gracias por visitar!");
-    window.location.href = "https://www.google.com"; // O tu página de inicio
-}
-</script>
+    <h1>¡Gracias por visitarnos!</h1>
+    <p>Te esperamos pronto en nuestra página 📚💻</p>
+    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Despedida">
+    <br>
+    <a class="boton-volver" href="index.html">Volver al Inicio</a>
+
+</body>
+</html>
+
