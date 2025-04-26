@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Tutorías - Tercero Informática "B"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-qZvrmS2ekKPF2mSznTQsxqPgnpkI4DNTlrdUmTzrDgektczlKNRRhy5X5AAOnx5S09ydFYWWNSfcEqDTTHgtNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        /* Custom font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Style for the printable area */
+        #printableArea {
+            background-color: white; /* Ensure white background for PDF */
+            color: black; /* Ensure text is black for PDF */
+        }
+        /* Hide elements not for PDF */
+        .no-print {
+             display: block; /* Ensure it's visible by default */
+        }
+        @media print {
+            .no-print {
+                display: none !important; /* Hide forcefully for printing */
+            }
+            /* Ensure inputs/textareas look like text in print/PDF */
+            input, textarea {
+                border: none !important;
+                background-color: transparent !important;
+                box-shadow: none !important;
+                resize: none !important; /* Prevent textarea resize handle */
+                padding: 0 !important;
+                margin: 0 !important;
+                color: black !important; /* Ensure text color */
+                -webkit-print-color-adjust: exact; /* Force color rendering */
+                 print-color-adjust: exact;
+            }
+            /* Hide placeholder text in PDF */
+            input::placeholder, textarea::placeholder {
+                color: transparent !important;
+            }
+            /* Adjust layout for print */
+             #printableArea {
+                padding: 1rem; /* Adjust padding for print if needed */
+            }
+            .session-block {
+                 page-break-inside: avoid; /* Try to keep each session block on one page */
+                 margin-bottom: 1rem; /* Add space between blocks in print */
+            }
+        }
+        /* Gradient background */
+        .gradient-bg {
+            background: linear-gradient(to bottom right, #6EE7B7, #3B82F6); /* Green to Blue gradient */
+        }
+        /* Style inputs and textareas */
+        input[type="date"], input[type="text"], textarea {
+            @apply w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-sm;
+        }
+        label {
+             @apply block text-gray-700 font-medium mb-1 text-sm;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl overflow-hidden">
+        <div class="p-6 text-center border-b" id="headerSection">
+             <div class="w-20 h-20 mx-auto bg-gray-200 rounded-full flex items-center justify-center mb-3">
+                <span class="text-gray-500 text-xs">[Sello Colegio]</span>
+                </div>
+            <h1 class="text-xl font-bold text-gray-800">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+            <p class="text-md font-semibold text-gray-700 mt-1">Curso: TERCERO, INFORMÁTICA "B"</p>
+            <p class="text-sm text-gray-600">Tutora: Mgs. Maricela Cun Rueda</p>
+        </div>
+
+        <div id="printableArea" class="p-6">
+            <h2 class="text-lg font-semibold text-center text-gray-800 mb-6">Registro de Tutorías Académicas</h2>
+
+            <div id="tutoringSessionsContainer" class="space-y-6">
+                <div class="border rounded-lg p-4 shadow-sm bg-gray-50 session-block" data-session-template>
+                    <h3 class="text-md font-semibold text-blue-600 mb-3">Detalles de la Tutoría</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="tutoria-fecha-1">Fecha:</label>
+                            <input type="date" id="tutoria-fecha-1" name="tutoria-fecha[]" required>
+                        </div>
+                        <div>
+                            <label for="tutoria-tema-1">Tema(s):</label>
+                            <input type="text" id="tutoria-tema-1" name="tutoria-tema[]" placeholder="Ingrese los temas tratados" required>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="tutoria-objetivo-1">Objetivo(s):</label>
+                            <textarea id="tutoria-objetivo-1" name="tutoria-objetivo[]" rows="2" placeholder="Describa el objetivo principal" required></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="tutoria-destrezas-1">Destrezas con Criterio de Desempeño:</label>
+                            <textarea id="tutoria-destrezas-1" name="tutoria-destrezas[]" rows="3" placeholder="Liste las destrezas y criterios trabajados" required></textarea>
+                        </div>
+                         <div class="md:col-span-2">
+                            <label for="tutoria-metodologias-1">Metodologías y Actividades de Clase Activas:</label>
+                            <textarea id="tutoria-metodologias-1" name="tutoria-metodologias[]" rows="3" placeholder="Detalle metodologías y actividades" required></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="tutoria-evaluacion-1">Técnicas e Instrumentos de Evaluación:</label>
+                            <textarea id="tutoria-evaluacion-1" name="tutoria-evaluacion[]" rows="2" placeholder="Mencione técnicas e instrumentos de evaluación" required></textarea>
+                        </div>
+                         <div class="md:col-span-2">
+                            <label for="tutoria-materiales-1">Materiales Utilizados:</label>
+                            <textarea id="tutoria-materiales-1" name="tutoria-materiales[]" rows="2" placeholder="Liste los materiales usados" required></textarea>
+                        </div>
+                    </div>
+                     <div class="text-right mt-3 no-print">
+                        <button type="button" class="removeSessionBtn hidden text-red-600 hover:text-red-800 text-sm font-medium" onclick="removeSession(this)">
+                            Eliminar Tutoría
+                        </button>
+                    </div>
+                </div>
+                </div>
+
+            <div class="text-center mt-6 no-print">
+                <button id="addSessionBtn" type="button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out text-sm">
+                    + Añadir Nueva Tutoría
+                </button>
+            </div>
+
+            <div class="mt-10 pt-6 border-t">
+                <h3 class="text-md font-semibold text-gray-800 mb-4 text-center">Ideas de Temas Socioemocionales para Tutorías</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border rounded-lg shadow-sm">
+                        <thead class="bg-blue-100">
+                            <tr>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-blue-800 uppercase tracking-wider">Dimensión Socioemocional</th>
+                                <th class="px-4 py-2 text-left text-xs font-semibold text-blue-800 uppercase tracking-wider">Posibles Temas / Actividades</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            <tr class="border-t">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Autoconocimiento</td>
+                                <td class="px-4 py-2 text-gray-600">Identificación de fortalezas y debilidades, manejo de emociones, reconocimiento de intereses.</td>
+                            </tr>
+                            <tr class="border-t bg-gray-50">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Autorregulación</td>
+                                <td class="px-4 py-2 text-gray-600">Técnicas de manejo del estrés y la ansiedad, establecimiento de metas, organización del tiempo.</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Conciencia Social</td>
+                                <td class="px-4 py-2 text-gray-600">Empatía, reconocimiento de perspectivas diferentes, respeto por la diversidad.</td>
+                            </tr>
+                             <tr class="border-t bg-gray-50">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Habilidades para Relacionarse</td>
+                                <td class="px-4 py-2 text-gray-600">Comunicación asertiva, trabajo en equipo, resolución de conflictos, escucha activa.</td>
+                            </tr>
+                             <tr class="border-t">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Toma de Decisiones Responsable</td>
+                                <td class="px-4 py-2 text-gray-600">Análisis de consecuencias, ética en la toma de decisiones, pensamiento crítico.</td>
+                            </tr>
+                             <tr class="border-t bg-gray-50">
+                                <td class="px-4 py-2 text-gray-700 font-medium">Bienestar y Proyecto de Vida</td>
+                                <td class="px-4 py-2 text-gray-600">Hábitos saludables, resiliencia, definición de metas a futuro, exploración vocacional.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4 text-center border-t no-print">
+            <button id="downloadPdfBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow transition duration-300 ease-in-out">
+                Descargar en PDF
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const tutoringSessionsContainer = document.getElementById('tutoringSessionsContainer');
+        // Find the template block using the data attribute
+        const sessionTemplate = document.querySelector('[data-session-template]');
+        const addSessionBtn = document.getElementById('addSessionBtn');
+        let sessionCounter = 1; // Start counter for unique IDs
+
+        function addSession() {
+            sessionCounter++;
+            // Clone the template node
+            const newSession = sessionTemplate.cloneNode(true);
+            // Remove the template attribute from the clone
+            newSession.removeAttribute('data-session-template');
+            newSession.style.display = 'block'; // Ensure it's visible if template was hidden
+
+            // Update IDs and 'for' attributes to be unique
+            newSession.querySelectorAll('[id]').forEach(element => {
+                element.id = element.id.replace('-1', `-${sessionCounter}`);
+            });
+            newSession.querySelectorAll('[for]').forEach(element => {
+                element.htmlFor = element.htmlFor.replace('-1', `-${sessionCounter}`);
+            });
+
+            // Clear input values in the new session block
+            newSession.querySelectorAll('input, textarea').forEach(input => {
+                if (input.type === 'date') {
+                    input.value = ''; // Clear date
+                } else {
+                    input.value = ''; // Clear text/textarea
+                }
+                input.required = true; // Ensure fields remain required
+            });
+
+            // Show the remove button for the new session
+            const removeBtn = newSession.querySelector('.removeSessionBtn');
+            if(removeBtn) {
+                removeBtn.classList.remove('hidden');
+            }
+
+            // Append the new session block to the container
+            tutoringSessionsContainer.appendChild(newSession);
+        }
+
+        function removeSession(button) {
+             // Find the closest parent session block and remove it
+            const sessionBlock = button.closest('.session-block');
+            if (sessionBlock) {
+                sessionBlock.remove();
+            }
+        }
+
+        // Add event listener to the "Add New Session" button
+        addSessionBtn.addEventListener('click', addSession);
+
+        // --- PDF Generation Logic ---
+        async function generatePdf() {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const margin = 10; // 10mm margin
+            const contentWidth = pdfWidth - (margin * 2);
+            let currentY = margin; // Start position for content
+
+            // 1. Add Header (Capture separately if needed styled differently)
+            const headerElement = document.getElementById('headerSection');
+            if (headerElement) {
+                const headerCanvas = await html2canvas(headerElement, { scale: 2 });
+                const headerImgData = headerCanvas.toDataURL('image/png');
+                const headerImgProps = pdf.getImageProperties(headerImgData);
+                const headerImgHeight = (headerImgProps.height * contentWidth) / headerImgProps.width;
+
+                if (currentY + headerImgHeight < pdfHeight - margin) {
+                    pdf.addImage(headerImgData, 'PNG', margin, currentY, contentWidth, headerImgHeight);
+                    currentY += headerImgHeight + 5; // Add some space after header
+                } else {
+                    // Handle case where header itself is too tall (unlikely)
+                    console.error("Header is too tall for the page.");
+                    // Potentially add page break here if needed
+                }
+            }
+
+             // Add Title for the main content section
+             const mainTitle = document.querySelector('#printableArea > h2');
+             if (mainTitle) {
+                 pdf.setFontSize(14);
+                 pdf.setFont(undefined, 'bold');
+                 // Center align text requires calculating text width (simplified here)
+                 pdf.text(mainTitle.innerText, pdfWidth / 2, currentY, { align: 'center' });
+                 currentY += 10; // Space after title
+             }
+
+
+            // 2. Add Tutoring Sessions (Iterate and add each one)
+            const sessionBlocks = tutoringSessionsContainer.querySelectorAll('.session-block:not([data-session-template])'); // Select only visible session blocks
+
+            for (const block of sessionBlocks) {
+                 // Temporarily make inputs look like text for capture
+                block.querySelectorAll('input, textarea').forEach(el => {
+                    el.style.border = 'none';
+                    el.style.backgroundColor = 'transparent';
+                    el.style.boxShadow = 'none';
+                    el.dataset.originalValue = el.value; // Store value
+                    // Set value directly to ensure it's captured if placeholder shows
+                    el.setAttribute('value', el.value);
+                    if (el.tagName === 'TEXTAREA') {
+                        el.textContent = el.value; // Set text content for textarea
+                    }
+                });
+
+
+                const canvas = await html2canvas(block, {
+                     scale: 2,
+                     logging: false, // Disable detailed logging unless debugging
+                     onclone: (clonedDoc) => {
+                        // Ensure styles are applied in the clone
+                        const clonedBlock = clonedDoc.querySelector(`[id="${block.id}"]`) || clonedDoc.body.firstChild;
+                        if (clonedBlock) {
+                            clonedBlock.style.padding = '5px'; // Minimal padding for capture
+                            clonedBlock.style.boxShadow = 'none';
+                            clonedBlock.style.border = '1px solid #ccc'; // Add a light border for separation in PDF
+                            clonedBlock.style.marginBottom = '5mm'; // Space between blocks in PDF
+                        }
+                     }
+                });
+
+                 // Restore original input appearance after capture
+                 block.querySelectorAll('input, textarea').forEach(el => {
+                    el.style.border = '';
+                    el.style.backgroundColor = '';
+                    el.style.boxShadow = '';
+                    el.removeAttribute('value'); // Remove temporary attribute
+                     if (el.tagName === 'TEXTAREA') {
+                        el.textContent = el.dataset.originalValue || ''; // Restore original value
+                    }
+                    delete el.dataset.originalValue;
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
+                const imgHeight = (imgProps.height * contentWidth) / imgProps.width;
+
+                // Check if content fits on the current page, add new page if not
+                if (currentY + imgHeight > pdfHeight - margin) {
+                    pdf.addPage();
+                    currentY = margin; // Reset Y position for new page
+                }
+
+                pdf.addImage(imgData, 'PNG', margin, currentY, contentWidth, imgHeight);
+                currentY += imgHeight + 5; // Add space after the block
+            }
+
+            // 3. Add Socio-emotional Table (Capture the table container)
+            const tableContainer = document.querySelector('#printableArea > div:last-of-type'); // Get the container of the table
+             if (tableContainer && currentY < pdfHeight - margin - 20) { // Check if there's enough space for table title
+                 const tableCanvas = await html2canvas(tableContainer, { scale: 2 });
+                 const tableImgData = tableCanvas.toDataURL('image/png');
+                 const tableImgProps = pdf.getImageProperties(tableImgData);
+                 const tableImgHeight = (tableImgProps.height * contentWidth) / tableImgProps.width;
+
+                 // Check if table fits on the current page
+                 if (currentY + tableImgHeight > pdfHeight - margin) {
+                     pdf.addPage();
+                     currentY = margin; // Reset Y position
+                 }
+                 pdf.addImage(tableImgData, 'PNG', margin, currentY, contentWidth, tableImgHeight);
+                 currentY += tableImgHeight;
+            } else if (tableContainer) {
+                 // Add table on a new page if it doesn't fit
+                 pdf.addPage();
+                 currentY = margin;
+                 const tableCanvas = await html2canvas(tableContainer, { scale: 2 });
+                 const tableImgData = tableCanvas.toDataURL('image/png');
+                 const tableImgProps = pdf.getImageProperties(tableImgData);
+                 const tableImgHeight = (tableImgProps.height * contentWidth) / tableImgProps.width;
+                 pdf.addImage(tableImgData, 'PNG', margin, currentY, contentWidth, tableImgHeight);
+            }
+
+
+            // Save the PDF
+            pdf.save('Registro_Tutorias_Editable_Tercero_Informatica_B.pdf');
+        }
+
+
+        // Add event listener to the download button
+        document.getElementById('downloadPdfBtn').addEventListener('click', generatePdf);
+
+        // Initialize by removing the template from the normal flow (optional: hide it visually)
+        // sessionTemplate.style.display = 'none'; // Hide the template visually
+        // Or add the first block dynamically on load if you prefer starting empty
+        addSession(); // Add the first editable session block automatically on load
+        // Hide the remove button for the very first block
+        const firstRemoveBtn = tutoringSessionsContainer.querySelector('.session-block .removeSessionBtn');
+        if (firstRemoveBtn) {
+            // Optionally hide or disable remove for the first block
+            // firstRemoveBtn.classList.add('hidden');
+        }
+
+
+    </script>
+
+</body>
+</html>
