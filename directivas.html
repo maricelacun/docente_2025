@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directivas - Tercero Informática "B"</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+        }
+        
+        .position-badge {
+            background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        input:focus, select:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        
+        /* Estilo para el sello */
+        .sello-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 4px solid #f59e0b;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sello-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8">
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Encabezado -->
+        <div class="header-gradient rounded-t-2xl shadow-xl overflow-hidden relative">
+            <div class="py-4 px-6 text-center">
+                <!-- Sello institucional - Ahora arriba del texto -->
+                <div class="sello-container">
+                    <img src="sello.jpg" alt="Sello Institucional" class="sello-img">
+                </div>
+                
+                <h1 class="text-3xl font-bold text-white">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+                <p class="text-xl font-semibold text-yellow-300 mt-2">Tercero de Bachillerato Técnico en Informática</p>
+                <p class="text-lg text-blue-100">Paralelo "B" - Tutora: Mgs. Maricela Cun Rueda</p>
+                
+                <!-- Botón de descarga en el encabezado -->
+                <div class="absolute top-4 right-4">
+                    <button id="downloadBtn" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-100 transition flex items-center">
+                        <i class="fas fa-download mr-2"></i> Descargar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div class="bg-white rounded-b-2xl shadow-lg overflow-hidden">
+            <div class="p-6 md:p-8">
+                <!-- Tabs de navegación -->
+                <div class="flex border-b border-gray-200 mb-8">
+                    <button class="tab-btn active px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600" data-tab="padres">
+                        <i class="fas fa-users mr-2"></i>Directiva de Padres
+                    </button>
+                    <button class="tab-btn px-4 py-2 font-medium text-gray-500 hover:text-blue-600" data-tab="estudiantes">
+                        <i class="fas fa-user-graduate mr-2"></i>Directiva Estudiantil
+                    </button>
+                </div>
+                
+                <!-- Contenido de tabs -->
+                <div id="padres-tab" class="tab-content">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center">
+                        <i class="fas fa-users-cog mr-3 text-yellow-500"></i>
+                        Directiva de Padres de Familia
+                    </h2>
+                    
+                    <!-- Formulario para agregar miembros -->
+                    <div class="card-gradient rounded-xl shadow-md p-6 mb-8 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                            <i class="fas fa-user-plus mr-2 text-yellow-500"></i>
+                            Registrar Nuevo Miembro
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
+                                <select id="cargo-padre" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">Seleccione un cargo</option>
+                                    <option value="presidente">Presidente</option>
+                                    <option value="vicepresidente">Vicepresidente</option>
+                                    <option value="secretario">Secretario</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="vocal">Vocal</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                                <input type="text" id="nombre-padre" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: Juan Pérez">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                <input type="tel" id="telefono-padre" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: 0991234567">
+                            </div>
+                            
+                            <div class="md:col-span-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
+                                <input type="email" id="email-padre" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: ejemplo@correo.com">
+                            </div>
+                            
+                            <div class="md:col-span-3 flex justify-end">
+                                <button id="guardar-padre" class="btn-primary text-white px-6 py-2 rounded-lg font-medium flex items-center">
+                                    <i class="fas fa-save mr-2"></i> Guardar Miembro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de miembros -->
+                    <div class="card-gradient rounded-xl shadow-md p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                            <i class="fas fa-list-ol mr-2 text-yellow-500"></i>
+                            Miembros de la Directiva
+                        </h3>
+                        
+                        <div id="lista-padres" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Los miembros se agregarán aquí dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tab de estudiantes (oculto inicialmente) -->
+                <div id="estudiantes-tab" class="tab-content hidden">
+                    <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center">
+                        <i class="fas fa-user-friends mr-3 text-yellow-500"></i>
+                        Directiva Estudiantil
+                    </h2>
+                    
+                    <!-- Formulario para agregar estudiantes -->
+                    <div class="card-gradient rounded-xl shadow-md p-6 mb-8 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                            <i class="fas fa-user-plus mr-2 text-yellow-500"></i>
+                            Registrar Nuevo Miembro
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
+                                <select id="cargo-estudiante" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">Seleccione un cargo</option>
+                                    <option value="presidente">Presidente</option>
+                                    <option value="vicepresidente">Vicepresidente</option>
+                                    <option value="secretario">Secretario</option>
+                                    <option value="tesorero">Tesorero</option>
+                                    <option value="vocal">Vocal</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
+                                <input type="text" id="nombre-estudiante" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: Ana López">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Representante</label>
+                                <input type="text" id="representante-estudiante" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: Padre/Madre de Ana">
+                            </div>
+                            
+                            <div class="md:col-span-3">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono de Contacto</label>
+                                <input type="tel" id="telefono-estudiante" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: 0991234567">
+                            </div>
+                            
+                            <div class="md:col-span-3 flex justify-end">
+                                <button id="guardar-estudiante" class="btn-primary text-white px-6 py-2 rounded-lg font-medium flex items-center">
+                                    <i class="fas fa-save mr-2"></i> Guardar Miembro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Lista de estudiantes -->
+                    <div class="card-gradient rounded-xl shadow-md p-6 border border-gray-100">
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                            <i class="fas fa-list-ol mr-2 text-yellow-500"></i>
+                            Miembros de la Directiva
+                        </h3>
+                        
+                        <div id="lista-estudiantes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Los estudiantes se agregarán aquí dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pie de página -->
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 text-center text-sm text-gray-500">
+                <p>© 2023 Unidad Educativa "Dr. Camilo Gallegos Domínguez" - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const { jsPDF } = window.jspdf;
+        let miembrosPadres = [];
+        let miembrosEstudiantes = [];
+        
+        // Funcionalidad de tabs
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remover clase active de todos los botones
+                document.querySelectorAll('.tab-btn').forEach(tb => {
+                    tb.classList.remove('active', 'text-blue-600', 'border-blue-600');
+                    tb.classList.add('text-gray-500');
+                });
+                
+                // Añadir clase active al botón clickeado
+                btn.classList.add('active', 'text-blue-600', 'border-blue-600');
+                btn.classList.remove('text-gray-500');
+                
+                // Ocultar todos los contenidos de tabs
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                
+                // Mostrar el contenido correspondiente
+                const tabId = btn.getAttribute('data-tab');
+                document.getElementById(`${tabId}-tab`).classList.remove('hidden');
+            });
+        });
+        
+        // Función para crear tarjeta de miembro
+        function crearTarjetaMiembro(miembro, tipo) {
+            const cargo = miembro.cargo.toUpperCase();
+            const nombre = miembro.nombre;
+            const telefono = miembro.telefono;
+            const extraInfo = tipo === 'padre' ? miembro.email : `Representante: ${miembro.representante}`;
+            
+            return `
+                <div class="member-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="position-badge text-white text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block">${cargo}</span>
+                                <h4 class="text-lg font-bold text-gray-800">${nombre}</h4>
+                                ${tipo === 'estudiante' ? `<p class="text-sm text-gray-500">${extraInfo}</p>` : ''}
+                            </div>
+                            <img src="https://ui-avatars.com/api/?name=${nombre.split(' ').map(n => n[0]).join('+')}&background=3b82f6&color=fff" 
+                                 alt="Avatar" class="w-12 h-12 rounded-full">
+                        </div>
+                        
+                        <div class="mt-4 space-y-2">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-phone-alt mr-2 text-blue-500"></i>
+                                <span>${telefono}</span>
+                            </div>
+                            ${tipo === 'padre' ? `
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fas fa-envelope mr-2 text-blue-500"></i>
+                                <span>${extraInfo}</span>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 px-5 py-3 flex justify-end space-x-2">
+                        <button class="text-blue-600 hover:text-blue-800" onclick="editarMiembro('${tipo}', ${miembro.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800" onclick="eliminarMiembro('${tipo}', ${miembro.id})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Función para actualizar las listas
+        function actualizarListas() {
+            const listaPadres = document.getElementById('lista-padres');
+            const listaEstudiantes = document.getElementById('lista-estudiantes');
+            
+            listaPadres.innerHTML = '';
+            listaEstudiantes.innerHTML = '';
+            
+            miembrosPadres.forEach(miembro => {
+                listaPadres.innerHTML += crearTarjetaMiembro(miembro, 'padre');
+            });
+            
+            miembrosEstudiantes.forEach(miembro => {
+                listaEstudiantes.innerHTML += crearTarjetaMiembro(miembro, 'estudiante');
+            });
+        }
+        
+        // Función para agregar miembro padre
+        document.getElementById('guardar-padre').addEventListener('click', () => {
+            const cargo = document.getElementById('cargo-padre').value;
+            const nombre = document.getElementById('nombre-padre').value;
+            const telefono = document.getElementById('telefono-padre').value;
+            const email = document.getElementById('email-padre').value;
+            
+            if (!cargo || !nombre || !telefono || !email) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+            
+            const nuevoMiembro = {
+                id: miembrosPadres.length + 1,
+                cargo,
+                nombre,
+                telefono,
+                email
+            };
+            
+            miembrosPadres.push(nuevoMiembro);
+            actualizarListas();
+            
+            // Limpiar formulario
+            document.getElementById('cargo-padre').value = '';
+            document.getElementById('nombre-padre').value = '';
+            document.getElementById('telefono-padre').value = '';
+            document.getElementById('email-padre').value = '';
+            
+            alert('Miembro de la directiva de padres registrado correctamente');
+        });
+        
+        // Función para agregar miembro estudiante
+        document.getElementById('guardar-estudiante').addEventListener('click', () => {
+            const cargo = document.getElementById('cargo-estudiante').value;
+            const nombre = document.getElementById('nombre-estudiante').value;
+            const representante = document.getElementById('representante-estudiante').value;
+            const telefono = document.getElementById('telefono-estudiante').value;
+            
+            if (!cargo || !nombre || !representante || !telefono) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+            
+            const nuevoMiembro = {
+                id: miembrosEstudiantes.length + 1,
+                cargo,
+                nombre,
+                representante,
+                telefono
+            };
+            
+            miembrosEstudiantes.push(nuevoMiembro);
+            actualizarListas();
+            
+            // Limpiar formulario
+            document.getElementById('cargo-estudiante').value = '';
+            document.getElementById('nombre-estudiante').value = '';
+            document.getElementById('representante-estudiante').value = '';
+            document.getElementById('telefono-estudiante').value = '';
+            
+            alert('Miembro de la directiva estudiantil registrado correctamente');
+        });
+        
+        // Funciones para editar y eliminar (simuladas)
+        window.editarMiembro = function(tipo, id) {
+            alert(`Editar miembro ${tipo} con ID ${id}`);
+        };
+        
+        window.eliminarMiembro = function(tipo, id) {
+            if (confirm('¿Está seguro de eliminar este miembro?')) {
+                if (tipo === 'padre') {
+                    miembrosPadres = miembrosPadres.filter(m => m.id !== id);
+                } else {
+                    miembrosEstudiantes = miembrosEstudiantes.filter(m => m.id !== id);
+                }
+                actualizarListas();
+                alert('Miembro eliminado correctamente');
+            }
+        };
+        
+        // Función para descargar PDF
+        document.getElementById('downloadBtn').addEventListener('click', async () => {
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const element = document.getElementById('printableArea');
+            
+            // Ocultar botones y elementos no deseados antes de capturar
+            const noPrintElements = element.querySelectorAll('.no-print, button, .tab-btn, .tab-content:not(.active)');
+            noPrintElements.forEach(el => el.style.display = 'none');
+            
+            // Capturar el contenido como imagen
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                logging: false,
+                useCORS: true
+            });
+            
+            // Restaurar elementos ocultos
+            noPrintElements.forEach(el => el.style.display = '');
+            
+            // Añadir imagen al PDF
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 190; // Ancho en mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+            pdf.save('Directivas_Tercero_Informatica_B.pdf');
+        });
+        
+        // Inicializar con algunos datos de ejemplo
+        miembrosPadres = [
+            { id: 1, cargo: 'presidente', nombre: 'Carlos Andrade', telefono: '0991234567', email: 'carlos.andrade@email.com' },
+            { id: 2, cargo: 'vicepresidente', nombre: 'María Fernández', telefono: '0987654321', email: 'maria.fernandez@email.com' },
+            { id: 3, cargo: 'secretario', nombre: 'Roberto Pazmiño', telefono: '0976543210', email: 'roberto.pazmino@email.com' }
+        ];
+        
+        miembrosEstudiantes = [
+            { id: 1, cargo: 'presidente', nombre: 'Daniel Mendoza', representante: 'Luis Mendoza', telefono: '0998765432' },
+            { id: 2, cargo: 'vicepresidente', nombre: 'Sofía Castro', representante: 'Marta Castro', telefono: '0987654321' },
+            { id: 3, cargo: 'secretario', nombre: 'Javier Torres', representante: 'Carlos Torres', telefono: '0976543210' }
+        ];
+        
+        actualizarListas();
+    </script>
+   <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">INICIO</a>
+</body>
+</html>
