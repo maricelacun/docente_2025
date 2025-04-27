@@ -29,12 +29,14 @@
             width: 210mm;
             min-height: 297mm;
             margin: 0 auto;
-            padding: 10mm 20mm;
+            padding: 0;
         }
 
         .container {
-            position: relative;
+            width: 100%;
             height: 100%;
+            padding: 15mm 25mm; /* 15mm arriba/abajo, 25mm izquierda/derecha */
+            position: relative;
         }
 
         /* Encabezado con sello */
@@ -45,8 +47,8 @@
         }
 
         .school-stamp {
-            width: 30mm;
-            height: 30mm;
+            width: 80mm;
+            height: 80mm;
             margin: 0 auto 5mm;
             display: block;
         }
@@ -86,44 +88,10 @@
             background: linear-gradient(90deg, var(--amarillo), var(--azul));
         }
 
-           
-        /* Estilos para el contenedor del nombre */
-        .student-name-container {
-            position: relative;
-            margin-bottom: 15px;
-        }
-
-        /* Estilos para el número de acta */
-        .acta-number {
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            background-color: white;
-            padding: 0 5px;
-        }
-
-        /* Estilos para el input del nombre */
-        #student-name {
-            width: 100%;
-            padding-right: 100px; /* Espacio para el número de acta */
-            box-sizing: border-box;
-        }
-
-        /* Estilos para el input del número de acta */
-        #acta-number {
-            width: 60px !important; /* Ancho fijo para el input del número */
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-         
         /* Formulario */
         .form-group {
             margin-bottom: 4mm;
+            position: relative;
         }
 
         label {
@@ -140,6 +108,32 @@
             border: 1px solid #000;
             border-radius: 3px;
             font-size: 14px;
+        }
+
+        /* Estilos específicos para el nombre del estudiante y número de acta */
+        .student-name-container {
+            position: relative;
+            padding-right: 70mm; /* Espacio para el número de acta */
+        }
+
+        .acta-number {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 65mm; /* Ancho del contenedor del número de acta */
+            display: flex;
+            align-items: center;
+            gap: 2mm;
+        }
+
+        .acta-number label {
+            white-space: nowrap;
+            margin-bottom: 0;
+        }
+
+        .acta-number input {
+            width: 40mm;
+            flex-shrink: 0;
         }
 
         textarea {
@@ -197,7 +191,7 @@
             }
             
             .container {
-                padding: 0 20mm;
+                padding: 15mm 25mm;
                 margin: 0;
             }
             
@@ -214,6 +208,7 @@
     </style>
 </head>
 <body>
+    <div class="container">
         <!-- Encabezado con sello -->
         <div class="header">
             <img src="sello.jpg" alt="Sello Oficial" class="school-stamp" onerror="this.style.display='none'">
@@ -221,19 +216,21 @@
             <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
         </div>
-    <form id="acta-form">
-        <div class="form-group student-name-container">
-            <label for="student-name">Nombre completo del estudiante:</label>
-            <div class="acta-number">
-            <label for="acta-number">N° Acta:</label>
-            <input type="text" id="acta-number">
-        </div>
-        
-        <input type="text" id="student-name" required>
-    </div>
-</form>
+
         <!-- Formulario -->
-     
+        <form id="acta-form">
+            <!-- Grupo de nombre del estudiante con número de acta -->
+            <div class="form-group student-name-container">
+                <label for="student-name">Nombre completo del estudiante:</label>
+                
+                <div class="acta-number">
+                    <label for="acta-number">N° de Acta:</label>
+                    <input type="text" id="acta-number">
+                </div>
+                
+                <input type="text" id="student-name" required>
+            </div>
+
             <div class="form-group">
                 <label for="course">Curso:</label>
                 <input type="text" id="course" value="Tercer Año de Bachillerato Técnico" readonly>
