@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acta de Compromiso Estudiantil</title>
     <style>
-        /* Eliminar márgenes y encabezados/pies al imprimir */
         @page {
             size: A4;
             margin: 0;
@@ -48,10 +47,33 @@
             background: linear-gradient(90deg, var(--amarillo), var(--azul), var(--amarillo));
         }
 
+        /* Sello del colegio */
+        .stamp {
+            position: absolute;
+            top: 15mm;
+            right: 20mm;
+            width: 50mm;
+            height: 50mm;
+            border: 3px dashed var(--azul);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul);
+            font-weight: bold;
+            transform: rotate(-15deg);
+            opacity: 0.7;
+            text-align: center;
+            line-height: 1.2;
+            font-size: 14px;
+            padding: 5mm;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
         .acta-number {
             position: absolute;
             top: 10mm;
-            right: 20mm;
+            left: 20mm;
             font-weight: bold;
         }
 
@@ -65,6 +87,7 @@
         .header {
             text-align: center;
             margin-bottom: 10mm;
+            padding-top: 20mm;
         }
 
         .school-name {
@@ -182,43 +205,33 @@
                 display: none;
             }
             
-            /* Eliminar completamente encabezados/pies de página */
+            .stamp {
+                opacity: 0.8;
+            }
+            
             @page {
                 size: A4;
                 margin: 0;
                 padding: 0;
             }
         }
-        .logo-contenedor {
-            width: 250px;
-            height: 250px;
-            background-color: yellow;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-        }
-
-        .logo {
-            width: 20%;
-            height: auto;
-        }
-
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Sello del colegio -->
+        <div class="stamp">
+            UNIDAD EDUCATIVA<br>
+            "Dr. Camilo Gallegos Domínguez"<br>
+            SELLO OFICIAL
+        </div>
+
         <div class="acta-number">
             <label for="acta-number">N° de Acta:</label>
             <input type="text" id="acta-number">
         </div>
 
         <div class="header">
-            <div class="logo-contenedor">
-                <img src="sello.jpg" alt="Logo del Colegio" class="logo">
-            </div>
             <h1 class="school-name">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
             <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
