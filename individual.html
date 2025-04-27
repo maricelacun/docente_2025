@@ -434,8 +434,8 @@
 
            // Firmas
             const numberOfSignatures = 3;
-            const signatureHeightPerLine = lineHeight * 1.5; // Reducimos el espacio por línea de firma
-            const totalSignatureHeight = signatureHeightPerLine * 3 + lineHeight * 2; // Espacio para líneas y textos
+            const signatureHeightPerLine = lineHeight * 1.5;
+            const totalSignatureHeight = signatureHeightPerLine * 3 + lineHeight * 2;
 
             checkNewPage(totalSignatureHeight);
             if (pageHeight - currentY < totalSignatureHeight + margin) {
@@ -447,30 +447,28 @@
             }
 
             const signatureLineWidth = 60;
-            const startX = pageWidth / 4; // Dividimos el ancho en tres partes para las firmas
+            const startY = currentY + signatureHeightPerLine; // Inicio vertical de la línea de firmas
 
-            // Firma del Docente
-            let currentSignatureY = currentY + signatureHeightPerLine;
+            // Firma del Representante (izquierda)
+            const representativeX = pageWidth / 4;
             doc.setLineWidth(0.3);
-            doc.line(startX, currentSignatureY, startX + signatureLineWidth, currentSignatureY);
+            doc.line(representativeX - signatureLineWidth / 2, startY, representativeX + signatureLineWidth / 2, startY);
             doc.setFontSize(10);
-            doc.text('Firma del Docente', startX + signatureLineWidth / 2, currentSignatureY + lineHeight, { align: 'center' });
-            doc.text(data['teacher-name'] || '', startX + signatureLineWidth / 2, currentSignatureY + lineHeight * 2, { align: 'center' });
+            doc.text('Firma del Representante', representativeX, startY + lineHeight, { align: 'center' });
+            doc.text(data['father-name'] || '', representativeX, startY + lineHeight * 2, { align: 'center' });
 
-            // Firma del Representante
-            const representativeX = pageWidth / 2;
-            currentSignatureY = currentY + signatureHeightPerLine;
-            doc.line(representativeX - signatureLineWidth / 2, currentSignatureY, representativeX + signatureLineWidth / 2, currentSignatureY);
-            doc.text('Firma del Representante', representativeX, currentSignatureY + lineHeight, { align: 'center' });
-            doc.text(data['father-name'] || '', representativeX, currentSignatureY + lineHeight * 2, { align: 'center' });
-
-            // Firma del Estudiante
+            // Firma del Estudiante (derecha, en la misma línea)
             const studentX = pageWidth * 3 / 4;
-            currentSignatureY = currentY + signatureHeightPerLine;
-            doc.line(studentX - signatureLineWidth / 2, currentSignatureY, studentX + signatureLineWidth / 2, currentSignatureY);
-            doc.text('Firma del Estudiante', studentX, currentSignatureY + lineHeight, { align: 'center' });
-            doc.text(data['student-name'] || '', studentX, currentSignatureY + lineHeight * 2, { align: 'center' });
+            doc.line(studentX - signatureLineWidth / 2, startY, studentX + signatureLineWidth / 2, startY);
+            doc.text('Firma del Estudiante', studentX, startY + lineHeight, { align: 'center' });
+            doc.text(data['student-name'] || '', studentX, startY + lineHeight * 2, { align: 'center' });
 
+            // Firma del Docente (debajo)
+            const teacherY = startY + signatureHeightPerLine * 2; // Desplazamos la firma del docente hacia abajo
+            const teacherX = pageWidth / 2;
+            doc.line(teacherX - signatureLineWidth / 2, teacherY, teacherX + signatureLineWidth / 2, teacherY);
+            doc.text('Firma del Docente', teacherX, teacherY + lineHeight, { align: 'center' });
+            doc.text(data['teacher-name'] || '', teacherX, teacherY + lineHeight * 2, { align: 'center' });
 
             // Descargar PDF
             const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
