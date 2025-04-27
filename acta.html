@@ -376,14 +376,14 @@
             <div class="signature-section">
                 <div class="signature-box">
                     <div class="signature-container">
-                        <div class="signature-pad" id="student-signature"></div>
+                        <canvas class="signature-pad" id="student-signature"></canvas>
                         <button type="button" class="signature-clear" onclick="clearSignature('student')">Limpiar</button>
                     </div>
                     <p>Estudiante</p>
                 </div>
                 <div class="signature-box">
                     <div class="signature-container">
-                        <div class="signature-pad" id="parent-signature"></div>
+                        <canvas class="signature-pad" id="parent-signature"></canvas>
                         <button type="button" class="signature-clear" onclick="clearSignature('parent')">Limpiar</button>
                     </div>
                     <p>Representante Legal</p>
@@ -407,9 +407,10 @@
 
     <script>
         // Variables para las firmas
-        let studentSignaturePad;
-        let parentSignaturePad;
+        let studentCtx, parentCtx;
         let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
 
         // Mostrar campo "otro motivo" cuando se seleccione esa opción
         document.getElementById('reason').addEventListener('change', function() {
@@ -417,8 +418,9 @@
             otherReasonContainer.style.display = this.value === 'otro' ? 'block' : 'none';
         });
 
-        // Establecer fecha actual por defecto
+        // Inicializar la aplicación cuando el DOM esté cargado
         document.addEventListener('DOMContentLoaded', function() {
+            // Establecer fecha actual por defecto
             const today = new Date();
             const dateStr = today.toISOString().split('T')[0];
             document.getElementById('date').value = dateStr;
@@ -428,6 +430,9 @@
             
             // Actualizar texto del compromiso cuando cambie el nombre
             document.getElementById('student-name').addEventListener('input', updateCommitmentText);
+            
+            // Configurar botones
+            setupButtons();
         });
 
         // Función para inicializar los pads de firma
@@ -435,13 +440,26 @@
             const studentCanvas = document.getElementById('student-signature');
             const parentCanvas = document.getElementById('parent-signature');
             
+            // Configurar tamaño de los canvas
             studentCanvas.width = studentCanvas.offsetWidth;
             studentCanvas.height = studentCanvas.offsetHeight;
             parentCanvas.width = parentCanvas.offsetWidth;
             parentCanvas.height = parentCanvas.offsetHeight;
             
-            const studentCtx = studentCanvas.getContext('2d');
-            const parentCtx = parentCanvas.getContext('2d');
+            // Obtener contextos de dibujo
+            studentCtx = studentCanvas.getContext('2d');
+            parentCtx = parentCanvas.getContext('2d');
+            
+            // Configurar estilos de dibujo
+            studentCtx.strokeStyle = '#000000';
+            studentCtx.lineWidth = 2;
+            studentCtx.lineCap = 'round';
+            studentCtx.lineJoin = 'round';
+            
+            parentCtx.strokeStyle = '#000000';
+            parentCtx.lineWidth = 2;
+            parentCtx.lineCap = 'round';
+            parentCtx.lineJoin = 'round';
             
             // Configurar eventos para el estudiante
             setupSignaturePad(studentCanvas, studentCtx);
@@ -452,49 +470,70 @@
 
         // Configurar un pad de firma
         function setupSignaturePad(canvas, ctx) {
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            
+            // Eventos para mouse
             canvas.addEventListener('mousedown', startDrawing);
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
             canvas.addEventListener('mouseout', stopDrawing);
             
-            // Soporte para pantallas táctiles
-            canvas.addEventListener('touchstart', handleTouch);
-            canvas.addEventListener('touchmove', handleTouch);
+            // Eventos para pantallas táctiles
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
             canvas.addEventListener('touchend', stopDrawing);
         }
 
-        function handleTouch(e) {
+        function handleTouchStart(e) {
             e.preventDefault();
             const touch = e.touches[0];
-            const mouseEvent = new MouseEvent(
-                e.type === 'touchstart' ? 'mousedown' : 'mousemove',
-                {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                }
-            );
-            this.dispatchEvent(mouseEvent);
+            const rect = e.target.getBoundingClientRect();
+            lastX = touch.clientX - rect.left;
+            lastY = touch.clientY - rect.top;
+            isDrawing = true;
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            
+            const touch = e.touches[0];
+            const rect = e.target.getBoundingClientRect();
+            const currentX = touch.clientX - rect.left;
+            const currentY = touch.clientY - rect.top;
+            
+            const ctx = e.target.id === 'student-signature' ? studentCtx : parentCtx;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+            
+            lastX = currentX;
+            lastY = currentY;
         }
 
         function startDrawing(e) {
             isDrawing = true;
-            const canvas = e.target;
-            const ctx = canvas.getContext('2d');
-            const rect = canvas.getBoundingClientRect();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+            const rect = e.target.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
         }
 
         function draw(e) {
             if (!isDrawing) return;
-            const canvas = e.target;
-            const ctx = canvas.getContext('2d');
-            const rect = canvas.getBoundingClientRect();
-            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            
+            const rect = e.target.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+            
+            const ctx = e.target.id === 'student-signature' ? studentCtx : parentCtx;
+            
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
             ctx.stroke();
+            
+            lastX = currentX;
+            lastY = currentY;
         }
 
         function stopDrawing() {
@@ -503,42 +542,28 @@
 
         function clearSignature(type) {
             const canvas = document.getElementById(`${type}-signature`);
-            const ctx = canvas.getContext('2d');
+            const ctx = type === 'student' ? studentCtx : parentCtx;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
         // Actualizar el texto del compromiso con el nombre del estudiante
         function updateCommitmentText() {
-            const studentName = document.getElementById('student-name').value;
-            if (studentName.trim() !== '') {
-                document.getElementById('commitment').value = 
+            const studentName = document.getElementById('student-name').value.trim();
+            const commitmentTextarea = document.getElementById('commitment');
+            
+            if (studentName !== '') {
+                commitmentTextarea.value = 
                     `Yo, ${studentName}, me comprometo a mejorar mi comportamiento/rendimiento académico/asistencia, cumpliendo con las normas establecidas por la institución y demostrando una actitud positiva hacia el aprendizaje y la convivencia escolar.`;
             } else {
-                document.getElementById('commitment').value = 
-                    'En este campo aparecerá automáticamente el nombre del estudiante';
+                commitmentTextarea.value = 'En este campo aparecerá automáticamente el nombre del estudiante';
             }
         }
 
-        // Función para guardar el acta (simulada)
-        document.getElementById('save-btn').addEventListener('click', function() {
-            if (document.getElementById('acta-form').checkValidity()) {
-                // Verificar que hay firmas
-                const studentCanvas = document.getElementById('student-signature');
-                const studentCtx = studentCanvas.getContext('2d');
-                const studentData = studentCtx.getImageData(0, 0, studentCanvas.width, studentCanvas.height).data;
-                let studentHasSigned = false;
-                
-                for (let i = 0; i < studentData.length; i += 4) {
-                    if (studentData[i] !== 255 || studentData[i+1] !== 255 || studentData[i+2] !== 255) {
-                        studentHasSigned = true;
-                        break;
-                    }
-                }
-                
-                if (!studentHasSigned) {
-                    alert('Por favor, el estudiante debe firmar el documento');
-                    return;
-                }
+        // Configurar los botones
+        function setupButtons() {
+            // Función para guardar el acta
+            document.getElementById('save-btn').addEventListener('click', function() {
+                if (!validateForm()) return;
                 
                 // Simulación de guardado
                 this.innerHTML = '<i class="fas fa-check"></i> Guardado!';
@@ -550,64 +575,98 @@
                 }, 2000);
                 
                 // Aquí iría la lógica real para guardar en base de datos
-                console.log('Acta guardada:', {
-                    student: document.getElementById('student-name').value,
-                    course: document.getElementById('course').value,
-                    parallel: document.getElementById('parallel').value,
-                    date: document.getElementById('date').value,
-                    reason: document.getElementById('reason').value,
-                    description: document.getElementById('description').value,
-                    commitment: document.getElementById('commitment').value
-                });
-            } else {
-                alert('Por favor complete todos los campos requeridos');
-            }
-        });
+                console.log('Acta guardada:', getFormData());
+            });
 
-        // Función para descargar PDF
-        document.getElementById('download-btn').addEventListener('click', async function() {
-            if (!document.getElementById('acta-form').checkValidity()) {
-                alert('Por favor complete todos los campos requeridos antes de generar el PDF');
-                return;
+            // Función para descargar PDF
+            document.getElementById('download-btn').addEventListener('click', function() {
+                if (!validateForm()) return;
+                
+                const btn = this;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+                btn.disabled = true;
+                
+                // Esperar un momento para que se actualice el botón
+                setTimeout(() => {
+                    generatePDF()
+                        .then(() => {
+                            btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
+                            btn.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error('Error al generar PDF:', error);
+                            alert('Error al generar el PDF. Por favor intente nuevamente.');
+                            btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
+                            btn.disabled = false;
+                        });
+                }, 100);
+            });
+        }
+
+        // Validar el formulario
+        function validateForm() {
+            const form = document.getElementById('acta-form');
+            if (!form.checkValidity()) {
+                alert('Por favor complete todos los campos requeridos');
+                return false;
             }
             
-            // Verificar que hay firmas
-            const studentCanvas = document.getElementById('student-signature');
-            const studentCtx = studentCanvas.getContext('2d');
-            const studentData = studentCtx.getImageData(0, 0, studentCanvas.width, studentCanvas.height).data;
-            let studentHasSigned = false;
+            // Verificar que el estudiante ha firmado
+            if (!hasSignature('student')) {
+                alert('Por favor, el estudiante debe firmar el documento');
+                return false;
+            }
             
-            for (let i = 0; i < studentData.length; i += 4) {
-                if (studentData[i] !== 255 || studentData[i+1] !== 255 || studentData[i+2] !== 255) {
-                    studentHasSigned = true;
-                    break;
+            return true;
+        }
+
+        // Verificar si hay una firma
+        function hasSignature(type) {
+            const canvas = document.getElementById(`${type}-signature`);
+            const ctx = type === 'student' ? studentCtx : parentCtx;
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            
+            for (let i = 0; i < imageData.length; i += 4) {
+                if (imageData[i] !== 255 || imageData[i+1] !== 255 || imageData[i+2] !== 255) {
+                    return true;
                 }
             }
             
-            if (!studentHasSigned) {
-                alert('Por favor, el estudiante debe firmar el documento');
-                return;
-            }
-            
-            const btn = this;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
-            btn.disabled = true;
-            
+            return false;
+        }
+
+        // Obtener los datos del formulario
+        function getFormData() {
+            return {
+                student: document.getElementById('student-name').value,
+                course: document.getElementById('course').value,
+                parallel: document.getElementById('parallel').value,
+                date: document.getElementById('date').value,
+                reason: document.getElementById('reason').value,
+                description: document.getElementById('description').value,
+                commitment: document.getElementById('commitment').value,
+                consequences: document.getElementById('consequences').value
+            };
+        }
+
+        // Generar el PDF
+        async function generatePDF() {
             try {
                 // Usar html2canvas para capturar el contenido
                 const canvas = await html2canvas(document.getElementById('acta-container'), {
                     scale: 2,
                     logging: false,
                     useCORS: true,
-                    allowTaint: true
+                    allowTaint: true,
+                    scrollX: 0,
+                    scrollY: 0
                 });
                 
                 const imgData = canvas.toDataURL('image/png');
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 210; // A4 width in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
                 
                 pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
                 
@@ -617,14 +676,11 @@
                 const fileName = `Acta_Compromiso_${studentName}_${dateStr}.pdf`;
                 
                 pdf.save(fileName);
-            } catch (err) {
-                console.error('Error al generar PDF:', err);
-                alert('Error al generar el PDF. Por favor intente nuevamente.');
-            } finally {
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
-                btn.disabled = false;
+            } catch (error) {
+                console.error('Error al generar PDF:', error);
+                throw error;
             }
-        });
+        }
 
         // Efecto de sello al cargar
         document.addEventListener('DOMContentLoaded', function() {
