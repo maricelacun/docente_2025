@@ -26,46 +26,48 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         /* Estilos personalizados para botones */
-/* Estilos personalizados para botones */
-.btn {
-    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2;
-}
+        .btn {
+            @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2;
+             /* Ajuste de padding para iconos */
+        }
 
-/* Estilo del botón PDF */
-.btn-pdf {
-    @apply bg-blue-600 text-white border border-blue-800; /* Azul oscuro */
-}
+        /* Estilo del botón PDF */
+        .btn-pdf {
+            @apply bg-blue-600 text-white border border-blue-800; /* Azul oscuro */
+        }
 
-.btn-pdf:hover {
-    @apply bg-blue-800; /* Color más oscuro al pasar el ratón */
-}
+        .btn-pdf:hover {
+            @apply bg-blue-800; /* Color más oscuro al pasar el ratón */
+        }
 
-/* Estilo del botón Añadir */
-.btn-add {
-    @apply bg-green-500 text-white; /* Verde */
-}
+        /* Estilo del botón Añadir */
+        .btn-add {
+             @apply bg-green-500 text-white px-3 py-2; /* Ajuste de padding para icono */
+        }
 
-.btn-add:hover {
-    @apply bg-green-600; /* Color más oscuro al pasar el ratón */
-}
+        .btn-add:hover {
+            @apply bg-green-600; /* Color más oscuro al pasar el ratón */
+        }
 
-/* Estilo del botón Guardar */
-.btn-save {
-    @apply bg-yellow-500 text-white; /* Amarillo */
-}
+        /* Estilo del botón Guardar (No usado actualmente en el form, pero definido) */
+        .btn-save {
+            @apply bg-yellow-500 text-white; /* Amarillo */
+        }
 
-.btn-save:hover {
-    @apply bg-yellow-600; /* Color más oscuro al pasar el ratón */
-}
+        .btn-save:hover {
+            @apply bg-yellow-600; /* Color más oscuro al pasar el ratón */
+        }
 
-/* Estilo del botón Eliminar */
-.btn-remove {
-    @apply bg-red-600 text-white py-1 px-2 text-sm; /* Rojo */
-}
+        /* Estilo del botón Eliminar */
+        .btn-remove {
+            /* Ajustado para icono */
+             @apply inline-flex items-center justify-center px-2 py-1 rounded-md font-semibold shadow-sm transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 text-sm;
+             @apply bg-red-600 text-white; /* Rojo */
+        }
 
-.btn-remove:hover {
-    @apply bg-red-700; /* Color más oscuro al pasar el ratón */
-}
+        .btn-remove:hover {
+            @apply bg-red-700; /* Color más oscuro al pasar el ratón */
+        }
 
         /* Estilo para lista de orden del día */
         #agenda-list li {
@@ -81,27 +83,12 @@
           -moz-appearance: textfield; /* Firefox */
         }
     </style>
-    <!-- Botón Añadir -->
-<button class="btn btn-add">
-    <i class="fa fa-plus mr-2"></i> Añadir
-</button>
-
-<!-- Botón Guardar -->
-<button class="btn btn-save">
-    <i class="fa fa-save mr-2"></i> Guardar
-</button>
-
-<!-- Botón Descargar PDF -->
-<button class="btn btn-pdf">
-    <i class="fa fa-file-pdf mr-2"></i> Descargar PDF
-</button>
-
-</head>
+    </head>
 <body class="p-4 md:p-8">
 
     <header class="flex flex-col md:flex-row items-center justify-between bg-white bg-opacity-80 p-4 rounded-lg shadow-md mb-8 max-w-4xl mx-auto">
         <div class="flex items-center mb-4 md:mb-0">
-            <img src="sello.jpg" alt="Sello Institución" class="h-16 w-16 md:h-20 md:w-20 mr-4 rounded-full border-2 border-blue-600" onerror="this.onerror=null; this.src='https://placehold.co/80x80/CCCCCC/000000?text=Error';">
+            <img src="https://placehold.co/80x80/e0e0e0/333333?text=Sello" alt="Sello Institución" class="h-16 w-16 md:h-20 md:w-20 mr-4 rounded-full border-2 border-blue-600" onerror="this.onerror=null; this.src='https://placehold.co/80x80/CCCCCC/000000?text=Error';">
             <h1 class="text-xl md:text-3xl font-bold text-blue-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
         </div>
         <h2 class="text-lg md:text-2xl font-semibold text-yellow-600 text-center md:text-right">Registro de Reuniones Generales</h2>
@@ -129,16 +116,15 @@
                 <h4 class="text-lg font-semibold mb-3 text-gray-800">Orden del Día</h4>
                 <div class="flex space-x-2 mb-3">
                     <input type="text" id="new-agenda-item" placeholder="Añadir punto al orden del día" class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    <button type="button" id="add-agenda-button" class="btn btn-add">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <button type="button" id="add-agenda-button" class="btn btn-add" title="Añadir punto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                           <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                         </svg>
-                        Añadir
-                    </button>
+                        </button>
                 </div>
                 <ul id="agenda-list" class="list-decimal list-inside space-y-1 max-h-40 overflow-y-auto bg-white p-3 rounded border">
                     <li id="no-agenda-items" class="text-gray-500 italic flex justify-center">No hay puntos añadidos.</li>
-                </ul>
+                    </ul>
             </div>
 
             <div>
@@ -155,12 +141,11 @@
             </div>
 
             <div class="flex justify-end pt-4">
-                <button type="button" id="pdf-button" class="btn btn-pdf w-full sm:w-auto">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                     <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd" />
+                <button type="button" id="pdf-button" class="btn btn-pdf w-full sm:w-auto" title="Guardar y Descargar PDF">
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                    </svg>
-                    Guardar y Descargar PDF
-                </button>
+                    </button>
             </div>
         </form>
     </div>
@@ -207,7 +192,7 @@
         // Permitir añadir con Enter en el input
         newAgendaItemInput.addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Prevenir envío de formulario (si lo hubiera)
+                event.preventDefault(); // Prevenir envío de formulario
                 addAgendaItem();
             }
         });
@@ -215,8 +200,12 @@
         closeModalButton.addEventListener('click', closeModal);
         // Usar delegación de eventos para los botones de eliminar
         agendaList.addEventListener('click', function(event) {
-            if (event.target && event.target.classList.contains('remove-agenda-item')) {
-                removeAgendaItem(event.target.parentElement);
+            const removeButton = event.target.closest('.remove-agenda-item');
+            if (removeButton) {
+                 const listItem = removeButton.closest('li');
+                 if (listItem) {
+                    removeAgendaItem(listItem);
+                 }
             }
         });
 
@@ -229,20 +218,24 @@
                 return;
             }
 
-            // Ocultar mensaje inicial si existe
-            if (noAgendaItemsMessage) {
+            // Ocultar mensaje inicial si existe y es visible
+            if (noAgendaItemsMessage && noAgendaItemsMessage.style.display !== 'none') {
                 noAgendaItemsMessage.style.display = 'none';
+                if (agendaList.children.length === 1 && agendaList.firstChild === noAgendaItemsMessage) {
+                   agendaList.innerHTML = '';
+                }
             }
 
             const listItem = document.createElement('li');
+            // Se aplica el estilo base de li definido en CSS
+            // *** MODIFICADO: Botón Quitar solo con icono ***
             listItem.innerHTML = `
                 <span class="flex-grow mr-2">${itemText}</span>
-                <button type="button" class="btn btn-remove remove-agenda-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor">
+                <button type="button" class="btn btn-remove remove-agenda-item" title="Quitar punto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
                     </svg>
-                    Quitar
-                </button>
+                    </button>
             `;
             agendaList.appendChild(listItem);
             newAgendaItemInput.value = ''; // Limpiar input
@@ -252,22 +245,17 @@
         function removeAgendaItem(itemElement) {
             itemElement.remove();
             // Mostrar mensaje si la lista queda vacía
-            if (agendaList.children.length === 1 && noAgendaItemsMessage) { // Solo queda el mensaje original
-                 agendaList.innerHTML = ''; // Limpiar por si acaso
+            if (agendaList.children.length === 0 && noAgendaItemsMessage) {
                  agendaList.appendChild(noAgendaItemsMessage); // Volver a añadir el mensaje
-                 noAgendaItemsMessage.style.display = 'list-item'; // Asegurarse que sea visible
-            } else if (agendaList.children.length === 0 && noAgendaItemsMessage) {
-                 // Si se eliminó el último item y el mensaje no estaba, volver a ponerlo
-                 agendaList.appendChild(noAgendaItemsMessage);
-                 noAgendaItemsMessage.style.display = 'list-item';
+                 noAgendaItemsMessage.style.display = 'flex'; // Asegurarse que sea visible
             }
         }
 
         function getAgendaItems() {
             const items = [];
-            const listItems = agendaList.querySelectorAll('li:not(#no-agenda-items)'); // Excluir el mensaje
+            const listItems = agendaList.querySelectorAll('li:not(#no-agenda-items)');
             listItems.forEach(li => {
-                const span = li.querySelector('span');
+                const span = li.querySelector('span:first-child');
                 if (span) {
                     items.push(span.textContent.trim());
                 }
@@ -284,16 +272,20 @@
                  if (key === 'meeting-date' && value) {
                     try {
                         const date = new Date(value);
-                        data[key] = `${date.toLocaleDateString('es-EC')} ${date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit' })}`;
+                        const formattedDate = date.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                        const formattedTime = date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
+                        data[key] = `${formattedDate} ${formattedTime}`;
                         data[`${key}_raw`] = value;
                     } catch (e) {
+                        console.error("Error parsing date:", e);
                         data[key] = value;
+                        data[`${key}_raw`] = value;
                     }
                 } else {
-                   data[key] = value.trim();
+                   data[key] = typeof value === 'string' ? value.trim() : value;
                 }
             }
-            data.agendaItems = getAgendaItems(); // Obtener los puntos del orden del día
+            data.agendaItems = getAgendaItems();
             return data;
         }
 
@@ -303,14 +295,20 @@
                 const valueToCheck = field === 'meeting-date' ? data[`${field}_raw`] : data[field];
                 if (!valueToCheck) {
                     const inputElement = form.elements[field];
-                    const label = inputElement ? inputElement.previousElementSibling?.textContent || field : field;
-                    showModal('Campo Obligatorio', `El campo "${label.replace(':','')}" es obligatorio.`, false);
+                    let labelText = field;
+                    if (inputElement && inputElement.labels && inputElement.labels.length > 0) {
+                        labelText = inputElement.labels[0].textContent.replace(':', '').trim();
+                    } else if (inputElement && inputElement.previousElementSibling && inputElement.previousElementSibling.tagName === 'LABEL') {
+                         labelText = inputElement.previousElementSibling.textContent.replace(':', '').trim();
+                    }
+                    showModal('Campo Obligatorio', `El campo "${labelText}" es obligatorio.`, false);
+                    if (inputElement) inputElement.focus();
                     return false;
                 }
             }
-            // Validar que haya al menos un punto en el orden del día
             if (data.agendaItems.length === 0) {
                  showModal('Orden del Día Vacío', 'Debe añadir al menos un punto al Orden del Día.', false);
+                 if(newAgendaItemInput) newAgendaItemInput.focus();
                  return false;
             }
             return true;
@@ -318,130 +316,138 @@
 
         function generateAndDownloadPDF() {
             const meetingData = getFormData();
-
             if (!validateForm(meetingData)) {
-                return; // Detener si la validación falla
+                return;
             }
-
-            generatePDF(meetingData); // Generar el PDF directamente
-
-            // Opcional: Limpiar formulario después de generar PDF
-            // form.reset();
-            // agendaList.innerHTML = ''; // Limpiar lista
-            // agendaList.appendChild(noAgendaItemsMessage); // Restaurar mensaje
-            // noAgendaItemsMessage.style.display = 'list-item';
-
+            generatePDF(meetingData);
             showModal('¡Éxito!', 'El PDF del registro de la reunión ha sido generado.');
+            // Opcional: Limpiar formulario
+            // form.reset();
+            // agendaList.innerHTML = '';
+            // if (noAgendaItemsMessage) {
+            //     agendaList.appendChild(noAgendaItemsMessage);
+            //     noAgendaItemsMessage.style.display = 'flex';
+            // }
         }
 
         function generatePDF(data) {
-            const doc = new jsPDF();
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
             const margin = 15;
             const lineHeight = 7;
             let currentY = margin;
             const pageHeight = doc.internal.pageSize.getHeight();
             const pageWidth = doc.internal.pageSize.getWidth();
+            const usableWidth = pageWidth - margin * 2;
 
-            // Función para añadir nueva página si es necesario
             const checkNewPage = (heightNeeded = lineHeight * 2) => {
                 if (currentY + heightNeeded > pageHeight - margin) {
                     doc.addPage();
                     currentY = margin;
-                    // Opcional: Repetir encabezado simple en nuevas páginas
-                    // doc.setFontSize(10);
-                    // doc.setTextColor(150);
-                    // doc.text(`Reunión General - ${data['course-grade']} - ${data['meeting-date'].split(' ')[0]}`, pageWidth - margin, margin / 2, { align: 'right' });
-                    // currentY = margin; // Reset Y after potential header
                 }
             };
 
-            // --- Encabezado del PDF ---
+            // Encabezado PDF
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(16);
-            doc.setTextColor(40, 40, 180); // Azul oscuro
+            doc.setTextColor(40, 40, 180);
             doc.text('Acta de Reunión General de Padres de Familia', pageWidth / 2, currentY, { align: 'center' });
             currentY += lineHeight * 1.5;
-
             doc.setFontSize(12);
-            doc.setTextColor(100, 100, 100); // Gris
+            doc.setTextColor(80, 80, 80);
             doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', pageWidth / 2, currentY, { align: 'center' });
             currentY += lineHeight * 2;
 
-            // --- Información General ---
+            // Información General
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
-            doc.setTextColor(0, 0, 0); // Negro
-
+            doc.setTextColor(0, 0, 0);
             const addLine = (label, value) => {
                 checkNewPage();
                 doc.setFont('helvetica', 'bold');
-                doc.text(`${label}:`, margin, currentY);
+                const labelWidth = doc.getTextWidth(label + ':') + 2;
+                doc.text(label + ':', margin, currentY, { baseline: 'top' });
                 doc.setFont('helvetica', 'normal');
-                const textLines = doc.splitTextToSize(value || '-', pageWidth - margin * 3 - doc.getTextWidth(label));
-                doc.text(textLines, margin + doc.getTextWidth(label) + 2, currentY);
+                const valueX = margin + labelWidth;
+                const valueWidth = usableWidth - labelWidth;
+                const textLines = doc.splitTextToSize(value || '-', valueWidth);
+                checkNewPage(textLines.length * lineHeight);
+                doc.text(textLines, valueX, currentY, { baseline: 'top' });
                 currentY += (textLines.length * lineHeight) + (lineHeight / 2);
             };
-
             addLine('Fecha y Hora', data['meeting-date']);
             addLine('Curso/Grado', data['course-grade']);
             addLine('Docente/Responsable', data['teacher-name']);
-            currentY += lineHeight; // Espacio extra
+            currentY += lineHeight;
 
-            // --- Orden del Día ---
-            checkNewPage(lineHeight * (data.agendaItems.length + 2)); // Estimar espacio para el título y los items
+            // Orden del Día
+            checkNewPage(lineHeight * 3);
             doc.setFont('helvetica', 'bold');
             doc.text('Orden del Día:', margin, currentY);
             currentY += lineHeight * 1.5;
             doc.setFont('helvetica', 'normal');
-            data.agendaItems.forEach((item, index) => {
+            if (data.agendaItems.length > 0) {
+                data.agendaItems.forEach((item, index) => {
+                    const itemText = `${index + 1}. ${item}`;
+                    const textLines = doc.splitTextToSize(itemText, usableWidth - 5);
+                    checkNewPage(textLines.length * lineHeight);
+                    doc.text(textLines, margin + 5, currentY);
+                    currentY += (textLines.length * lineHeight);
+                });
+            } else {
                 checkNewPage();
-                const itemText = `${index + 1}. ${item}`;
-                const textLines = doc.splitTextToSize(itemText, pageWidth - margin * 2 - 10); // Ancho menos margen y numeración
-                doc.text(textLines, margin + 5, currentY); // Indentado
-                currentY += (textLines.length * lineHeight);
-            });
-            currentY += lineHeight; // Espacio después de la lista
+                doc.setFont('helvetica', 'italic');
+                doc.text('No se registraron puntos en el orden del día.', margin + 5, currentY);
+                doc.setFont('helvetica', 'normal');
+                currentY += lineHeight;
+            }
+            currentY += lineHeight;
 
-            // --- Desarrollo, Acuerdos, Observaciones ---
+            // Secciones Desarrollo, Acuerdos, Observaciones
              const addSection = (label, value) => {
-                checkNewPage(lineHeight * 3); // Espacio para título y algo de texto
+                checkNewPage(lineHeight * 3);
                 doc.setFont('helvetica', 'bold');
                 doc.text(`${label}:`, margin, currentY);
                 currentY += lineHeight * 1.5;
                 doc.setFont('helvetica', 'normal');
-                const textLines = doc.splitTextToSize(value || '-', pageWidth - margin * 2);
-                 // Iterar sobre las líneas para añadir y comprobar página
+                const textLines = doc.splitTextToSize(value || '-', usableWidth);
                 textLines.forEach(line => {
-                    checkNewPage();
+                    checkNewPage(lineHeight);
                     doc.text(line, margin, currentY);
                     currentY += lineHeight;
                 });
-                currentY += lineHeight; // Espacio después de la sección
+                currentY += lineHeight;
             };
-
             addSection('Desarrollo de la Reunión', data['meeting-development']);
             addSection('Acuerdos y Compromisos', data['agreements']);
             if (data['observations']) {
                 addSection('Observaciones Adicionales', data['observations']);
             }
 
-            // --- Firma del Responsable (Placeholder) ---
-            checkNewPage(lineHeight * 4); // Espacio para firma
-            currentY = pageHeight - margin * 3; // Posicionar firma cerca del final
-            if (currentY < margin * 5) currentY = margin * 5; // Asegurar que no esté demasiado arriba si hay poco contenido
-
-            const signatureX = pageWidth / 2;
-            doc.setLineWidth(0.5);
-            doc.line(margin, currentY, signatureX - margin, currentY); // Línea Firma
+            // Firma
+            const signatureHeight = lineHeight * 4;
+            checkNewPage(signatureHeight);
+            if (pageHeight - currentY < signatureHeight + margin) {
+                doc.addPage();
+                currentY = margin;
+            } else {
+                 currentY = pageHeight - margin - signatureHeight;
+                 if (currentY < margin) currentY = margin;
+            }
+            const signatureLineY = currentY + lineHeight * 2;
+            const signatureLineLength = 60;
+            const signatureLineX = (pageWidth - signatureLineLength) / 2;
+            doc.setLineWidth(0.3);
+            doc.line(signatureLineX, signatureLineY, signatureLineX + signatureLineLength, signatureLineY);
             doc.setFontSize(10);
-            doc.text('Firma Docente/Responsable', margin, currentY + lineHeight);
-            doc.text(data['teacher-name'], margin, currentY + lineHeight * 2);
+            doc.text('Firma Docente/Responsable', pageWidth / 2, signatureLineY + lineHeight, { align: 'center' });
+            doc.text(data['teacher-name'], pageWidth / 2, signatureLineY + lineHeight * 2, { align: 'center' });
 
-            // --- Descargar el PDF ---
-            const filename = `Acta_Reunion_General_${data['course-grade'].replace(/\s+/g, '_')}_${data['meeting-date'].split(' ')[0].replace(/\//g, '-')}.pdf`;
+            // Descargar PDF
+            const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+            const safeDate = data['meeting-date'].split(' ')[0].replace(/\//g, '-');
+            const filename = `Acta_Reunion_General_${safeCourseGrade}_${safeDate}.pdf`;
             doc.save(filename);
         }
-
 
         // --- Funciones del Modal ---
         function showModal(title, message, isSuccess = true) {
@@ -458,7 +464,21 @@
             messageModal.classList.add('hidden');
         }
 
+        // --- Inicialización ---
+         document.addEventListener('DOMContentLoaded', () => {
+            if (agendaList.children.length === 1 && agendaList.firstChild === noAgendaItemsMessage) {
+                noAgendaItemsMessage.style.display = 'flex';
+            } else if (agendaList.children.length === 0 && noAgendaItemsMessage) {
+                 agendaList.appendChild(noAgendaItemsMessage);
+                 noAgendaItemsMessage.style.display = 'flex';
+            }
+         });
+
     </script>
- <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">INICIO</a>
+ <div class="text-center mt-6 mb-4">
+    <a href="index.html" class="inline-block bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300">
+        INICIO
+    </a>
+ </div>
 </body>
 </html>
