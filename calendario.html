@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de Eventos - U.E. Dr. Camilo Gallegos Domínguez</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter font as requested */
+            background: radial-gradient(circle, #3b82f6, #facc15, #ef4444); /* Blue-500, Yellow-400, Red-500 gradient */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #1f2937; /* Dark gray text for better contrast */
+        }
+        .calendar-container {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 95%;
+            max-width: 900px; /* Max width for larger screens */
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem; /* Gap between cells */
+        }
+        .calendar-cell {
+            aspect-ratio: 1 / 1; /* Make cells square */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center number vertically */
+            align-items: center; /* Center number horizontally */
+            padding: 0.25rem;
+            border: 1px solid #e5e7eb; /* Light gray border */
+            border-radius: 0.375rem; /* Rounded corners */
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Added color transition */
+            position: relative; /* For event indicators */
+            font-size: 0.8rem; /* Smaller font size for date number */
+            font-weight: 500; /* Slightly bolder number */
+            overflow: hidden; /* Hide overflowing event text */
+        }
+        .calendar-cell.disabled {
+            color: #9ca3af; /* Gray out dates not in the current month */
+            background-color: #f3f4f6; /* Lighter background for disabled */
+            cursor: default;
+        }
+        .calendar-cell:not(.disabled):not(.event-day):hover { /* Don't change background on hover if it's an event day */
+            background-color: #d1d5db; /* Gray background on hover */
+        }
+        .calendar-cell.event-day { /* Style for days with events */
+           color: white; /* Make text white for better contrast on colored background */
+        }
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            padding-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 50;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6); /* Black background with opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; /* Adjusted margin */
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 90%; /* Wider on small screens */
+            max-width: 500px;
+            border-radius: 0.5rem;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+        }
+        /* Responsive adjustments */
+        @media (min-width: 640px) {
+            .calendar-cell {
+                font-size: 1rem;
+            }
+            .calendar-header {
+                font-size: 1rem;
+            }
+            .modal-content {
+                margin: 15% auto;
+                width: 80%;
+            }
+        }
+         /* Button styling */
+        .action-button {
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 5px; /* Add some margin for smaller screens */
+        }
+        .button-primary {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+        }
+        .button-primary:hover {
+            background-color: #2563eb;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+         .button-secondary {
+            background-color: #6b7280; /* Gray */
+            color: white;
+        }
+        .button-secondary:hover {
+            background-color: #4b5563;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .button-danger {
+            background-color: #ef4444; /* Red */
+            color: white;
+        }
+        .button-danger:hover {
+            background-color: #dc2626;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .button-success {
+             background-color: #10b981; /* Green */
+            color: white;
+        }
+        .button-success:hover {
+            background-color: #059669;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        /* Style for selected event in modal */
+        #event-list li.selected {
+            background-color: #d1d5db; /* Gray background for selected item */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center p-4">
+
+    <header class="text-center mb-6 bg-white/80 p-4 rounded-lg shadow-md w-full max-w-3xl">
+        <img src="https://placehold.co/100x100/e2e8f0/334155?text=Sello" alt="[Imagen del Sello del Colegio]" class="mx-auto mb-3 rounded-full" id="school-logo" onerror="this.onerror=null; this.src='https://placehold.co/100x100/e2e8f0/334155?text=Logo+Error';">
+        <h1 class="text-2xl font-bold text-gray-800">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+        <p class="text-lg text-gray-600">Msc. Maricela Cun Rueda</p>
+    </header>
+
+    <div id="calendar-section" class="calendar-container">
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 space-y-2 sm:space-y-0">
+            <button id="prev-month" class="action-button button-secondary w-full sm:w-auto">&lt; Anterior</button>
+            <h2 id="month-year" class="text-xl font-semibold text-center order-first sm:order-none"></h2>
+            <button id="next-month" class="action-button button-secondary w-full sm:w-auto">Siguiente &gt;</button>
+        </div>
+
+        <div class="calendar-grid mb-2">
+            <div class="calendar-header">Dom</div>
+            <div class="calendar-header">Lun</div>
+            <div class="calendar-header">Mar</div>
+            <div class="calendar-header">Mié</div>
+            <div class="calendar-header">Jue</div>
+            <div class="calendar-header">Vie</div>
+            <div class="calendar-header">Sáb</div>
+        </div>
+
+        <div id="calendar-grid" class="calendar-grid">
+            </div>
+    </div>
+
+    <button id="download-pdf" class="action-button button-success mt-4 mb-8 w-full max-w-xs sm:w-auto">Descargar Calendario como PDF</button>
+
+    <div id="event-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-modal">&times;</span>
+            <h3 class="text-xl font-semibold mb-4" id="modal-title">Añadir/Ver Evento</h3>
+            <p id="modal-date-display" class="text-md text-gray-600 mb-3"></p> {/* Display selected date */}
+            <input type="hidden" id="event-date">
+            <div class="mb-4">
+                <label for="event-description" class="block text-sm font-medium text-gray-700 mb-1">Descripción del Evento:</label>
+                <textarea id="event-description" rows="3" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Escriba la descripción aquí..."></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="event-type" class="block text-sm font-medium text-gray-700 mb-1">Tipo de Evento:</label>
+                <select id="event-type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                    <option value="educativo">Educativo (Azul)</option>
+                    <option value="cultural">Cultural (Púrpura)</option>
+                    <option value="social">Social (Amarillo)</option>
+                    <option value="deportivo">Deportivo (Verde)</option>
+                </select>
+            </div>
+             <div class="mb-4" id="event-list-container" style="display: none;"> {/* Initially hidden */}
+                <h4 class="text-md font-medium text-gray-700 mb-1">Eventos Guardados (Seleccione para eliminar):</h4>
+                <ul id="event-list" class="text-sm text-gray-800 max-h-32 overflow-y-auto border rounded p-2 bg-gray-50">
+                    {/* Saved events for the selected date will appear here */}
+                </ul>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
+                 <button id="delete-event" class="action-button button-danger w-full sm:w-auto" style="display: none;">Eliminar Seleccionado</button>
+                <button id="save-event" class="action-button button-primary w-full sm:w-auto">Guardar Nuevo Evento</button>
+                <button id="cancel-event" type="button" class="action-button button-secondary w-full sm:w-auto">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Global Variables ---
+        const calendarGrid = document.getElementById('calendar-grid');
+        const monthYearDisplay = document.getElementById('month-year');
+        const prevMonthButton = document.getElementById('prev-month');
+        const nextMonthButton = document.getElementById('next-month');
+        const eventModal = document.getElementById('event-modal');
+        const closeModalButton = document.getElementById('close-modal');
+        const saveEventButton = document.getElementById('save-event');
+        const cancelEventButton = document.getElementById('cancel-event');
+        const deleteEventButton = document.getElementById('delete-event');
+        const eventDateInput = document.getElementById('event-date');
+        const eventDescriptionInput = document.getElementById('event-description');
+        const eventTypeInput = document.getElementById('event-type');
+        const eventListContainer = document.getElementById('event-list-container');
+        const eventListUl = document.getElementById('event-list');
+        const downloadPdfButton = document.getElementById('download-pdf');
+        const calendarSection = document.getElementById('calendar-section'); // Element to capture for PDF
+        const modalDateDisplay = document.getElementById('modal-date-display'); // To show date in modal
+
+        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        // Mapping event types to Tailwind background colors
+        const typeColors = {
+            'educativo': 'bg-blue-500',   // Blue
+            'cultural': 'bg-purple-500', // Purple
+            'social': 'bg-yellow-400',  // Yellow (using 400 for potentially better text contrast)
+            'deportivo': 'bg-green-500'   // Green
+        };
+         // Mapping event types to text colors (for yellow background)
+         const typeTextColors = {
+             'social': 'text-black', // Black text on yellow background
+             'default': 'text-white' // White text for other backgrounds
+         };
+
+        // --- State Variables ---
+        let currentDate = new Date(2025, 4, 1); // Start Month: May 2025 (Month is 0-indexed)
+        const startDateLimit = new Date(2025, 4, 1); // May 2025
+        const endDateLimit = new Date(2026, 1, 28); // February 2026
+        // Load events from localStorage or initialize empty object
+        let events = JSON.parse(localStorage.getItem('calendarEvents')) || {};
+        let selectedEventIndex = -1; // Index of the event selected in the modal list for deletion
+
+        // --- Event Listeners ---
+        prevMonthButton.addEventListener('click', () => changeMonth(-1));
+        nextMonthButton.addEventListener('click', () => changeMonth(1));
+        closeModalButton.addEventListener('click', closeModal);
+        cancelEventButton.addEventListener('click', closeModal);
+        saveEventButton.addEventListener('click', saveEvent);
+        deleteEventButton.addEventListener('click', deleteSelectedEvent);
+        downloadPdfButton.addEventListener('click', downloadPDF);
+        // Close modal if clicked outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target === eventModal) {
+                closeModal();
+            }
+        });
+         // Add listener for event list clicks (for selecting to delete)
+        eventListUl.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI') {
+                // Remove previous selection style
+                Array.from(eventListUl.children).forEach(li => li.classList.remove('selected'));
+                // Add selection style to clicked item
+                e.target.classList.add('selected');
+                selectedEventIndex = Array.from(eventListUl.children).indexOf(e.target);
+                deleteEventButton.style.display = 'inline-block'; // Show delete button
+            }
+        });
+
+        // --- Functions ---
+
+        // Function to save events to localStorage
+        function persistEvents() {
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+        }
+
+        // Function to render the calendar for the given month and year
+        function renderCalendar(year, month) {
+            calendarGrid.innerHTML = ''; // Clear previous grid
+            monthYearDisplay.textContent = `${monthNames[month]} ${year}`; // Update display
+
+            const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0=Sun, 1=Mon,...
+            const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get last day of month
+
+            // Calculate days from previous month to display
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            // *** CORRECTED: startDayIndex is simply the result of getDay() for Sunday start ***
+            const startDayIndex = firstDayOfMonth;
+
+             // Add cells for previous month's days
+             for (let i = 0; i < startDayIndex; i++) {
+                 const day = daysInPrevMonth - startDayIndex + 1 + i;
+                 const cell = createCalendarCell(day, true); // true indicates disabled
+                 calendarGrid.appendChild(cell);
+             }
+
+            // Add cells for current month's days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const cell = createCalendarCell(day, false, dateStr); // false indicates not disabled
+                calendarGrid.appendChild(cell);
+            }
+
+             // Add cells for next month's days (to fill grid, ensure 6 rows total for consistency)
+             const totalCells = calendarGrid.children.length;
+             // const remainingCells = (totalCells % 7 === 0) ? 0 : 7 - (totalCells % 7); // Original fill logic
+             const remainingCells = (6 * 7) - totalCells; // Ensure 6 rows (42 cells)
+             for (let i = 1; i <= remainingCells; i++) {
+                 const cell = createCalendarCell(i, true); // true indicates disabled
+                 calendarGrid.appendChild(cell);
+             }
+
+            updateNavigationButtons(); // Enable/disable prev/next based on limits
+        }
+
+        // Function to create a single calendar cell
+        function createCalendarCell(day, isDisabled, dateStr = null) {
+            const cell = document.createElement('div');
+            cell.classList.add('calendar-cell');
+            cell.textContent = day;
+
+            if (isDisabled) {
+                cell.classList.add('disabled');
+            } else {
+                cell.dataset.date = dateStr; // Store the full date string
+                cell.addEventListener('click', () => openEventModal(dateStr));
+
+                // *** MODIFIED: Color the cell background based on the first event ***
+                if (events[dateStr] && events[dateStr].length > 0) {
+                    const firstEventType = events[dateStr][0].type;
+                    const bgColorClass = typeColors[firstEventType] || 'bg-gray-400'; // Default gray if type unknown
+                    const textColorClass = typeTextColors[firstEventType] || typeTextColors['default']; // Get specific text color or default
+
+                    cell.classList.add(bgColorClass, textColorClass, 'event-day'); // Add background, text color, and event marker class
+                }
+            }
+            return cell;
+        }
+
+        // Function to change the displayed month
+        function changeMonth(change) {
+            currentDate.setMonth(currentDate.getMonth() + change);
+
+            // Clamp dates within the allowed range
+            if (currentDate < startDateLimit) {
+                currentDate = new Date(startDateLimit);
+            } else if (currentDate > endDateLimit) {
+                 // Adjust if we go past Feb 2026
+                 currentDate = new Date(endDateLimit.getFullYear(), endDateLimit.getMonth(), 1);
+            }
+
+            renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+        }
+
+        // Function to update Prev/Next button states
+        function updateNavigationButtons() {
+            // Disable Prev if current month is May 2025 or earlier
+            prevMonthButton.disabled = currentDate.getFullYear() === startDateLimit.getFullYear() && currentDate.getMonth() <= startDateLimit.getMonth();
+            prevMonthButton.classList.toggle('opacity-50', prevMonthButton.disabled);
+            prevMonthButton.classList.toggle('cursor-not-allowed', prevMonthButton.disabled);
+
+
+            // Disable Next if current month is February 2026 or later
+            nextMonthButton.disabled = currentDate.getFullYear() === endDateLimit.getFullYear() && currentDate.getMonth() >= endDateLimit.getMonth();
+             nextMonthButton.classList.toggle('opacity-50', nextMonthButton.disabled);
+             nextMonthButton.classList.toggle('cursor-not-allowed', nextMonthButton.disabled);
+        }
+
+        // Function to open the event modal
+        function openEventModal(dateStr) {
+            const dateObj = new Date(dateStr + 'T00:00:00'); // Ensure correct date parsing
+            const formattedDate = `${dateObj.getDate()} de ${monthNames[dateObj.getMonth()]} de ${dateObj.getFullYear()}`;
+            modalDateDisplay.textContent = formattedDate; // Show formatted date
+            eventDateInput.value = dateStr;
+            eventDescriptionInput.value = ''; // Clear previous input
+            eventTypeInput.value = 'educativo'; // Reset type
+            selectedEventIndex = -1; // Reset selected index
+            deleteEventButton.style.display = 'none'; // Hide delete button initially
+            eventListUl.innerHTML = ''; // Clear previous event list
+
+            // Populate the list of existing events for this date
+            if (events[dateStr] && events[dateStr].length > 0) {
+                eventListContainer.style.display = 'block'; // Show container
+                events[dateStr].forEach((event, index) => {
+                    const li = document.createElement('li');
+                    // Add a small color indicator span within the list item
+                    const colorIndicator = document.createElement('span');
+                    colorIndicator.classList.add('inline-block', 'w-3', 'h-3', 'rounded-full', 'mr-2', typeColors[event.type] || 'bg-gray-400');
+                    li.appendChild(colorIndicator);
+                    // Add event text
+                    li.appendChild(document.createTextNode(`(${event.type}) ${event.description}`));
+                    li.classList.add('p-1.5', 'cursor-pointer', 'hover:bg-gray-200', 'rounded', 'mb-1', 'border-b'); // Add styles
+                    li.dataset.index = index; // Store index if needed
+                    eventListUl.appendChild(li);
+                });
+            } else {
+                eventListContainer.style.display = 'none'; // Hide list if no events
+            }
+
+            eventModal.style.display = 'block';
+            eventDescriptionInput.focus(); // Focus description input
+        }
+
+        // Function to close the event modal
+        function closeModal() {
+            eventModal.style.display = 'none';
+        }
+
+        // Function to save a new event
+        function saveEvent() {
+            const date = eventDateInput.value;
+            const description = eventDescriptionInput.value.trim();
+            const type = eventTypeInput.value;
+
+            if (!date || !description) {
+                // Replace alert with a more user-friendly message display if possible
+                alert("Por favor, ingrese una descripción para el evento.");
+                return;
+            }
+
+            const newEvent = { description, type };
+
+            // Check if events exist for this date, if not initialize array
+            if (!events[date]) {
+                events[date] = [];
+            }
+
+            // Add the new event
+            events[date].push(newEvent);
+            persistEvents(); // Save to localStorage
+
+            console.log("Event saved:", events); // For debugging
+            closeModal();
+            renderCalendar(currentDate.getFullYear(), currentDate.getMonth()); // Re-render calendar to show new event
+        }
+
+        // Function to delete the selected event
+        function deleteSelectedEvent() {
+            const date = eventDateInput.value;
+            if (selectedEventIndex > -1 && events[date] && events[date][selectedEventIndex]) {
+                events[date].splice(selectedEventIndex, 1); // Remove the event from the array
+
+                // If no events left for this date, remove the date key entirely
+                if (events[date].length === 0) {
+                    delete events[date];
+                }
+                persistEvents(); // Save changes to localStorage
+
+                console.log("Event deleted:", events); // For debugging
+                closeModal();
+                renderCalendar(currentDate.getFullYear(), currentDate.getMonth()); // Re-render calendar
+            } else {
+                 // Replace alert with a more user-friendly message display if possible
+                alert("No se pudo eliminar el evento seleccionado. Por favor, seleccione un evento de la lista.");
+                deleteEventButton.style.display = 'none'; // Hide button if error occurs
+                selectedEventIndex = -1; // Reset index
+                 // Clear selection style
+                 Array.from(eventListUl.children).forEach(li => li.classList.remove('selected'));
+            }
+        }
+
+
+        // Function to download the calendar as PDF
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const elementToCapture = calendarSection; // Capture the container div
+
+            // Temporarily increase resolution for better PDF quality
+            const scale = 2; // Increase scale factor if needed
+
+            // Add a temporary class to body for PDF generation if needed for background
+            // document.body.classList.add('pdf-generating');
+
+            html2canvas(elementToCapture, {
+                 scale: scale,
+                 useCORS: true, // Important if using external images like the placeholder
+                 logging: true, // Enable logging for debugging
+                 backgroundColor: '#ffffff' // Set explicit white background for capture area
+                 // allowTaint: true // May be needed if CORS issues persist with background
+            }).then(canvas => {
+                // document.body.classList.remove('pdf-generating'); // Remove temporary class
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'landscape', // Or 'portrait'
+                    unit: 'px', // Use pixels for units
+                    format: [canvas.width, canvas.height] // Set PDF size based on scaled canvas
+                });
+
+                // Add the captured image
+                pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+
+                // Create filename
+                const month = monthNames[currentDate.getMonth()];
+                const year = currentDate.getFullYear();
+                const filename = `Calendario_${month}_${year}_UE_Camilo_Gallegos.pdf`;
+
+                pdf.save(filename);
+            }).catch(err => {
+                // document.body.classList.remove('pdf-generating'); // Ensure removal on error
+                console.error("Error generating PDF:", err);
+                alert("Hubo un error al generar el PDF. Revise la consola para más detalles.");
+            });
+        }
+
+
+        // --- Initial Load ---
+        renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+
+    </script>
+
+</body>
+</html>
