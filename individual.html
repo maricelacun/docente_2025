@@ -432,31 +432,51 @@
                 addSection('Observaciones Adicionales', data['observations']);
             }
 
-            // Firma
-            const signatureHeight = lineHeight * 4;
-            checkNewPage(signatureHeight);
-            if (pageHeight - currentY < signatureHeight + margin) {
-                doc.addPage();
-                currentY = margin;
-            } else {
-                 currentY = pageHeight - margin - signatureHeight;
-                 if (currentY < margin) currentY = margin;
-            }
-            const signatureLineY = currentY + lineHeight * 2;
-            const signatureLineLength = 60;
-            const signatureLineX = (pageWidth - signatureLineLength) / 2;
-            doc.setLineWidth(0.3);
-            doc.line(signatureLineX, signatureLineY, signatureLineX + signatureLineLength, signatureLineY);
-            doc.setFontSize(10);
-            doc.text('Firma Docente/Responsable', pageWidth / 2, signatureLineY + lineHeight, { align: 'center' });
-            doc.text(data['teacher-name'], pageWidth / 2, signatureLineY + lineHeight * 2, { align: 'center' });
+           // Firmas
+        const numberOfSignatures = 3;
+        const signatureHeightPerLine = lineHeight * 1.5; // Reducimos el espacio por línea de firma
+        const totalSignatureHeight = signatureHeightPerLine * 3 + lineHeight * 2; // Espacio para líneas y textos
 
-            // Descargar PDF
-            const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
-            const safeDate = data['meeting-date'].split(' ')[0].replace(/\//g, '-');
-            const filename = `Acta_Reunion_General_${safeCourseGrade}_${safeDate}.pdf`;
-            doc.save(filename);
+        checkNewPage(totalSignatureHeight);
+        if (pageHeight - currentY < totalSignatureHeight + margin) {
+            doc.addPage();
+            currentY = margin;
+        } else {
+            currentY = pageHeight - margin - totalSignatureHeight;
+            if (currentY < margin) currentY = margin;
         }
+
+        const signatureLineWidth = 60;
+        const startX = pageWidth / 4; // Dividimos el ancho en tres partes para las firmas
+
+        // Firma del Docente
+        let currentSignatureY = currentY + signatureHeightPerLine;
+        doc.setLineWidth(0.3);
+        doc.line(startX, currentSignatureY, startX + signatureLineWidth, currentSignatureY);
+        doc.setFontSize(10);
+        doc.text('Firma del Docente', startX + signatureLineWidth / 2, currentSignatureY + lineHeight, { align: 'center' });
+        doc.text(data['teacher-name'] || '', startX + signatureLineWidth / 2, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+        // Firma del Representante
+        const representativeX = pageWidth / 2;
+        currentSignatureY = currentY + signatureHeightPerLine;
+        doc.line(representativeX - signatureLineWidth / 2, currentSignatureY, representativeX + signatureLineWidth / 2, currentSignatureY);
+        doc.text('Firma del Representante', representativeX, currentSignatureY + lineHeight, { align: 'center' });
+        doc.text(data['representative-name'] || '', representativeX, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+        // Firma del Estudiante
+        const studentX = pageWidth * 3 / 4;
+        currentSignatureY = currentY + signatureHeightPerLine;
+        doc.line(studentX - signatureLineWidth / 2, currentSignatureY, studentX + signatureLineWidth / 2, currentSignatureY);
+        doc.text('Firma del Estudiante', studentX, currentSignatureY + lineHeight, { align: 'center' });
+        doc.text(data['student-name'] || '', studentX, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+        // Descargar PDF
+        const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+        const safeDate = data['meeting-date'].split(' ')[0].replace(/\//g, '-');
+        const filename = `Acta_Reunion_General_${safeCourseGrade}_${safeDate}.pdf`;
+        doc.save(filename);
+    }
 
         // --- Funciones del Modal ---
         function showModal(title, message, isSuccess = true) {
