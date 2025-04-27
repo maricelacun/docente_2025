@@ -193,11 +193,28 @@
             text-align: center;
             line-height: 1.2;
         }
+        .logo-contenedor {
+            width: 250px;  /* tamaño del círculo */
+            height: 250px;
+            background-color: white; /* fondo blanco dentro del círculo */
+            border-radius: 50%; /* hace que sea un círculo perfecto */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* sombra suave para que "flote" */
+            overflow: hidden; /* para que la imagen no se salga del círculo */
+        }
+
+        .logo {
+            width: 70%; /* el logo ocupa el 70% del círculo */
+            height: auto; /* mantiene la proporción del logo */
+        }
     </style>
 </head>
 <body>
     <div class="container" id="acta-container">
         <div class="header">
+            <img src="sello.jpg" alt="Logo del Colegio" class="logo">
             <h1 class="school-name">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
             <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
