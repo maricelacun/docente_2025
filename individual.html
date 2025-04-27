@@ -76,11 +76,11 @@
         /* Ocultar flechas en input number (si se usara) */
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
-          -webkit-appearance: none;
-          margin: 0;
+            -webkit-appearance: none;
+            margin: 0;
         }
         input[type=number] {
-          -moz-appearance: textfield; /* Firefox */
+            -moz-appearance: textfield; /* Firefox */
         }
     </style>
     </head>
@@ -125,7 +125,7 @@
                     <input type="text" id="new-agenda-item" placeholder="Añadir punto al orden del día" class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     <button type="button" id="add-agenda-button" class="btn btn-add" title="Añadir punto">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                         </svg>
                         </button>
                 </div>
@@ -149,9 +149,9 @@
 
             <div class="flex justify-end pt-4">
                 <button type="button" id="pdf-button" class="btn btn-pdf w-full sm:w-auto" title="Guardar y Descargar PDF">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                   </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
                     </button>
             </div>
         </form>
@@ -209,10 +209,10 @@
         agendaList.addEventListener('click', function(event) {
             const removeButton = event.target.closest('.remove-agenda-item');
             if (removeButton) {
-                 const listItem = removeButton.closest('li');
-                 if (listItem) {
+                const listItem = removeButton.closest('li');
+                if (listItem) {
                     removeAgendaItem(listItem);
-                 }
+                }
             }
         });
 
@@ -229,18 +229,18 @@
             if (noAgendaItemsMessage && noAgendaItemsMessage.style.display !== 'none') {
                 noAgendaItemsMessage.style.display = 'none';
                 if (agendaList.children.length === 1 && agendaList.firstChild === noAgendaItemsMessage) {
-                   agendaList.innerHTML = '';
+                    agendaList.innerHTML = '';
                 }
             }
 
             const listItem = document.createElement('li');
-            // Se aplica el estilo base de li definido en CSS
-            // *** MODIFICADO: Botón Quitar solo con icono ***
+            // Se aplica el estilo base
+        // *** MODIFICADO: Botón Quitar solo con icono ***
             listItem.innerHTML = `
                 <span class="flex-grow mr-2">${itemText}</span>
                 <button type="button" class="btn btn-remove remove-agenda-item" title="Quitar punto">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
                     </svg>
                     </button>
             `;
@@ -253,8 +253,8 @@
             itemElement.remove();
             // Mostrar mensaje si la lista queda vacía
             if (agendaList.children.length === 0 && noAgendaItemsMessage) {
-                 agendaList.appendChild(noAgendaItemsMessage); // Volver a añadir el mensaje
-                 noAgendaItemsMessage.style.display = 'flex'; // Asegurarse que sea visible
+                agendaList.appendChild(noAgendaItemsMessage); // Volver a añadir el mensaje
+                noAgendaItemsMessage.style.display = 'flex'; // Asegurarse que sea visible
             }
         }
 
@@ -276,28 +276,28 @@
             const formData = new FormData(form);
             const data = {};
             for (let [key, value] of formData.entries()) {
-                 if (key === 'meeting-date' && value) {
-                    try {
-                        const date = new Date(value);
-                        const formattedDate = date.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                        const formattedTime = date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
-                        data[key] = `${formattedDate} ${formattedTime}`;
-                        data[`${key}_raw`] = value;
-                    } catch (e) {
-                        console.error("Error parsing date:", e);
-                        data[key] = value;
-                        data[`${key}_raw`] = value;
+                    if (key === 'meeting-date' && value) {
+                        try {
+                            const date = new Date(value);
+                            const formattedDate = date.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                            const formattedTime = date.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', hour12: false });
+                            data[key] = `${formattedDate} ${formattedTime}`;
+                            data[`${key}_raw`] = value;
+                        } catch (e) {
+                            console.error("Error parsing date:", e);
+                            data[key] = value;
+                            data[`${key}_raw`] = value;
+                        }
+                    } else {
+                        data[key] = typeof value === 'string' ? value.trim() : value;
                     }
-                } else {
-                   data[key] = typeof value === 'string' ? value.trim() : value;
-                }
             }
             data.agendaItems = getAgendaItems();
             return data;
         }
 
         function validateForm(data) {
-            const requiredFields = ['meeting-date', 'course-grade', 'teacher-name', 'meeting-development', 'agreements'];
+            const requiredFields = ['meeting-date', 'course-grade', 'teacher-name', 'student-name', 'father-name', 'meeting-development', 'agreements'];
             for (const field of requiredFields) {
                 const valueToCheck = field === 'meeting-date' ? data[`${field}_raw`] : data[field];
                 if (!valueToCheck) {
@@ -306,7 +306,7 @@
                     if (inputElement && inputElement.labels && inputElement.labels.length > 0) {
                         labelText = inputElement.labels[0].textContent.replace(':', '').trim();
                     } else if (inputElement && inputElement.previousElementSibling && inputElement.previousElementSibling.tagName === 'LABEL') {
-                         labelText = inputElement.previousElementSibling.textContent.replace(':', '').trim();
+                            labelText = inputElement.previousElementSibling.textContent.replace(':', '').trim();
                     }
                     showModal('Campo Obligatorio', `El campo "${labelText}" es obligatorio.`, false);
                     if (inputElement) inputElement.focus();
@@ -314,9 +314,9 @@
                 }
             }
             if (data.agendaItems.length === 0) {
-                 showModal('Orden del Día Vacío', 'Debe añadir al menos un punto al Orden del Día.', false);
-                 if(newAgendaItemInput) newAgendaItemInput.focus();
-                 return false;
+                showModal('Orden del Día Vacío', 'Debe añadir al menos un punto al Orden del Día.', false);
+                if(newAgendaItemInput) newAgendaItemInput.focus();
+                return false;
             }
             return true;
         }
@@ -412,7 +412,7 @@
             currentY += lineHeight;
 
             // Secciones Desarrollo, Acuerdos, Observaciones
-             const addSection = (label, value) => {
+            const addSection = (label, value) => {
                 checkNewPage(lineHeight * 3);
                 doc.setFont('helvetica', 'bold');
                 doc.text(`${label}:`, margin, currentY);
@@ -433,50 +433,51 @@
             }
 
            // Firmas
-        const numberOfSignatures = 3;
-        const signatureHeightPerLine = lineHeight * 1.5; // Reducimos el espacio por línea de firma
-        const totalSignatureHeight = signatureHeightPerLine * 3 + lineHeight * 2; // Espacio para líneas y textos
+            const numberOfSignatures = 3;
+            const signatureHeightPerLine = lineHeight * 1.5; // Reducimos el espacio por línea de firma
+            const totalSignatureHeight = signatureHeightPerLine * 3 + lineHeight * 2; // Espacio para líneas y textos
 
-        checkNewPage(totalSignatureHeight);
-        if (pageHeight - currentY < totalSignatureHeight + margin) {
-            doc.addPage();
-            currentY = margin;
-        } else {
-            currentY = pageHeight - margin - totalSignatureHeight;
-            if (currentY < margin) currentY = margin;
+            checkNewPage(totalSignatureHeight);
+            if (pageHeight - currentY < totalSignatureHeight + margin) {
+                doc.addPage();
+                currentY = margin;
+            } else {
+                currentY = pageHeight - margin - totalSignatureHeight;
+                if (currentY < margin) currentY = margin;
+            }
+
+            const signatureLineWidth = 60;
+            const startX = pageWidth / 4; // Dividimos el ancho en tres partes para las firmas
+
+            // Firma del Docente
+            let currentSignatureY = currentY + signatureHeightPerLine;
+            doc.setLineWidth(0.3);
+            doc.line(startX, currentSignatureY, startX + signatureLineWidth, currentSignatureY);
+            doc.setFontSize(10);
+            doc.text('Firma del Docente', startX + signatureLineWidth / 2, currentSignatureY + lineHeight, { align: 'center' });
+            doc.text(data['teacher-name'] || '', startX + signatureLineWidth / 2, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+            // Firma del Representante
+            const representativeX = pageWidth / 2;
+            currentSignatureY = currentY + signatureHeightPerLine;
+            doc.line(representativeX - signatureLineWidth / 2, currentSignatureY, representativeX + signatureLineWidth / 2, currentSignatureY);
+            doc.text('Firma del Representante', representativeX, currentSignatureY + lineHeight, { align: 'center' });
+            doc.text(data['father-name'] || '', representativeX, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+            // Firma del Estudiante
+            const studentX = pageWidth * 3 / 4;
+            currentSignatureY = currentY + signatureHeightPerLine;
+            doc.line(studentX - signatureLineWidth / 2, currentSignatureY, studentX + signatureLineWidth / 2, currentSignatureY);
+            doc.text('Firma del Estudiante', studentX, currentSignatureY + lineHeight, { align: 'center' });
+            doc.text(data['student-name'] || '', studentX, currentSignatureY + lineHeight * 2, { align: 'center' });
+
+
+            // Descargar PDF
+            const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+            const safeDate = data['meeting-date'].split(' ')[0].replace(/\//g, '-');
+            const filename = `Acta_Reunion_General_${safeCourseGrade}_${safeDate}.pdf`;
+            doc.save(filename);
         }
-
-        const signatureLineWidth = 60;
-        const startX = pageWidth / 4; // Dividimos el ancho en tres partes para las firmas
-
-        // Firma del Docente
-        let currentSignatureY = currentY + signatureHeightPerLine;
-        doc.setLineWidth(0.3);
-        doc.line(startX, currentSignatureY, startX + signatureLineWidth, currentSignatureY);
-        doc.setFontSize(10);
-        doc.text('Firma del Docente', startX + signatureLineWidth / 2, currentSignatureY + lineHeight, { align: 'center' });
-        doc.text(data['teacher-name'] || '', startX + signatureLineWidth / 2, currentSignatureY + lineHeight * 2, { align: 'center' });
-
-        // Firma del Representante
-        const representativeX = pageWidth / 2;
-        currentSignatureY = currentY + signatureHeightPerLine;
-        doc.line(representativeX - signatureLineWidth / 2, currentSignatureY, representativeX + signatureLineWidth / 2, currentSignatureY);
-        doc.text('Firma del Representante', representativeX, currentSignatureY + lineHeight, { align: 'center' });
-        doc.text(data['representative-name'] || '', representativeX, currentSignatureY + lineHeight * 2, { align: 'center' });
-
-        // Firma del Estudiante
-        const studentX = pageWidth * 3 / 4;
-        currentSignatureY = currentY + signatureHeightPerLine;
-        doc.line(studentX - signatureLineWidth / 2, currentSignatureY, studentX + signatureLineWidth / 2, currentSignatureY);
-        doc.text('Firma del Estudiante', studentX, currentSignatureY + lineHeight, { align: 'center' });
-        doc.text(data['student-name'] || '', studentX, currentSignatureY + lineHeight * 2, { align: 'center' });
-
-        // Descargar PDF
-        const safeCourseGrade = data['course-grade'].replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
-        const safeDate = data['meeting-date'].split(' ')[0].replace(/\//g, '-');
-        const filename = `Acta_Reunion_General_${safeCourseGrade}_${safeDate}.pdf`;
-        doc.save(filename);
-    }
 
         // --- Funciones del Modal ---
         function showModal(title, message, isSuccess = true) {
@@ -498,16 +499,16 @@
             if (agendaList.children.length === 1 && agendaList.firstChild === noAgendaItemsMessage) {
                 noAgendaItemsMessage.style.display = 'flex';
             } else if (agendaList.children.length === 0 && noAgendaItemsMessage) {
-                 agendaList.appendChild(noAgendaItemsMessage);
-                 noAgendaItemsMessage.style.display = 'flex';
+                agendaList.appendChild(noAgendaItemsMessage);
+                noAgendaItemsMessage.style.display = 'flex';
             }
-         });
+        });
 
     </script>
- <div class="text-center mt-6 mb-4">
-    <a href="index.html" class="inline-block bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300">
-        INICIO
-    </a>
- </div>
+   <div class="text-center mt-6 mb-4">
+        <a href="index.html" class="inline-block bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-300">
+            INICIO
+        </a>
+   </div>
 </body>
 </html>
