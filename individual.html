@@ -108,12 +108,16 @@
                 </div>
             </div>
             <div>
-                <label for="teacher-name" class="block text-sm font-medium text-gray-700">Docente/Tutor Responsable:</label>
+                <label for="teacher-name" class="block text-sm font-medium text-gray-700">Docente Responsable:</label>
                 <input type="text" id="teacher-name" name="teacher-name" required placeholder="Nombre del docente que convoca" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div>
                 <label for="student-name" class="block text-sm font-medium text-gray-700">Estudiante:</label>
                 <input type="text" id="student-name" name="student-name" required placeholder="Nombre del estudiante" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+            </div>
+             <div>
+                <label for="father-name" class="block text-sm font-medium text-gray-700">Estudiante:</label>
+                <input type="text" id="father-name" name="father-name" required placeholder="Nombre del Repreentante Legal:" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="border border-gray-300 p-4 rounded-lg bg-gray-50">
                 <h4 class="text-lg font-semibold mb-3 text-gray-800">Orden del Día</h4>
@@ -380,7 +384,8 @@
             addLine('Fecha y Hora', data['meeting-date']);
             addLine('Curso/Grado', data['course-grade']);
             addLine('Docente/Responsable', data['teacher-name']);
-            addLine('estudiante/Responsable', data['student-name']);
+            addLine('Estudiante', data['student-name']);
+            addLine('Representante', data['father-name']);
             currentY += lineHeight;
 
             // Orden del Día
