@@ -26,33 +26,37 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         /* Estilos personalizados para botones */
-        .btn {
-            @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2;
-        }
-        .btn-pdf {
-            background-color: #0056b3; /* Azul oscuro */
-            color: white;
-            border: 1px solid #004080;
-        }
-        .btn-pdf:hover {
-            background-color: #003d80;
-        }
-        .btn-add {
-            background-color: #28a745; /* Verde */
-            color: white;
-        }
-        .btn-add:hover {
-            background-color: #218838;
-        }
-        .btn-remove {
-            background-color: #dc3545; /* Rojo */
-            color: white;
-            padding: 0.3rem 0.6rem; /* Más pequeño */
-            font-size: 0.8rem;
-        }
-        .btn-remove:hover {
-            background-color: #c82333;
-        }
+.btn {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg font-semibold shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+/* Estilo del botón PDF */
+.btn-pdf {
+    @apply bg-blue-600 text-white border border-blue-800; /* Azul oscuro */
+}
+
+.btn-pdf:hover {
+    @apply bg-blue-800; /* Color más oscuro al pasar el ratón */
+}
+
+/* Estilo del botón Agregar */
+.btn-add {
+    @apply bg-green-500 text-white; /* Verde */
+}
+
+.btn-add:hover {
+    @apply bg-green-600; /* Color más oscuro al pasar el ratón */
+}
+
+/* Estilo del botón Eliminar */
+.btn-remove {
+    @apply bg-red-600 text-white py-1 px-2 text-sm; /* Rojo */
+}
+
+.btn-remove:hover {
+    @apply bg-red-700; /* Color más oscuro al pasar el ratón */
+}
+
         /* Estilo para lista de orden del día */
         #agenda-list li {
             @apply flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200 mb-2;
