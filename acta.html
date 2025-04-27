@@ -4,45 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acta de Compromiso Estudiantil</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        body {
-            font-family: sans-serif;
-            background: radial-gradient(yellow, blue);
+        :root {
+            --amarillo: #FFD700;
+            --azul: #0056b3;
+            --azul-oscuro: #003366;
+            --blanco: #FFFFFF;
+            --gris: #F5F5F5;
+        }
+
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, var(--amarillo), var(--azul));
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
             background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--amarillo), var(--azul), var(--amarillo));
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            position: relative;
         }
 
-        .header img {
-            max-width: 80px;
-            height: auto;
-            margin-bottom: 10px;
+        .school-logo {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            display: block;
+            border-radius: 50%;
+            border: 3px solid var(--azul);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
         }
 
-        h1 {
-            color: #333;
+        .school-name {
+            color: var(--azul-oscuro);
+            font-size: 24px;
+            font-weight: 700;
             margin-bottom: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        h3 {
+        .document-title {
+            color: var(--azul);
+            font-size: 28px;
+            font-weight: 800;
+            margin: 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .document-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--amarillo), var(--azul));
+            border-radius: 3px;
+        }
+
+        .teacher-info {
+            font-style: italic;
             color: #555;
-            margin-top: 0;
+            margin-bottom: 20px;
         }
 
         .form-group {
@@ -51,224 +112,565 @@
 
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--azul-oscuro);
         }
 
-        input[type="text"],
-        textarea,
-        select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            margin-bottom: 10px;
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
         }
 
         textarea {
-            resize: vertical;
             min-height: 100px;
+            resize: vertical;
         }
 
-        .signatures {
+        .signature-section {
             display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            text-align: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .signature-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .signature-pad {
+            width: 200px;
+            height: 80px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            background-color: white;
+            cursor: crosshair;
+        }
+
+        .signature-clear {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
         }
 
         .signature-box {
             flex: 1;
-            padding: 10px;
-            border-top: 1px solid #ccc;
-        }
-
-        .buttons {
+            min-width: 200px;
+            margin: 10px;
             text-align: center;
+        }
+
+        .signature-line {
+            height: 1px;
+            background-color: #000;
+            margin: 40px 0 10px;
+            position: relative;
+        }
+
+        .signature-line::after {
+            content: "Firma";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #666;
+        }
+
+        .buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
-        .action-button {
-            background-color: #007bff;
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--amarillo), #FFC000);
+            color: #000;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--azul), var(--azul-oscuro));
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-            margin: 0 10px;
         }
 
-        .action-button:hover {
-            background-color: #0056b3;
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
-        /* Estilos interactivos (puedes personalizarlos con imágenes) */
-        .button-container {
-            display: inline-block;
-            overflow: hidden;
-            border-radius: 8px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-            margin: 5px;
+        .btn:active {
+            transform: translateY(1px);
         }
 
-        .interactive-button {
-            background: #f8f9fa;
-            color: #333;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out;
+        .btn i {
+            font-size: 20px;
         }
 
-        .interactive-button:hover {
-            transform: scale(1.05);
-            background-color: #e9ecef;
+        .date-input {
+            max-width: 200px;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
-                width: 95%;
-                padding: 20px;
+                padding: 20px 15px;
             }
-
-            .signatures {
+            
+            .school-name {
+                font-size: 20px;
+            }
+            
+            .document-title {
+                font-size: 22px;
+            }
+            
+            .signature-section {
+                flex-direction: column;
+            }
+            
+            .buttons-container {
                 flex-direction: column;
                 align-items: center;
             }
-
-            .signature-box {
-                width: 80%;
-                margin-bottom: 20px;
-            }
-
-            .action-button {
+            
+            .btn {
                 width: 100%;
-                margin-bottom: 10px;
+                max-width: 300px;
             }
         }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Efecto de sello */
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            opacity: 0.8;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px dashed var(--azul);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul);
+            font-weight: bold;
+            transform: rotate(15deg);
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.2;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="acta-container">
+        <div class="stamp">UNIDAD EDUCATIVA<br>"Dr. Camilo Gallegos Domínguez"</div>
+        
         <div class="header">
-            <img src="sello.jpg" alt="Sello del Colegio">
-            <h1>Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
-            <h3>Acta de Compromiso Estudiantil</h3>
-            <p>Docente: Mgs. Maricela Cun Rueda</p>
+            <img src="sello.jpg" alt="Sello del Colegio" class="school-logo" onerror="this.style.display='none'">
+            <h1 class="school-name">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
+            <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
+            <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
         </div>
 
-        <div class="form-group">
-            <label for="fecha">Fecha:</label>
-            <input type="text" id="fecha" value="<?php echo date('Y-m-d'); ?>" readonly>
-        </div>
-
-        <div class="form-group">
-            <label for="nombre_estudiante">Nombre del Estudiante:</label>
-            <input type="text" id="nombre_estudiante" placeholder="Ingrese el nombre del estudiante">
-        </div>
-
-        <div class="form-group">
-            <label for="curso">Curso y Paralelo:</label>
-            <select id="curso">
-                <option value="3ro_Bachillerato_A">3ro Bachillerato Técnico Paralelo A</option>
-                <option value="3ro_Bachillerato_B">3ro Bachillerato Técnico Paralelo B</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="motivo">Motivo del Acta:</label>
-            <select id="motivo">
-                <option value="conducta">Problemas de Conducta</option>
-                <option value="bajo_rendimiento">Bajo Rendimiento Académico</option>
-                <option value="acto_indisciplinario">Acto Indisciplinario</option>
-                <option value="faltas_clase">Faltas a Clase Injustificadas</option>
-                <option value="otro">Otro</option>
-            </select>
-            <textarea id="descripcion_motivo" placeholder="Descripción detallada del motivo (opcional)"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="compromiso">Compromiso del Estudiante:</label>
-            <textarea id="compromiso" placeholder="Describa el compromiso del estudiante para mejorar su situación"></textarea>
-        </div>
-
-        <div class="signatures">
-            <div class="signature-box">
-                <label>Firma del Estudiante</label>
-                <div style="height: 50px; border-bottom: 1px dashed #ccc;"></div>
+        <form id="acta-form">
+            <div class="form-group">
+                <label for="student-name">Nombre completo del estudiante:</label>
+                <input type="text" id="student-name" required>
             </div>
-            <div class="signature-box">
-                <label>Firma del Docente</label>
-                <div style="height: 50px; border-bottom: 1px dashed #ccc;"></div>
-            </div>
-            <div class="signature-box">
-                <label>Firma del Representante Legal</label>
-                <div style="height: 50px; border-bottom: 1px dashed #ccc;"></div>
-            </div>
-        </div>
 
-        <div class="buttons">
-            <div class="button-container">
-                <button class="interactive-button" onclick="guardarActa()">Guardar</button>
+            <div class="form-group">
+                <label for="course">Curso:</label>
+                <input type="text" id="course" value="Tercer Año de Bachillerato Técnico" readonly>
             </div>
-            <div class="button-container">
-                <button class="interactive-button" onclick="descargarPDF()">Descargar PDF</button>
+
+            <div class="form-group">
+                <label for="parallel">Paralelo:</label>
+                <select id="parallel" required>
+                    <option value="">Seleccione...</option>
+                    <option value="A">Paralelo A</option>
+                    <option value="B">Paralelo B</option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="date">Fecha:</label>
+                <input type="date" id="date" class="date-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Motivo del compromiso:</label>
+                <select id="reason" required>
+                    <option value="">Seleccione el motivo...</option>
+                    <option value="conducta">Problemas de conducta</option>
+                    <option value="rendimiento">Bajo rendimiento académico</option>
+                    <option value="indisciplina">Acto indisciplinario</option>
+                    <option value="faltas">Faltas a clase</option>
+                    <option value="otro">Otro (especifique)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="other-reason-container" style="display: none;">
+                <label for="other-reason">Especifique otro motivo:</label>
+                <input type="text" id="other-reason">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción detallada de la situación:</label>
+                <textarea id="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="commitment">Compromiso adquirido por el estudiante:</label>
+                <textarea id="commitment" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="consequences">Consecuencias por incumplimiento:</label>
+                <textarea id="consequences" required>En caso de no cumplir con los acuerdos establecidos en este documento, acepto las medidas disciplinarias que la institución determine de acuerdo al reglamento interno.</textarea>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-container">
+                        <canvas class="signature-pad" id="student-signature"></canvas>
+                        <button type="button" class="signature-clear" onclick="clearSignature('student')">Limpiar</button>
+                    </div>
+                    <p>Estudiante</p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-container">
+                        <canvas class="signature-pad" id="parent-signature"></canvas>
+                        <button type="button" class="signature-clear" onclick="clearSignature('parent')">Limpiar</button>
+                    </div>
+                    <p>Representante Legal</p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p>Docente</p>
+                </div>
+            </div>
+        </form>
+
+        <div class="buttons-container">
+            <button type="button" class="btn btn-save" id="save-btn">
+                <i class="fas fa-save"></i> Guardar Acta
+            </button>
+            <button type="button" class="btn btn-download" id="download-btn">
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </button>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
-        function guardarActa() {
-            // Aquí puedes implementar la lógica para guardar los datos del acta,
-            // por ejemplo, enviándolos a un servidor mediante una petición AJAX.
-            alert("Acta guardada (funcionalidad para implementar).");
+        // Variables globales
+        const studentCanvas = document.getElementById('student-signature');
+        const parentCanvas = document.getElementById('parent-signature');
+        const studentCtx = studentCanvas.getContext('2d');
+        const parentCtx = parentCanvas.getContext('2d');
+        let isDrawing = false;
+        
+        // Configuración inicial
+        function init() {
+            // Establecer fecha actual
+            document.getElementById('date').valueAsDate = new Date();
+            
+            // Configurar canvas de firmas
+            setupSignaturePads();
+            
+            // Configurar eventos
+            setupEventListeners();
+            
+            // Actualizar compromiso inicial
+            updateCommitment();
         }
-
-        function descargarPDF() {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF();
-
-            // Añadir contenido al PDF
-            pdf.addImage('sello.jpg', 'JPEG', 15, 15, 30, 30); // Añadir el sello
-            pdf.setFontSize(18);
-            pdf.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', 105, 25, { align: 'center' });
-            pdf.setFontSize(14);
-            pdf.text('Acta de Compromiso Estudiantil', 105, 35, { align: 'center' });
-            pdf.setFontSize(12);
-            pdf.text(`Docente: Mgs. Maricela Cun Rueda`, 15, 50);
-            pdf.text(`Fecha: ${document.getElementById('fecha').value}`, 15, 58);
-            pdf.text(`Nombre del Estudiante: ${document.getElementById('nombre_estudiante').value}`, 15, 66);
-            pdf.text(`Curso y Paralelo: ${document.getElementById('curso').value}`, 15, 74);
-            pdf.text(`Motivo del Acta: ${document.getElementById('motivo').value}`, 15, 82);
-            if (document.getElementById('descripcion_motivo').value) {
-                pdf.text(`Descripción: ${document.getElementById('descripcion_motivo').value}`, 15, 90);
+        
+        // Configurar los pads de firma
+        function setupSignaturePads() {
+            // Configurar tamaño
+            studentCanvas.width = studentCanvas.offsetWidth;
+            studentCanvas.height = studentCanvas.offsetHeight;
+            parentCanvas.width = parentCanvas.offsetWidth;
+            parentCanvas.height = parentCanvas.offsetHeight;
+            
+            // Configurar estilo de dibujo
+            [studentCtx, parentCtx].forEach(ctx => {
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 2;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, studentCanvas.width, studentCanvas.height);
+            });
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Eventos para el nombre del estudiante
+            document.getElementById('student-name').addEventListener('input', updateCommitment);
+            
+            // Eventos para el motivo
+            document.getElementById('reason').addEventListener('change', function() {
+                document.getElementById('other-reason-container').style.display = 
+                    this.value === 'otro' ? 'block' : 'none';
+            });
+            
+            // Eventos para firmas (estudiante)
+            studentCanvas.addEventListener('mousedown', startDrawing);
+            studentCanvas.addEventListener('mousemove', draw);
+            studentCanvas.addEventListener('mouseup', stopDrawing);
+            studentCanvas.addEventListener('mouseout', stopDrawing);
+            
+            // Eventos para firmas (representante)
+            parentCanvas.addEventListener('mousedown', startDrawing);
+            parentCanvas.addEventListener('mousemove', draw);
+            parentCanvas.addEventListener('mouseup', stopDrawing);
+            parentCanvas.addEventListener('mouseout', stopDrawing);
+            
+            // Eventos táctiles (estudiante)
+            studentCanvas.addEventListener('touchstart', handleTouchStart);
+            studentCanvas.addEventListener('touchmove', handleTouchMove);
+            studentCanvas.addEventListener('touchend', stopDrawing);
+            
+            // Eventos táctiles (representante)
+            parentCanvas.addEventListener('touchstart', handleTouchStart);
+            parentCanvas.addEventListener('touchmove', handleTouchMove);
+            parentCanvas.addEventListener('touchend', stopDrawing);
+            
+            // Botones
+            document.getElementById('save-btn').addEventListener('click', saveActa);
+            document.getElementById('download-btn').addEventListener('click', downloadPDF);
+        }
+        
+        // Funciones para firmas
+        function startDrawing(e) {
+            isDrawing = true;
+            const canvas = e.target;
+            const ctx = canvas === studentCanvas ? studentCtx : parentCtx;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            e.preventDefault(); // Prevenir scrolling en móviles
+        }
+        
+        function draw(e) {
+            if (!isDrawing) return;
+            
+            const canvas = e.target;
+            const ctx = canvas === studentCanvas ? studentCtx : parentCtx;
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            e.preventDefault(); // Prevenir scrolling en móviles
+        }
+        
+        function stopDrawing() {
+            isDrawing = false;
+        }
+        
+        function handleTouchStart(e) {
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: e.touches[0].clientX,
+                clientY: e.touches[0].clientY
+            });
+            this.dispatchEvent(mouseEvent);
+        }
+        
+        function handleTouchMove(e) {
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: e.touches[0].clientX,
+                clientY: e.touches[0].clientY
+            });
+            this.dispatchEvent(mouseEvent);
+        }
+        
+        function clearSignature(type) {
+            const ctx = type === 'student' ? studentCtx : parentCtx;
+            const canvas = type === 'student' ? studentCanvas : parentCanvas;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#000000';
+        }
+        
+        // Actualizar texto de compromiso
+        function updateCommitment() {
+            const studentName = document.getElementById('student-name').value.trim();
+            const commitmentText = studentName 
+                ? `Yo, ${studentName}, me comprometo a mejorar mi comportamiento/rendimiento académico/asistencia, cumpliendo con las normas establecidas por la institución y demostrando una actitud positiva hacia el aprendizaje y la convivencia escolar.`
+                : 'El compromiso aparecerá aquí automáticamente cuando ingrese el nombre del estudiante';
+            
+            document.getElementById('commitment').value = commitmentText;
+        }
+        
+        // Validar formulario
+        function validateForm() {
+            const form = document.getElementById('acta-form');
+            const studentName = document.getElementById('student-name').value.trim();
+            
+            if (!studentName) {
+                alert('Por favor ingrese el nombre del estudiante');
+                return false;
             }
-            pdf.text(`Compromiso del Estudiante:`, 15, 105);
-            const compromisoText = pdf.splitTextToSize(document.getElementById('compromiso').value, 180);
-            pdf.text(compromisoText, 15, 113);
-
-            // Añadir firmas
-            const ySignatures = 180;
-            pdf.line(20, ySignatures + 20, 70, ySignatures + 20);
-            pdf.text('Firma del Estudiante', 25, ySignatures + 25);
-
-            pdf.line(80, ySignatures + 20, 130, ySignatures + 20);
-            pdf.text('Firma del Docente', 85, ySignatures + 25);
-
-            pdf.line(140, ySignatures + 20, 190, ySignatures + 20);
-            pdf.text('Firma del Representante', 145, ySignatures + 25);
-            pdf.text('Legal', 155, ySignatures + 30);
-
-            // Guardar el PDF
-            pdf.save('acta_compromiso.pdf');
+            
+            if (!document.getElementById('parallel').value) {
+                alert('Por favor seleccione el paralelo');
+                return false;
+            }
+            
+            if (!document.getElementById('reason').value) {
+                alert('Por favor seleccione el motivo');
+                return false;
+            }
+            
+            if (!document.getElementById('description').value.trim()) {
+                alert('Por favor ingrese la descripción');
+                return false;
+            }
+            
+            // Verificar firma del estudiante
+            if (!hasSignature(studentCanvas, studentCtx)) {
+                alert('Por favor, el estudiante debe firmar el documento');
+                return false;
+            }
+            
+            return true;
         }
+        
+        // Verificar si hay firma
+        function hasSignature(canvas, ctx) {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+            
+            for (let i = 0; i < imageData.length; i += 4) {
+                if (imageData[i] !== 255 || imageData[i+1] !== 255 || imageData[i+2] !== 255) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+        
+        // Guardar acta
+        function saveActa() {
+            if (!validateForm()) return;
+            
+            const btn = document.getElementById('save-btn');
+            btn.innerHTML = '<i class="fas fa-check"></i> Guardado!';
+            btn.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+            
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar Acta';
+                btn.style.background = 'linear-gradient(135deg, var(--amarillo), #FFC000)';
+            }, 2000);
+            
+            // Aquí iría la lógica para guardar en base de datos
+            console.log('Acta guardada:', {
+                student: document.getElementById('student-name').value,
+                course: document.getElementById('course').value,
+                parallel: document.getElementById('parallel').value,
+                date: document.getElementById('date').value,
+                reason: document.getElementById('reason').value,
+                description: document.getElementById('description').value,
+                commitment: document.getElementById('commitment').value
+            });
+        }
+        
+        // Descargar PDF
+        async function downloadPDF() {
+            if (!validateForm()) return;
+            
+            const btn = document.getElementById('download-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+            btn.disabled = true;
+            
+            try {
+                // Crear PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                // Usar html2canvas para capturar el contenido
+                const canvas = await html2canvas(document.getElementById('acta-container'), {
+                    scale: 2,
+                    logging: false,
+                    useCORS: true,
+                    scrollX: 0,
+                    scrollY: 0
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // Ancho A4 en mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                
+                // Nombre del archivo
+                const studentName = document.getElementById('student-name').value.replace(/\s+/g, '_');
+                const dateStr = document.getElementById('date').value;
+                const fileName = `Acta_Compromiso_${studentName}_${dateStr}.pdf`;
+                
+                // Descargar
+                pdf.save(fileName);
+            } catch (error) {
+                console.error('Error al generar PDF:', error);
+                alert('Error al generar el PDF. Por favor intente nuevamente.');
+            } finally {
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Descargar PDF';
+                btn.disabled = false;
+            }
+        }
+        
+        // Inicializar la aplicación
+        window.onload = init;
     </script>
 </body>
 </html>
