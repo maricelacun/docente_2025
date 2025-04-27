@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acta de Compromiso Estudiantil</title>
     <style>
+        /* Eliminar márgenes y encabezados/pies al imprimir */
         @page {
             size: A4;
-            margin: 10mm 15mm;
-            marks: crop cross;
+            margin: 0;
+            padding: 0;
         }
         
         :root {
@@ -25,19 +26,16 @@
         }
 
         body {
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            padding: 0;
+            background-color: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 15mm 20mm;
         }
 
         .container {
-            background-color: white;
-            width: 210mm;
-            min-height: 287mm;
-            padding: 10mm 25mm 15mm;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
+            height: 100%;
         }
 
         .container::before {
@@ -46,14 +44,14 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 5px;
+            height: 3px;
             background: linear-gradient(90deg, var(--amarillo), var(--azul), var(--amarillo));
         }
 
         .acta-number {
             position: absolute;
-            top: 15mm;
-            right: 25mm;
+            top: 10mm;
+            right: 20mm;
             font-weight: bold;
         }
 
@@ -66,19 +64,19 @@
 
         .header {
             text-align: center;
-            margin-bottom: 10px;
+            margin-bottom: 10mm;
         }
 
         .school-name {
             font-size: 18px;
-            margin-bottom: 5px;
+            margin-bottom: 3mm;
             color: var(--azul-oscuro);
         }
 
         .teacher-info {
             font-style: italic;
             color: #555;
-            margin-bottom: 10px;
+            margin-bottom: 3mm;
             font-size: 14px;
         }
 
@@ -86,7 +84,7 @@
             color: var(--azul);
             font-size: 18px;
             font-weight: 800;
-            margin: 10px 0;
+            margin: 5mm 0;
             text-transform: uppercase;
             position: relative;
             display: inline-block;
@@ -95,7 +93,7 @@
         .document-title::after {
             content: "";
             position: absolute;
-            bottom: -5px;
+            bottom: -3mm;
             left: 50%;
             transform: translateX(-50%);
             width: 80px;
@@ -104,12 +102,12 @@
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 4mm;
         }
 
         label {
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 1mm;
             font-weight: 600;
             color: var(--azul-oscuro);
             font-size: 14px;
@@ -117,48 +115,48 @@
 
         input, textarea, select {
             width: 100%;
-            padding: 5px 8px;
+            padding: 2mm 3mm;
             border: 1px solid #000;
             border-radius: 3px;
             font-size: 14px;
         }
 
         textarea {
-            min-height: 60px;
+            min-height: 20mm;
             resize: vertical;
         }
 
         .date-input {
-            max-width: 120px;
+            max-width: 40mm;
         }
 
         .signature-section {
             display: flex;
             justify-content: space-between;
-            margin: 25px 0 15px;
+            margin: 10mm 0 5mm;
         }
 
         .signature-box {
             flex: 1;
-            min-width: 100px;
-            margin: 0 5px;
+            min-width: 50mm;
+            margin: 0 3mm;
             text-align: center;
         }
 
         .signature-line {
             border-bottom: 1px solid #000;
             height: 1px;
-            margin: 20px 0 5px;
+            margin: 15mm 0 2mm;
         }
 
         .buttons-container {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 10mm;
         }
 
         .btn-print {
-            padding: 6px 12px;
+            padding: 2mm 4mm;
             background: var(--azul);
             color: white;
             border: none;
@@ -168,28 +166,33 @@
 
         @media print {
             body {
-                background: none;
+                background: white;
                 padding: 0;
+                margin: 0;
+                width: 210mm;
+                height: 297mm;
             }
+            
             .container {
-                box-shadow: none;
-                padding: 0 15mm;
-                width: 100%;
-                height: 100%;
+                padding: 0;
                 margin: 0;
             }
+            
             .buttons-container {
                 display: none;
             }
+            
+            /* Eliminar completamente encabezados/pies de página */
             @page {
-                margin: 10mm 15mm;
                 size: A4;
+                margin: 0;
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container" id="acta-container">
+    <div class="container">
         <div class="acta-number">
             <label for="acta-number">N° de Acta:</label>
             <input type="text" id="acta-number">
@@ -282,7 +285,9 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Fecha actual por defecto
-            document.getElementById('date').valueAsDate = new Date();
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById('date').value = formattedDate;
             
             // Autocompletar compromiso
             document.getElementById('student-name').addEventListener('input', function() {
