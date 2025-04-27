@@ -29,7 +29,7 @@
             width: 210mm;
             min-height: 297mm;
             margin: 0 auto;
-            padding: 15mm 20mm;
+            padding: 10mm 20mm;
         }
 
         .container {
@@ -37,63 +37,25 @@
             height: 100%;
         }
 
-        .container::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--amarillo), var(--azul), var(--amarillo));
-        }
-
-        /* Sello del colegio */
-        .stamp {
-            position: absolute;
-            top: 15mm;
-            right: 20mm;
-            width: 50mm;
-            height: 50mm;
-            border: 3px dashed var(--azul);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--azul);
-            font-weight: bold;
-            transform: rotate(-15deg);
-            opacity: 0.7;
-            text-align: center;
-            line-height: 1.2;
-            font-size: 14px;
-            padding: 5mm;
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        .acta-number {
-            position: absolute;
-            top: 10mm;
-            left: 20mm;
-            font-weight: bold;
-        }
-
-        .acta-number input {
-            width: 60px;
-            padding: 2px 5px;
-            border: 1px solid #000;
-            border-radius: 3px;
-        }
-
+        /* Encabezado con sello */
         .header {
             text-align: center;
             margin-bottom: 10mm;
-            padding-top: 20mm;
+            position: relative;
+        }
+
+        .school-stamp {
+            width: 80mm;
+            height: 80mm;
+            margin: 0 auto 5mm;
+            display: block;
         }
 
         .school-name {
             font-size: 18px;
             margin-bottom: 3mm;
             color: var(--azul-oscuro);
+            font-weight: bold;
         }
 
         .teacher-info {
@@ -124,6 +86,22 @@
             background: linear-gradient(90deg, var(--amarillo), var(--azul));
         }
 
+        /* Número de acta */
+        .acta-number {
+            position: absolute;
+            top: 10mm;
+            right: 20mm;
+            font-weight: bold;
+        }
+
+        .acta-number input {
+            width: 60px;
+            padding: 2px 5px;
+            border: 1px solid #000;
+            border-radius: 3px;
+        }
+
+        /* Formulario */
         .form-group {
             margin-bottom: 4mm;
         }
@@ -153,6 +131,7 @@
             max-width: 40mm;
         }
 
+        /* Firmas */
         .signature-section {
             display: flex;
             justify-content: space-between;
@@ -172,6 +151,7 @@
             margin: 15mm 0 2mm;
         }
 
+        /* Botón */
         .buttons-container {
             display: flex;
             justify-content: center;
@@ -197,16 +177,12 @@
             }
             
             .container {
-                padding: 0;
+                padding: 0 20mm;
                 margin: 0;
             }
             
             .buttons-container {
                 display: none;
-            }
-            
-            .stamp {
-                opacity: 0.8;
             }
             
             @page {
@@ -219,24 +195,21 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sello del colegio -->
-        <div class="stamp">
-            UNIDAD EDUCATIVA<br>
-            "Dr. Camilo Gallegos Domínguez"<br>
-            SELLO OFICIAL
-        </div>
-
+        <!-- Número de acta -->
         <div class="acta-number">
             <label for="acta-number">N° de Acta:</label>
             <input type="text" id="acta-number">
         </div>
 
+        <!-- Encabezado con sello -->
         <div class="header">
+            <img src="sello.jpg" alt="Sello Oficial" class="school-stamp" onerror="this.style.display='none'">
             <h1 class="school-name">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
             <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
         </div>
 
+        <!-- Formulario -->
         <form id="acta-form">
             <div class="form-group">
                 <label for="student-name">Nombre completo del estudiante:</label>
@@ -294,6 +267,7 @@
                 <textarea id="consequences" required>En caso de incumplimiento, acepto las medidas disciplinarias según el reglamento interno.</textarea>
             </div>
 
+            <!-- Firmas -->
             <div class="signature-section">
                 <div class="signature-box">
                     <div class="signature-line"></div>
