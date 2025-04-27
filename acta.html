@@ -193,7 +193,7 @@
             text-align: center;
             line-height: 1.2;
         }
-        body {
+    .sello{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -218,6 +218,36 @@
     width: 70%; /* el logo ocupa el 70% del círculo */
     height: auto; /* mantiene la proporción del logo */
 }
+        body {
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #acta-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Todo el alto de la pantalla */
+        }
+
+        .logo-contenedor {
+            width: 250px;
+            height: 250px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .logo {
+            width: 70%;
+            height: auto;
+        }
 
     </style>
 </head>
@@ -226,8 +256,8 @@
     <div class="container" id="acta-container">
         <div class="header">
             <div class="logo-contenedor">
-                <img src="sello.jpg" alt="Logo del Colegio" class="logo">
-           </div>
+               <img src="sello.jpg" alt="Logo del Colegio" class="logo">
+            </div>
             <h1 class="school-name">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
             <p class="teacher-info">Docente: Mgs. Maricela Cun Rueda</p>
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
