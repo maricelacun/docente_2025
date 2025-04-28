@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Capacitaciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Slightly different light gray */
+        }
+        /* Style for printable area */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableArea, #printableArea * {
+                visibility: visible;
+            }
+            #printableArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none !important; /* Remove shadow for print */
+                border: none !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            table {
+                border-collapse: collapse !important;
+                width: 100% !important;
+                box-shadow: none !important;
+            }
+            th, td {
+                border: 1px solid #ddd !important; /* Lighter border for print */
+                padding: 8px !important;
+                text-align: left !important;
+            }
+            th {
+                 background-color: #e5e7eb !important; /* Tailwind gray-200 */
+                 color: #374151 !important; /* Tailwind gray-700 */
+                 -webkit-print-color-adjust: exact; /* Ensure background color prints */
+                 color-adjust: exact;
+            }
+             /* Hide background gradient in print */
+            .header-gradient {
+                background: none !important;
+                background-color: #fff !important; /* Simple white background for print header */
+                color: #000 !important; /* Black text for print header */
+                padding-bottom: 1rem !important; /* Adjust padding if needed */
+                border-bottom: 1px solid #ccc;
+            }
+            .header-gradient h1, .header-gradient p {
+                 color: #000 !important;
+            }
+            .container {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+            }
+            /* Hide edit/delete icons in print */
+            .action-cell button {
+                display: none !important;
+            }
+        }
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Input Styles */
+        input[type="text"], input[type="date"], textarea {
+            @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm;
+        }
+        /* Button Styles */
+        .btn {
+            @apply inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition duration-200 ease-in-out transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed;
+        }
+        .btn-primary {
+            @apply text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500;
+        }
+         .btn-success { /* For Save Changes */
+            @apply text-white bg-green-600 hover:bg-green-700 focus:ring-green-500;
+        }
+        .btn-secondary {
+            @apply text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:ring-indigo-500;
+        }
+        .btn-warning-icon { /* For Edit Icon */
+             @apply text-yellow-500 hover:text-yellow-700 transition duration-150 ease-in-out mr-2; /* Added margin */
+        }
+        .btn-danger-icon { /* For Delete Icon */
+             @apply text-red-500 hover:text-red-700 transition duration-150 ease-in-out;
+        }
+         .btn-cancel { /* For Cancel Button */
+            @apply text-gray-700 bg-gray-200 hover:bg-gray-300 focus:ring-gray-400;
+         }
+        /* Header Gradient */
+        .header-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Example Gradient */
+            color: white;
+            border-radius: 0.5rem; /* Rounded corners */
+            padding: 2rem 1rem; /* More padding */
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        /* Table styling */
+        #scheduleTable th {
+            @apply px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider bg-gray-50; /* Slightly bolder header */
+        }
+         #scheduleTable tbody tr:nth-child(odd) {
+            background-color: #f9fafb; /* Zebra striping */
+        }
+        #scheduleTable tbody tr:hover {
+            background-color: #eff6ff; /* Light blue hover */
+        }
+         /* Card-like appearance for form and table area */
+        .card {
+             @apply bg-white p-6 rounded-xl shadow-lg transition duration-300 ease-in-out;
+        }
+         .card:hover {
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Slightly larger shadow on hover */
+         }
+
+         /* Placeholder for Logo */
+         .logo-placeholder {
+            width: 50px; /* Adjust size as needed */
+            height: 50px;
+            background-color: #e0e0e0; /* Placeholder color */
+            border-radius: 50%; /* Make it circular or square */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #757575;
+            margin: 0 auto 1rem; /* Center and add margin below */
+            /* Or use an img tag if you have a logo URL */
+            /* content: url('path/to/your/logo.png'); */
+         }
+         /* Hide elements visually but keep accessible */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+         .imagen-bonita {
+            max-width: 50px; /* Tamaño máximo */
+            width: 100%; /* Que la imagen respete el tamaño máximo */
+            height: auto; /* Mantiene la proporción correcta */
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: block;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl"> 
+        <header class="text-center fade-in header-gradient">
+             <img src="https://static.wixstatic.com/media/87ec0b_d7d20280e69d43cc8f1a69e5aac159e7~mv2.gif" alt="Foto de paisaje" style="display: block; margin-left: auto; margin-right: auto;">
+            <h1 class="text-3xl md:text-4xl font-bold mb-2">CRONOGRAMA DE ACTIVIDADES</h1>
+            <p class="text-lg text-indigo-100">PLANIFICA Y ORGANIZA TUS ACTIVIDADES EDUCATIVAS .</p>
+        </header>
+
+        <div id="formCard" class="card mb-8 fade-in no-print">
+            <h2 id="formTitle" class="text-xl font-semibold mb-5 text-gray-800 border-b pb-2 border-gray-200">
+                <i class="fas fa-plus-circle text-indigo-500 mr-2"></i>Añadir Nueva Capacitación
+            </h2>
+            <form id="addTrainingForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                 <input type="hidden" id="editingRowId" name="editingRowId">
+                <div>
+                    <label for="trainingName" class="block text-sm font-medium text-gray-600 mb-1">Nombre Capacitación</label>
+                    <input type="text" id="trainingName" name="trainingName" placeholder="Ej: Taller de Scrum" required>
+                </div>
+                <div>
+                    <label for="trainingDate" class="block text-sm font-medium text-gray-600 mb-1">Fecha Propuesta</label>
+                    <input type="date" id="trainingDate" name="trainingDate" required>
+                </div>
+                <div>
+                    <label for="trainingResponsible" class="block text-sm font-medium text-gray-600 mb-1">Responsable</label>
+                    <input type="text" id="trainingResponsible" name="trainingResponsible" placeholder="Ej: Ana García">
+                </div>
+                <div class="md:col-span-2 lg:col-span-1">
+                    <label for="trainingNotes" class="block text-sm font-medium text-gray-600 mb-1">Notas Adicionales</label>
+                    <input type="text" id="trainingNotes" name="trainingNotes" placeholder="Ej: Sala B, 9am">
+                </div>
+                <div class="md:col-span-2 lg:col-span-4 flex justify-end items-end mt-4 space-x-3">
+                     <button type="button" id="cancelEditBtn" class="btn btn-cancel" style="display: none;">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                     <button type="submit" id="submitBtn" class="btn btn-primary">
+                        <i class="fas fa-plus mr-2"></i>Añadir Capacitación
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="printableArea" class="card fade-in">
+             <h2 class="text-xl font-semibold mb-5 text-gray-800 border-b pb-2 border-gray-200">
+                <i class="fas fa-calendar-alt text-indigo-500 mr-2"></i>Cronograma Actual
+            </h2>
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
+                <table id="scheduleTable" class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th scope="col">Capacitación</th>
+                            <th scope="col">Fecha Propuesta</th>
+                            <th scope="col">Responsable</th>
+                            <th scope="col">Notas</th>
+                            <th scope="col" class="relative px-6 py-3 no-print">
+                                <span class="sr-only">Acciones</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody" class="bg-white divide-y divide-gray-200">
+                        <tr data-id="ejemplo1">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 name-cell">Introducción a Nuevas Herramientas</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 date-cell">2025-05-15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 responsible-cell">Juan Pérez</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 notes-cell">Sesión virtual, 2 horas</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium no-print action-cell">
+                                <button onclick="editRow('ejemplo1')" class="btn-warning-icon" title="Editar">
+                                    <i class="fas fa-pencil-alt fa-lg"></i>
+                                </button>
+                                <button onclick="deleteRow('ejemplo1')" class="btn-danger-icon" title="Eliminar">
+                                    <i class="fas fa-trash-alt fa-lg"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+             <p id="emptyMessage" class="text-center text-gray-500 py-6" style="display: none;">
+                <i class="fas fa-info-circle mr-2"></i>No hay capacitaciones programadas todavía. ¡Añade una usando el formulario de arriba!
+            </p>
+        </div>
+
+        <footer class="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 no-print fade-in">
+            <button id="downloadPdfBtn" class="btn btn-secondary w-full sm:w-auto">
+                <i class="fas fa-file-pdf mr-2"></i>Descargar como PDF
+            </button>
+            <button id="printBtn" class="btn btn-secondary w-full sm:w-auto">
+                 <i class="fas fa-print mr-2"></i>Imprimir Cronograma
+            </button>
+        </footer>
+
+    </div>
+
+    <script>
+        // Get DOM elements
+        const addTrainingForm = document.getElementById('addTrainingForm');
+        const scheduleBody = document.getElementById('scheduleBody');
+        const emptyMessage = document.getElementById('emptyMessage');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+        const printBtn = document.getElementById('printBtn');
+        const printableArea = document.getElementById('printableArea'); // Area to capture for PDF/Print
+        const scheduleTable = document.getElementById('scheduleTable'); // Reference to the table itself
+        const formTitle = document.getElementById('formTitle');
+        const submitBtn = document.getElementById('submitBtn');
+        const cancelEditBtn = document.getElementById('cancelEditBtn');
+        const editingRowIdInput = document.getElementById('editingRowId');
+        const formCard = document.getElementById('formCard'); // Reference to the form's card container
+
+        // Input fields
+        const trainingNameInput = document.getElementById('trainingName');
+        const trainingDateInput = document.getElementById('trainingDate');
+        const trainingResponsibleInput = document.getElementById('trainingResponsible');
+        const trainingNotesInput = document.getElementById('trainingNotes');
+
+
+        // --- Form State Management ---
+
+        /**
+         * Resets the form to its default state (for adding new entries).
+         */
+        function resetFormToAddMode() {
+            addTrainingForm.reset(); // Clear form fields
+            editingRowIdInput.value = ''; // Clear hidden ID
+            formTitle.innerHTML = '<i class="fas fa-plus-circle text-indigo-500 mr-2"></i>Añadir Nueva Capacitación';
+            submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Añadir Capacitación';
+            submitBtn.classList.remove('btn-success'); // Remove green class if present
+            submitBtn.classList.add('btn-primary'); // Ensure primary class is present
+            cancelEditBtn.style.display = 'none'; // Hide cancel button
+            trainingNameInput.focus(); // Focus on the first field
+        }
+
+        /**
+         * Sets the form to edit mode, populating fields with row data.
+         * @param {string} rowId - The ID of the table row being edited.
+         * @param {HTMLTableRowElement} row - The table row element.
+         */
+        function setFormToEditMode(rowId, row) {
+            // Extract data from the row's cells using specific classes
+            const name = row.querySelector('.name-cell')?.textContent || '';
+            const date = row.querySelector('.date-cell')?.textContent || '';
+            const responsible = row.querySelector('.responsible-cell')?.textContent || '';
+            const notes = row.querySelector('.notes-cell')?.textContent || '';
+
+            // Populate form fields
+            editingRowIdInput.value = rowId;
+            trainingNameInput.value = name;
+            trainingDateInput.value = date; // Assumes date is in YYYY-MM-DD format
+            trainingResponsibleInput.value = responsible;
+            trainingNotesInput.value = notes;
+
+            // Update form appearance for editing
+            formTitle.innerHTML = '<i class="fas fa-edit text-yellow-500 mr-2"></i>Editar Capacitación';
+            submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Guardar Cambios';
+            submitBtn.classList.remove('btn-primary');
+            submitBtn.classList.add('btn-success'); // Use green for save
+            cancelEditBtn.style.display = 'inline-flex'; // Show cancel button
+
+            // Scroll to the form for better visibility
+            formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            trainingNameInput.focus(); // Focus on the first field
+        }
+
+
+        // --- Table Row Operations ---
+
+        /**
+         * Checks if the table body is empty and toggles message/table visibility.
+         */
+        function checkTableEmpty() {
+            const hasRows = scheduleBody.rows.length > 0;
+            emptyMessage.style.display = hasRows ? 'none' : 'block';
+            scheduleTable.style.display = hasRows ? 'table' : 'none';
+            scheduleTable.parentElement.style.display = 'block';
+        }
+
+        /**
+         * Adds a new row to the schedule table.
+         * @param {string} name - Training name.
+         * @param {string} date - Training date (YYYY-MM-DD).
+         * @param {string} responsible - Person responsible.
+         * @param {string} notes - Additional notes.
+         */
+        function addRow(name, date, responsible, notes) {
+            const rowId = `training-${Date.now()}`; // Unique ID for the row
+            const newRow = scheduleBody.insertRow();
+            newRow.setAttribute('data-id', rowId);
+            newRow.classList.add('fade-in');
+
+            // Add specific classes to cells for easier data retrieval during edit
+            newRow.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 name-cell">${name || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 date-cell">${date || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 responsible-cell">${responsible || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 notes-cell">${notes || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium no-print action-cell">
+                    <button onclick="editRow('${rowId}')" class="btn-warning-icon" title="Editar">
+                        <i class="fas fa-pencil-alt fa-lg"></i>
+                    </button>
+                    <button onclick="deleteRow('${rowId}')" class="btn-danger-icon" title="Eliminar">
+                        <i class="fas fa-trash-alt fa-lg"></i>
+                    </button>
+                </td>
+            `;
+            checkTableEmpty();
+        }
+
+        /**
+         * Updates an existing row in the schedule table.
+         * @param {string} rowId - The ID of the row to update.
+         * @param {string} name - Updated training name.
+         * @param {string} date - Updated training date.
+         * @param {string} responsible - Updated responsible person.
+         * @param {string} notes - Updated notes.
+         */
+        function updateRow(rowId, name, date, responsible, notes) {
+            const row = scheduleBody.querySelector(`tr[data-id="${rowId}"]`);
+            if (row) {
+                // Update cell content using specific classes
+                row.querySelector('.name-cell').textContent = name || '-';
+                row.querySelector('.date-cell').textContent = date || '-';
+                row.querySelector('.responsible-cell').textContent = responsible || '-';
+                row.querySelector('.notes-cell').textContent = notes || '-';
+
+                // Add a subtle highlight effect
+                row.classList.add('bg-yellow-100', 'transition', 'duration-500');
+                setTimeout(() => {
+                    row.classList.remove('bg-yellow-100');
+                }, 1000); // Remove highlight after 1 second
+            } else {
+                console.error("Row with ID not found for update:", rowId);
+            }
+        }
+
+        /**
+         * Initiates the editing process for a specific row.
+         * @param {string} rowId - The ID of the row to edit.
+         */
+         window.editRow = function(rowId) { // Make globally accessible
+             const row = scheduleBody.querySelector(`tr[data-id="${rowId}"]`);
+             if (row) {
+                 setFormToEditMode(rowId, row);
+             } else {
+                 console.error("Row with ID not found for edit:", rowId);
+                 alert("Error: No se pudo encontrar la fila para editar.");
+             }
+         }
+
+        /**
+         * Deletes a specific row from the table after confirmation.
+         * @param {string} rowId - The ID of the row to delete.
+         */
+        window.deleteRow = function(rowId) { // Make globally accessible
+             const row = scheduleBody.querySelector(`tr[data-id="${rowId}"]`);
+             if (row) {
+                 if (confirm('¿Estás seguro de que quieres eliminar esta capacitación del cronograma?')) {
+                     row.classList.add('animate-pulse', 'opacity-0');
+                     setTimeout(() => {
+                         row.remove();
+                         checkTableEmpty();
+                         // If the deleted row was being edited, reset the form
+                         if (editingRowIdInput.value === rowId) {
+                             resetFormToAddMode();
+                         }
+                     }, 300);
+                 }
+             }
+        }
+
+        // --- Event Listeners ---
+
+        // Form submission handler (handles both Add and Save Changes)
+        addTrainingForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = trainingNameInput.value.trim();
+            const date = trainingDateInput.value;
+            const responsible = trainingResponsibleInput.value.trim();
+            const notes = trainingNotesInput.value.trim();
+            const currentEditingId = editingRowIdInput.value;
+
+            // Basic validation
+            if (!name || !date) {
+                 alert('Por favor, completa al menos los campos "Nombre Capacitación" y "Fecha Propuesta".');
+                 if (!name) trainingNameInput.focus();
+                 else if (!date) trainingDateInput.focus();
+                 return; // Stop execution if validation fails
+            }
+
+            if (currentEditingId) {
+                // --- Edit Mode: Update existing row ---
+                updateRow(currentEditingId, name, date, responsible, notes);
+            } else {
+                // --- Add Mode: Add new row ---
+                addRow(name, date, responsible, notes);
+            }
+
+            // Reset form back to "Add" mode after successful operation
+            resetFormToAddMode();
+        });
+
+        // Cancel Edit button listener
+        cancelEditBtn.addEventListener('click', () => {
+            resetFormToAddMode(); // Simply reset the form
+        });
+
+
+        // Download PDF button listener
+        downloadPdfBtn.addEventListener('click', () => {
+            console.log("Attempting to download PDF...");
+
+            // Temporarily hide action buttons and other non-printable elements
+            const elementsToHide = printableArea.querySelectorAll('.no-print');
+            elementsToHide.forEach(el => el.style.visibility = 'hidden');
+
+            // Add a title within the printable area for the PDF
+            const pdfTitle = document.createElement('h2');
+            pdfTitle.textContent = 'Cronograma de Capacitaciones';
+            // Use Tailwind classes for styling the PDF title (might need adjustment)
+            pdfTitle.className = 'text-xl font-semibold mb-4 text-center';
+            printableArea.insertBefore(pdfTitle, printableArea.firstChild);
+
+
+            html2canvas(printableArea, {
+                scale: 2,
+                useCORS: true,
+                logging: true, // Enable logging for debugging
+                onclone: (clonedDoc) => {
+                    // Ensure table styles are preserved in the clone if needed
+                    const tableInClone = clonedDoc.getElementById('scheduleTable');
+                    if(tableInClone) {
+                        // Example: Force zebra striping if it doesn't render correctly
+                         const rows = tableInClone.querySelectorAll('tbody tr');
+                         rows.forEach((row, index) => {
+                            if (index % 2 !== 0) { // Odd rows (0-based index)
+                                row.style.backgroundColor = '#f9fafb'; // Tailwind gray-50
+                            } else {
+                                row.style.backgroundColor = '#ffffff'; // White
+                            }
+                         });
+                         // Ensure header background prints
+                         const ths = tableInClone.querySelectorAll('thead th');
+                         ths.forEach(th => {
+                            th.style.backgroundColor = '#e5e7eb'; // Tailwind gray-200
+                            th.style.color = '#374151'; // Tailwind gray-700
+                         });
+                    }
+                }
+             }).then(canvas => {
+                console.log("Canvas created successfully.");
+                const imgData = canvas.toDataURL('image/png');
+                const { jsPDF } = window.jspdf;
+
+                const pdfWidth = 210;
+                const pageHeight = 297;
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const ratio = imgWidth / imgHeight;
+                let pdfImgWidth = pdfWidth - 20;
+                let pdfImgHeight = pdfImgWidth / ratio;
+                let heightLeft = pdfImgHeight;
+                let position = 10;
+
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                pdf.addImage(imgData, 'PNG', 10, position, pdfImgWidth, pdfImgHeight);
+                heightLeft -= (pageHeight - 20);
+
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfImgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, pdfImgWidth, pdfImgHeight);
+                    heightLeft -= (pageHeight - 20);
+                }
+
+                pdf.save('cronograma_capacitaciones.pdf');
+                console.log("PDF saved.");
+
+                // Restore visibility and remove temporary title
+                elementsToHide.forEach(el => el.style.visibility = 'visible');
+                 printableArea.removeChild(pdfTitle);
+
+
+            }).catch(error => {
+                 console.error("Error generating PDF with html2canvas:", error);
+                 alert("Hubo un error al generar el PDF. Revisa la consola para más detalles.");
+                 elementsToHide.forEach(el => el.style.visibility = 'visible');
+                 if (pdfTitle.parentNode === printableArea) {
+                     printableArea.removeChild(pdfTitle);
+                 }
+            });
+        });
+
+
+        // Print button listener
+        printBtn.addEventListener('click', () => {
+            window.print();
+        });
+
+        // --- Initial Setup ---
+        checkTableEmpty(); // Initial check when the page loads
+        resetFormToAddMode(); // Ensure form starts in add mode
+
+    </script>
+
+</body>
+</html>
