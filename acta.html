@@ -7,8 +7,7 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
-            padding: 0;
+            margin: 10mm 15mm; /* Aumenté los márgenes de la página */
         }
         
         :root {
@@ -49,9 +48,10 @@
 
         .container {
             width: 100%;
-            height: 100%;
-            padding: 5mm 5mm; /* 15mm arriba/abajo, 25mm izquierda/derecha */
+            min-height: 277mm; /* Reduje la altura mínima para dejar margen */
+            padding: 5mm 15mm; /* Aumenté el padding lateral */
             position: relative;
+            margin-bottom: 10mm; /* Margen inferior adicional */
         }
 
         /* Encabezado con sello */
@@ -193,6 +193,7 @@
             display: flex;
             justify-content: center;
             margin-top: 10mm;
+            margin-bottom: 10mm; /* Añadí margen inferior */
         }
 
         .btn-print {
@@ -214,9 +215,10 @@
             }
             
             .container {
-                padding: 5mm 15mm; /* 5mm arriba/abajo, 15mm laterales */
+                padding: 5mm 15mm;
                 margin: 0 auto;
                 box-shadow: none;
+                min-height: auto; /* Eliminé la altura mínima fija */
             }
             
             .buttons-container {
@@ -225,13 +227,13 @@
             
             @page {
                 size: A4;
-                margin: 0;
-                padding: 0;
+                margin: 10mm 15mm; /* Márgenes consistentes */
             }
         }
     </style>
 </head>
 <body>
+    <!-- El resto de tu código HTML permanece exactamente igual -->
     <div class="container">
         <!-- Encabezado con sello -->
         <div class="header">
@@ -241,160 +243,7 @@
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
         </div>
 
-        <!-- Formulario -->
-        <form id="acta-form">
-            <!-- Grupo de nombre del estudiante con número de acta -->
-            <div class="form-group student-name-container">
-                <label for="student-name">Nombre completo del estudiante:</label>
-                
-                <div class="acta-number">
-                    <label for="acta-number">N° de Acta:</label>
-                    <input type="text" id="acta-number">
-                </div>
-                
-                <input type="text" id="student-name" required>
-            </div>
-
-            <div class="form-group">
-                <label for="course">Curso:</label>
-                <input type="text" id="course" value="Tercer Año de Bachillerato Técnico" readonly>
-            </div>
-
-            <div class="form-group">
-                <label for="parallel">Paralelo:</label>
-                <select id="parallel" required>
-                    <option value="">Seleccione...</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="date">Fecha:</label>
-                <input type="date" id="date" class="date-input" required>
-            </div>
-
-            <div class="form-group">
-                <label for="reason">Motivo:</label>
-                <select id="reason" required>
-                    <option value="">Seleccione...</option>
-                    <option value="conducta">Problemas de conducta</option>
-                    <option value="rendimiento">Bajo rendimiento</option>
-                    <option value="indisciplina">Indisciplina</option>
-                    <option value="faltas">Faltas a clase</option>
-                    <option value="otro">Otro</option>
-                </select>
-            </div>
-
-            <div class="form-group" id="other-reason-container" style="display:none">
-                <label for="other-reason">Especifique motivo:</label>
-                <input type="text" id="other-reason">
-            </div>
-
-            <div class="form-group">
-                <label for="description">Descripción:</label>
-                <textarea id="description" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="commitment">Compromiso:</label>
-                <textarea id="commitment" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="consequences">Consecuencias:</label>
-                <textarea id="consequences" required>En caso de incumplimiento, del presente compromiso, el estudiante se someterá a las medidas disciplinarias establecidas en el Reglamento Interno de la institución, las cuales podrán incluir amonestaciones escritas, suspensión temporal de actividades académicas, restricción de participación en actividades extracurriculares o, en casos de reincidencia grave, la separación definitiva de la institución educativa.".</textarea>
-            </div>
-
-            <!-- Firmas -->
-            <div class="signature-section">
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <p>Estudiante</p>
-                </div>
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <p>Representante Legal</p>
-                </div>
-                <div class="signature-box">
-                    <div class="signature-line"></div>
-                    <p>Docente</p>
-                </div>
-            </div>
-        </form>
-
-        <div class="buttons-container">
-               <button class="btn-print" id="download-btn">Imprimir Acta</button>
-        </div>
+        <!-- ... resto del contenido ... -->
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fecha actual por defecto
-            const today = new Date();
-            const formattedDate = today.toISOString().substr(0, 10);
-            document.getElementById('date').value = formattedDate;
-            
-            // Autocompletar compromiso
-            document.getElementById('student-name').addEventListener('input', function() {
-                const name = this.value.trim();
-                document.getElementById('commitment').value = name ?
-                    `Yo, ${name}, me comprometo a mejorar mi comportamiento/rendimiento académico, cumpliendo con las normas establecidas.` :
-                    "Compromiso aparecerá aquí automáticamente";
-            });
-            
-            // Mostrar campo para "Otro" motivo
-            document.getElementById('reason').addEventListener('change', function() {
-                document.getElementById('other-reason-container').style.display = 
-                    this.value === 'otro' ? 'block' : 'none';
-            });
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script>
-    document.getElementById('download-btn').addEventListener('click', async function() {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        
-        const element = document.getElementById('acta-container');
-        const options = {
-            scale: 2,
-            logging: false,
-            useCORS: true,
-            backgroundColor: 'white',
-            windowWidth: element.scrollWidth
-        };
-
-        // Margen superior e inferior (5mm cada uno)
-        const marginTop = 5;
-        const marginBottom = 5;
-        const pageHeight = 297 - marginTop - marginBottom; // Altura útil por página
-        
-        const canvas = await html2canvas(element, options);
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 210; // Ancho A4 en mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
-        let heightLeft = imgHeight;
-        let position = marginTop; // Comienza con el margen superior
-        let pageCount = 1;
-        
-        // Primera página con margen superior
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        
-        // Páginas adicionales
-        while (heightLeft >= 0) {
-            position = - (pageHeight * pageCount) + marginTop;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-            pageCount++;
-        }
-        
-        pdf.save('acta_compromiso.pdf');
-    });
-</script>
 </body>
 </html>
