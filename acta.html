@@ -7,7 +7,7 @@
     <style>
         @page {
             size: A4;
-            margin: 10mm 15mm; /* Aumenté los márgenes de la página */
+            margin: 10mm 15mm;
         }
         
         :root {
@@ -36,25 +36,22 @@
             line-height: 2;
         }
 
-        /* Para los párrafos (como el texto del docente) */
         .teacher-info {
             line-height: 1.6;
         }
 
-        /* Para los labels */
         label {
             line-height: 1.5;
         }
 
         .container {
             width: 100%;
-            min-height: 277mm; /* Reduje la altura mínima para dejar margen */
-            padding: 5mm 15mm; /* Aumenté el padding lateral */
+            min-height: 277mm;
+            padding: 5mm 15mm;
             position: relative;
-            margin-bottom: 10mm; /* Margen inferior adicional */
+            margin-bottom: 10mm;
         }
 
-        /* Encabezado con sello */
         .header {
             text-align: center;
             margin-bottom: 10mm;
@@ -103,7 +100,6 @@
             background: linear-gradient(90deg, var(--amarillo), var(--azul));
         }
 
-        /* Formulario */
         .form-group {
             margin-bottom: 4mm;
             position: relative;
@@ -125,17 +121,16 @@
             font-size: 14px;
         }
 
-        /* Estilos específicos para el nombre del estudiante y número de acta */
         .student-name-container {
             position: relative;
-            padding-right: 70mm; /* Espacio para el número de acta */
+            padding-right: 70mm;
         }
 
         .acta-number {
             position: absolute;
             top: 0;
             right: 0;
-            width: 65mm; /* Ancho del contenedor del número de acta */
+            width: 65mm;
             display: flex;
             align-items: center;
             gap: 2mm;
@@ -154,7 +149,7 @@
         textarea {
             min-height: 20mm;
             resize: vertical;
-            line-height: 1.6; /* Espacio entre líneas */
+            line-height: 1.6;
             padding: 3mm;
             font-size: 14px;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -168,7 +163,6 @@
             max-width: 40mm;
         }
 
-        /* Firmas */
         .signature-section {
             display: flex;
             justify-content: space-between;
@@ -188,12 +182,11 @@
             margin: 15mm 0 2mm;
         }
 
-        /* Botón */
         .buttons-container {
             display: flex;
             justify-content: center;
             margin-top: 10mm;
-            margin-bottom: 10mm; /* Añadí margen inferior */
+            margin-bottom: 10mm;
         }
 
         .btn-print {
@@ -218,7 +211,7 @@
                 padding: 5mm 15mm;
                 margin: 0 auto;
                 box-shadow: none;
-                min-height: auto; /* Eliminé la altura mínima fija */
+                min-height: auto;
             }
             
             .buttons-container {
@@ -227,15 +220,13 @@
             
             @page {
                 size: A4;
-                margin: 10mm 15mm; /* Márgenes consistentes */
+                margin: 10mm 15mm;
             }
         }
     </style>
 </head>
 <body>
-    <!-- El resto de tu código HTML permanece exactamente igual -->
     <div class="container">
-        <!-- Encabezado con sello -->
         <div class="header">
             <img src="sello.jpg" alt="Sello Oficial" class="school-stamp" onerror="this.style.display='none'">
             <h1 class="school-name">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMINGUEZ"</h1>
@@ -243,7 +234,108 @@
             <h2 class="document-title">Acta de Compromiso Estudiantil</h2>
         </div>
 
-        <!-- ... resto del contenido ... -->
+        <form id="acta-form">
+            <div class="form-group student-name-container">
+                <label for="student-name">Nombre completo del estudiante:</label>
+                
+                <div class="acta-number">
+                    <label for="acta-number">N° de Acta:</label>
+                    <input type="text" id="acta-number">
+                </div>
+                
+                <input type="text" id="student-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="course">Curso:</label>
+                <input type="text" id="course" value="Tercer Año de Bachillerato Técnico" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="parallel">Paralelo:</label>
+                <select id="parallel" required>
+                    <option value="">Seleccione...</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Fecha:</label>
+                <input type="date" id="date" class="date-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reason">Motivo:</label>
+                <select id="reason" required>
+                    <option value="">Seleccione...</option>
+                    <option value="conducta">Problemas de conducta</option>
+                    <option value="rendimiento">Bajo rendimiento</option>
+                    <option value="indisciplina">Indisciplina</option>
+                    <option value="faltas">Faltas a clase</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="other-reason-container" style="display:none">
+                <label for="other-reason">Especifique motivo:</label>
+                <input type="text" id="other-reason">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción:</label>
+                <textarea id="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="commitment">Compromiso:</label>
+                <textarea id="commitment" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="consequences">Consecuencias:</label>
+                <textarea id="consequences" required>En caso de incumplimiento, del presente compromiso, el estudiante se someterá a las medidas disciplinarias establecidas en el Reglamento Interno de la institución, las cuales podrán incluir amonestaciones escritas, suspensión temporal de actividades académicas, restricción de participación en actividades extracurriculares o, en casos de reincidencia grave, la separación definitiva de la institución educativa.".</textarea>
+            </div>
+
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p>Estudiante</p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p>Representante Legal</p>
+                </div>
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <p>Docente</p>
+                </div>
+            </div>
+        </form>
+
+        <div class="buttons-container">
+            <button class="btn-print" onclick="window.print()">Imprimir Acta</button>
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById('date').value = formattedDate;
+            
+            document.getElementById('student-name').addEventListener('input', function() {
+                const name = this.value.trim();
+                document.getElementById('commitment').value = name ?
+                    `Yo, ${name}, me comprometo a mejorar mi comportamiento/rendimiento académico, cumpliendo con las normas establecidas.` :
+                    "Compromiso aparecerá aquí automáticamente";
+            });
+            
+            document.getElementById('reason').addEventListener('change', function() {
+                document.getElementById('other-reason-container').style.display = 
+                    this.value === 'otro' ? 'block' : 'none';
+            });
+        });
+    </script>
 </body>
 </html>
