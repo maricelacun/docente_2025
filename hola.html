@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horario de Clases - Unidad Educativa Dr. Camilo Gallegos Domínguez</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilo para el cuerpo con degradado radial */
+        body {
+            font-family: "Graduate", "Inter", sans-serif;
+            background: radial-gradient(circle, rgba(255, 255, 0, 0.6), rgba(0, 0, 255, 0.6)); /* Amarillo a Azul */
+            min-height: 100vh; /* Asegura que el degradado cubra toda la altura */
+            font-family: "Graduate", "Inter", sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Estilos para la impresión */
+        @media print {
+            body {
+                
+                -webkit-print-color-adjust: exact; /* Intenta mantener colores en Chrome/Safari */
+                print-color-adjust: exact; /* Intenta mantener colores en Firefox */
+                justify-content: center;
+                align-items: center;
+            }
+            /* Oculta botones y elementos no deseados al imprimir */
+            .no-print {
+                display: none !important;
+            }
+            /* Ajusta el contenedor para impresión */
+            #schedule-container {
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+                width: 100%; /* Asegura que ocupe el ancho A4 */
+            }
+            /* Asegura que la tabla use el ancho disponible */
+            table {
+                width: 100% !important;
+                table-layout: fixed; /* Ayuda a controlar el ancho de las columnas */
+            }
+            th, td {
+                border: 1px solid #ccc !important; /* Asegura bordes visibles */
+                font-size: 10pt; /* Tamaño de fuente adecuado para A4 */
+                padding: 4px; /* Reduce el padding para impresión */
+                word-wrap: break-word; /* Permite que el texto largo se ajuste */
+            }
+            /* Estilo específico para celdas editables al imprimir */
+            td[contenteditable="true"] {
+                min-height: 30px; /* Altura mínima para impresión */
+            }
+            /* Oculta la imagen TIC en impresión si es necesario */
+            .print-hide-image {
+                 display: none;
+            }
+        }
+        /* Estilo para celdas editables */
+        td[contenteditable="true"] {
+            cursor: text;
+            min-height: 50px; /* Altura mínima para facilitar click */
+            padding: 8px;
+            background-color: rgba(255, 255, 255, 0.1); /* Fondo sutil para indicar edición */
+            transition: background-color 0.3s ease;
+        }
+        td[contenteditable="true"]:focus {
+            background-color: rgba(255, 255, 255, 0.3); /* Resalta al enfocar */
+            outline: 1px solid rgba(0, 0, 255, 0.5);
+        }
+        /* Estilo para la tabla */
+        table {
+            border-collapse: collapse; /* Colapsa los bordes */
+            width: 100%;
+            table-layout: fixed; /* Distribución uniforme de columnas */
+        }
+        th, td {
+            border: 1px solid rgba(0, 0, 0, 0.2); /* Bordes sutiles */
+            text-align: center;
+            padding: 10px; /* Espaciado interno */
+            vertical-align: middle; /* Alineación vertical */
+        }
+        th {
+            background-color: rgba(0, 0, 139, 0.1); /* Fondo azul claro para encabezados */
+            font-weight: 600;
+        }
+        /* Placeholder para el sello */
+        .seal-placeholder {
+            width: 80px;
+            height: 80px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #555;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div id="schedule-container" class="max-w-6xl mx-auto bg-white bg-opacity-80 backdrop-blur-sm p-6 md:p-10 rounded-lg shadow-xl">
+
+        <header class="flex flex-col md:flex-row items-center justify-between mb-6 border-b pb-4 border-gray-300">
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="Sello.jpg" alt="Sello del Colegio" class="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-blue-200" onerror="this.onerror=null; this.src='https://placehold.co/80x80/e2e8f0/64748b?text=Sello';">
+                 <div class="absolute left-1/2 transform -translate-x-1/2 text-center">
+                    <h1 class="text-lg md:text-2xl font-bold text-blue-800 font-graduate">UNIDAD EDUCATIVA</h1>
+                    <h2 class="text-4xl md:text-3xl font-bold text-blue-900">DR. CAMILO GALLEGOS DOMINGUEZ</h2>
+                    <p class="text-base md:text-xl text-blue-700 mt-1">Tutor/a: Msc. Maricela Cun Rueda</p>
+                </div>
+            </div>
+             <img src="tic.jpg" alt="Imagen representativa de TIC en la Educación" class="w-32 h-auto md:w-40 rounded-md object-cover shadow-md print-hide-image" onerror="this.onerror=null; this.src='https://placehold.co/150x100/dbeafe/1e3a8a?text=TIC+Error';">
+        </header>
+
+        <h3 class="text-2xl font-semibold text-center text-gray-800 mb-6">Horario de Clases</h3>
+
+        <div class="overflow-x-auto mb-6">
+            <table class="min-w-full bg-white bg-opacity-90 rounded-md shadow">
+                <thead class="bg-blue-100">
+                    <tr>
+                        <th class="w-1/12 md:w-1/12 lg:w-[10%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Hora</th>
+                        <th class="w-1/5 md:w-1/5 lg:w-[18%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Lunes</th>
+                        <th class="w-1/5 md:w-1/5 lg:w-[18%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Martes</th>
+                        <th class="w-1/5 md:w-1/5 lg:w-[18%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Miércoles</th>
+                        <th class="w-1/5 md:w-1/5 lg:w-[18%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Jueves</th>
+                        <th class="w-1/5 md:w-1/5 lg:w-[18%] py-3 px-2 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Viernes</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm">
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 1 <br><span class="font-normal text-xs">(ej: 12:40-13:20)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 2 <br><span class="font-normal text-xs">(ej: 13:20-14:00)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 3 <br><span class="font-normal text-xs">(ej: 14:00-14:40)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                     <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 4 <br><span class="font-normal text-xs">(ej: 14:40-15:20)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                    <tr class="bg-yellow-100">
+                        <th scope="row" class="font-semibold text-yellow-800 py-3 px-2">RECESO <br><span class="font-normal text-xs">(ej: 15:20-15:50)</span></th>
+                        <td colspan="5" class="text-center font-semibold text-yellow-800 py-3 px-2">Tiempo de descanso</td>
+                    </tr>
+                     <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 5 <br><span class="font-normal text-xs">(ej: 15:50-16:30)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 6 <br><span class="font-normal text-xs">(ej: 16:30-17:10)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                     <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 7 <br><span class="font-normal text-xs">(ej: 17:10-17:50)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-3 px-2">Hora 8 <br><span class="font-normal text-xs">(ej: 17:50-18:30)</span></th>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                        <td contenteditable="true" class="py-3 px-2"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mt-6 no-print">
+            <button id="download-pdf" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                <span>Descargar PDF</span>
+            </button>
+            <button id="print-schedule" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+                    <path d="M7 11h6v1H7v-1z"/>
+                </svg>
+                <span>Imprimir Horario</span>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Funcionalidad del Botón Descargar PDF ---
+        const downloadPdfButton = document.getElementById('download-pdf');
+        const scheduleContainer = document.getElementById('schedule-container');
+
+        downloadPdfButton.addEventListener('click', () => {
+            // Opciones para html2pdf
+            const opt = {
+              margin:       [5, 5, 5, 5], // Márgenes [arriba, izquierda, abajo, derecha] en mm
+              filename:     'horario_clases_camilo_gallegos.pdf',
+              image:        { type: 'jpeg', quality: 0.98 }, // Calidad de imagen
+              html2canvas:  { scale: 2, useCORS: true, logging: true }, // Escala para mejor resolución, permite imágenes externas
+              jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }, // Formato A4 horizontal
+              pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Evita cortes de página dentro de elementos
+            };
+
+            // Clonar el contenedor para evitar modificar el original visualmente antes de la captura
+            const elementToPrint = scheduleContainer.cloneNode(true);
+
+            // Opcional: Remover elementos no deseados del clon antes de generar el PDF
+            const elementsToRemove = elementToPrint.querySelectorAll('.no-print');
+            elementsToRemove.forEach(el => el.remove());
+
+            // Añadir una clase temporal para estilos específicos de PDF si es necesario
+            elementToPrint.classList.add('pdf-export');
+
+            // Generar el PDF desde el elemento clonado
+            html2pdf().from(elementToPrint).set(opt).save().then(() => {
+                 // Limpieza opcional después de generar el PDF
+                 elementToPrint.classList.remove('pdf-export');
+                 console.log('PDF generado exitosamente.');
+            }).catch(err => {
+                console.error('Error al generar el PDF:', err);
+                // Puedes mostrar un mensaje de error al usuario aquí
+                alert('Hubo un error al generar el PDF. Por favor, inténtalo de nuevo.');
+            });
+        });
+
+        // --- Funcionalidad del Botón Imprimir ---
+        const printButton = document.getElementById('print-schedule');
+        printButton.addEventListener('click', () => {
+            window.print(); // Abre el diálogo de impresión del navegador
+        });
+
+        // --- Guardar contenido editable en localStorage (Opcional) ---
+        // Esto permite que el contenido persista si el usuario recarga la página
+        const editableCells = document.querySelectorAll('td[contenteditable="true"]');
+
+        // Cargar datos guardados al iniciar
+        editableCells.forEach((cell, index) => {
+            const savedContent = localStorage.getItem(`schedule_cell_${index}`);
+            if (savedContent) {
+                cell.innerHTML = savedContent;
+            }
+            // Guardar al perder el foco (cuando se deja de editar)
+            cell.addEventListener('blur', () => {
+                localStorage.setItem(`schedule_cell_${index}`, cell.innerHTML);
+            });
+        });
+
+    </script>
+
+</body>
+</html>
