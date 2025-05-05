@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nómina Tercero Informática "B" - U.E. Dr. Camilo Gallegos Domínguez</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* Estilo para asegurar que el degradado cubra toda la pantalla */
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif; /* Fuente Inter */
+        }
+        /* Estilo para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px; /* Bordes redondeados para la tabla */
+            overflow: hidden; /* Para que los bordes redondeados se apliquen a las celdas */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px; /* Aumentar padding */
+            text-align: left;
+        }
+        th {
+            background-color: #4a90e2; /* Azul más vibrante para encabezados */
+            color: white;
+            font-weight: bold; /* Texto en negrita */
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa; /* Fondo ligeramente gris para filas pares */
+        }
+        tr:hover {
+            background-color: #e9ecef; /* Efecto hover */
+        }
+        /* Estilos para botones */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-pdf {
+            background-color: #e74c3c; /* Rojo */
+            color: white;
+        }
+        .btn-pdf:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px); /* Efecto hover */
+        }
+        .btn-print {
+            background-color: #3498db; /* Azul */
+            color: white;
+        }
+        .btn-print:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px); /* Efecto hover */
+        }
+        /* Clases personalizadas para degradado radial - ACTUALIZADO */
+        .bg-radial-gradient-blue-yellow {
+             /* Degradado radial de Azul a Amarillo */
+             background: radial-gradient(ellipse at center, #60a5fa, #fef08a);
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-radial-gradient-blue-yellow text-gray-800 flex flex-col items-center p-4 md:p-8">
+
+    <div class="bg-white bg-opacity-80 p-6 md:p-10 rounded-lg shadow-xl w-full max-w-5xl backdrop-blur-sm">
+
+        <header class="text-center mb-8 relative">
+            <img src="https://placehold.co/100x100/cccccc/333333?text=Sello"
+                 alt="Sello Unidad Educativa Dr. Camilo Gallegos Domínguez"
+                 class="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-full shadow-md"
+                 onerror="this.onerror=null; this.src='https://placehold.co/100x100/cccccc/333333?text=Error+Sello';"
+                 >
+            <h1 class="text-2xl md:text-3xl font-bold text-blue-700">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
+            <p class="text-lg md:text-xl font-semibold text-blue-600 mt-2">Tercero Bachillerato Técnico - Informática "B"</p>
+            <p class="text-md md:text-lg text-gray-700 mt-1">Tutora: Mgs. Maricela Cun Rueda</p>
+            <p class="text-md md:text-lg text-gray-600">Año Lectivo: 2025-2026</p>
+             <p class="mt-4 text-lg italic text-indigo-600">"La educación es el arma más poderosa que puedes usar para cambiar el mundo." - Nelson Mandela</p>
+        </header>
+
+        <div class="overflow-x-auto">
+            <table id="tablaEstudiantes" class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">No</th>
+                        <th class="px-4 py-2">CÉDULA</th>
+                        <th class="px-4 py-2">NOMBRES COMPLETOS</th>
+                        <th class="px-4 py-2">CUENTA ESTUDIANTE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>0751030768</td><td>AGILA GUTIERREZ BRITTANY PAOLA</td><td>aggubrpa2768194@estudiantes2.edu.ec</td></tr>
+                    <tr><td>2</td><td>0706833860</td><td>CAJAMARCA PEÑAFIEL DARWIN ALEXANDER</td><td>capedaal1645136@estudiantes2.edu.ec</td></tr>
+                    <tr><td>3</td><td>0706078102</td><td>CAMACHO RODRIGUEZ LUZ MARIA</td><td>caroluma2754108@estudiantes2.edu.ec</td></tr>
+                    <tr><td>4</td><td>0706864352</td><td>CASTILLO SARITAMA LUIS ALEXANDER</td><td>casalual1720789@estudiantes2.edu.ec</td></tr>
+                    <tr><td>5</td><td>2101073233</td><td>CRUZ VELASCO STEFANIE YULIANA</td><td>crvestyu146723@estudiantes2.edu.ec</td></tr>
+                    <tr><td>6</td><td>0706824703</td><td>CUENCA CALVA YUSELLY DAYANNA</td><td>cucayuda3884104@estudiantes2.edu.ec</td></tr>
+                    <tr><td>7</td><td>0930915236</td><td>ESPINOZA AREVALO ERICKA DAYANNA</td><td>esarerda14200578@estudiantes2.edu.ec</td></tr>
+                    <tr><td>8</td><td>0750144529</td><td>GUARNIZO SARANGO XIOMARA PAULETTE</td><td>gusaxipa2757739@estudiantes2.edu.ec</td></tr>
+                    <tr><td>9</td><td>0956564660</td><td>GUTIERREZ RAMON AXEL XAVIER</td><td>quraaxxa4393457@estudiantes2.edu.ec</td></tr>
+                    <tr><td>10</td><td>0750696049</td><td>JARAMILLO MORALES XIMENA KAROLINA</td><td>jamoxika1779104@estudiantes2.edu.ec</td></tr>
+                    <tr><td>11</td><td>0706960747</td><td>JUMBO SARANGO JEFFERSON VICENTE</td><td>jusajevi1969273@estudiantes2.edu.ec</td></tr>
+                    <tr><td>12</td><td>0706963691</td><td>LIANG FAREZ BAO YU</td><td>lifabayu4790870@estudiantes2.edu.ec</td></tr>
+                    <tr><td>13</td><td>0706807732</td><td>MANZANO RAMIREZ GABRIELA ALEXANDRA</td><td>maragaal2696402@estudiantes2.edu.ec</td></tr>
+                    <tr><td>14</td><td>0750058927</td><td>MASAPANTA FLORES VICTOR MANUEL</td><td>mativima1697099@estudiantes2.edu.ec</td></tr>
+                    <tr><td>15</td><td>0706267382</td><td>MAZA CHUYA EMILY GABRIELA</td><td>machemga13143921@estudiantes2.edu.ec</td></tr>
+                    <tr><td>16</td><td>1105444507</td><td>MEDINA SANCHEZ CRISTOPHER ADRIAN</td><td>mesacrad1784460@estudiantes2.edu.ec</td></tr>
+                    <tr><td>17</td><td>0750227084</td><td>MENDOZA MANZANO KEVIN MANUEL</td><td>memakema2673416@estudiantes2.edu.ec</td></tr>
+                    <tr><td>18</td><td>1752533370</td><td>MOROCHO VILLALTA ESTEFANY MARIBEL</td><td>moviesma11211481@estudiantes2.edu.ec</td></tr>
+                    <tr><td>19</td><td>1752533701</td><td>MOROCHO VILLALTA JOSE ALEXANDER</td><td>movijoal11211538@estudiantes2.edu.ec</td></tr>
+                    <tr><td>20</td><td>0750375289</td><td>NAZARENO NAZARENO ALEXANDRA NOEMI</td><td>nanaalno3895337@estudiantes2.edu.ec</td></tr>
+                    <tr><td>21</td><td>1251384978</td><td>ORDOÑEZ BELTRAN ANGELA EUNICE</td><td>orbeaneu9150365@estudiantes2.edu.ec</td></tr>
+                    <tr><td>22</td><td>0750554305</td><td>ORELLANA NOBLECILLA JEINER JAIR</td><td>ornojeja1720604@estudiantes2.edu.ec</td></tr>
+                    <tr><td>23</td><td>0750831026</td><td>REYES BEDOYA MARIA ISABEL</td><td>rebemais12550177@estudiantes2.edu.ec</td></tr>
+                    <tr><td>24</td><td>0706622370</td><td>RODRIGUEZ ROMERO ELVIS DANIEL</td><td>roroelda1828100@estudiantes2.edu.ec</td></tr>
+                    <tr><td>25</td><td>0750046922</td><td>ROMERO JIMENEZ GRACIELA MERCEDES</td><td>rojigrme1643197@estudiantes2.edu.ec</td></tr>
+                    <tr><td>26</td><td>0750699886</td><td>SANCHEZ ORDOÑEZ FELIX ADOLFO</td><td>saorfead1721668@estudiantes2.edu.ec</td></tr>
+                    <tr><td>27</td><td>0750536757</td><td>SARANGO NARVAEZ DILAN JOSUE</td><td>sanadijo2495134@estudiantes2.edu.ec</td></tr>
+                    <tr><td>28</td><td>0750924565</td><td>SOTO PUCHA ESNEIDER ANDRES</td><td>soan14937875@estudiantes2.edu.ec</td></tr>
+                    <tr><td>29</td><td>0750844888</td><td>VINCES BRAVO ARIEL ENRIQUE</td><td>vibraren1896293@estudiantes2.edu.ec</td></tr>
+                    <tr><td>30</td><td>0750585408</td><td>VIVANCO GRANDA ANTHONY JAIR</td><td>vigranja2519472@estudiantes2.edu.ec</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-8">
+            <button id="btnDescargarPdf" class="btn btn-pdf">
+                Descargar PDF
+            </button>
+            <button id="btnImprimir" class="btn btn-print">
+                Imprimir Nómina
+            </button>
+        </div>
+
+        <footer class="text-center mt-8 text-sm text-gray-600">
+            <p>Transformar la educación, misión de TODOS</p>
+            <p>&copy; <span id="year"></span> Unidad Educativa "Dr. Camilo Gallegos Domínguez". Todos los derechos reservados.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Establecer el año actual en el pie de página
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Funcionalidad del botón Imprimir
+        const btnImprimir = document.getElementById('btnImprimir');
+        btnImprimir.addEventListener('click', () => {
+            window.print(); // Abre el diálogo de impresión del navegador
+        });
+
+        // Funcionalidad del botón Descargar PDF
+        const btnDescargarPdf = document.getElementById('btnDescargarPdf');
+        btnDescargarPdf.addEventListener('click', () => {
+            // Asegurarse de que jsPDF esté cargado
+            if (window.jspdf && window.jspdf.jsPDF) {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+
+                // Título del documento PDF
+                doc.setFontSize(16);
+                doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', 14, 15);
+                doc.setFontSize(12);
+                doc.text('Nómina de Estudiantes - Tercero Informática "B"', 14, 22);
+                doc.text('Tutora: Mgs. Maricela Cun Rueda', 14, 29);
+                doc.text('Año Lectivo: 2025-2026', 14, 36);
+
+
+                // Generar la tabla en el PDF usando jsPDF-AutoTable
+                doc.autoTable({
+                    html: '#tablaEstudiantes',
+                    startY: 45, // Posición inicial de la tabla
+                    theme: 'grid', // Estilo de la tabla (grid, striped, plain)
+                    headStyles: { fillColor: [74, 144, 226] }, // Color azul para encabezados
+                    styles: { fontSize: 8, cellPadding: 2 }, // Tamaño de fuente y padding
+                    columnStyles: { // Ajustar ancho de columnas si es necesario
+                       // 0: { cellWidth: 10 }, // Columna 'No'
+                       // 1: { cellWidth: 30 }, // Columna 'CÉDULA'
+                       // 2: { cellWidth: 'auto' }, // Columna 'NOMBRES COMPLETOS'
+                       // 3: { cellWidth: 'auto' }  // Columna 'CUENTA'
+                    }
+                });
+
+                // Guardar el PDF
+                doc.save('Nomina_Tercero_Informatica_B.pdf');
+            } else {
+                console.error("Error: jsPDF no está cargado.");
+                // Opcional: Mostrar un mensaje al usuario
+                // Usar un cuadro de mensaje personalizado en lugar de alert()
+                const messageBox = document.createElement('div');
+                messageBox.textContent = "Error al generar el PDF. Por favor, inténtalo de nuevo más tarde.";
+                messageBox.style.position = 'fixed';
+                messageBox.style.top = '20px';
+                messageBox.style.left = '50%';
+                messageBox.style.transform = 'translateX(-50%)';
+                messageBox.style.padding = '10px 20px';
+                messageBox.style.backgroundColor = '#f8d7da'; // Color de fondo de error
+                messageBox.style.color = '#721c24'; // Color de texto de error
+                messageBox.style.border = '1px solid #f5c6cb';
+                messageBox.style.borderRadius = '8px';
+                messageBox.style.zIndex = '1000';
+                document.body.appendChild(messageBox);
+                setTimeout(() => {
+                    document.body.removeChild(messageBox);
+                }, 3000); // El mensaje desaparece después de 3 segundos
+            }
+        });
+    </script>
+
+</body>
+</html>
