@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nómina Tercero Informática "B" - U.E. Dr. Camilo Gallegos Domínguez</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilo para asegurar que el degradado cubra toda la pantalla */
+        /* Estilo para asegurar que el degradado cubra toda la pantalla y usar la fuente Inter */
         body {
             min-height: 100vh;
             font-family: 'Inter', sans-serif; /* Fuente Inter */
         }
-        /* Estilo para la tabla */
+        /* Estilo para la tabla HTML */
         table {
             border-collapse: collapse;
             width: 100%;
@@ -24,16 +26,17 @@
         }
         th, td {
             border: 1px solid #ddd;
-            padding: 12px; /* Aumentar padding */
+            padding: 12px; /* Padding aumentado */
             text-align: left;
+            vertical-align: top; /* Alinear texto arriba en celdas */
         }
         th {
-            background-color: #4a90e2; /* Azul más vibrante para encabezados */
+            background-color: #4a90e2; /* Azul vibrante para encabezados */
             color: white;
             font-weight: bold; /* Texto en negrita */
         }
         tr:nth-child(even) {
-            background-color: #f8f9fa; /* Fondo ligeramente gris para filas pares */
+            background-color: #f8f9fa; /* Fondo gris claro para filas pares */
         }
         tr:hover {
             background-color: #e9ecef; /* Efecto hover */
@@ -48,12 +51,13 @@
             margin: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .btn-pdf {
-            background-color: #e74c3c; /* Rojo */
+        /* Estilo para el botón de Excel (verde) */
+        .btn-excel {
+            background-color: #2ecc71; /* Verde */
             color: white;
         }
-        .btn-pdf:hover {
-            background-color: #c0392b;
+        .btn-excel:hover {
+            background-color: #27ae60;
             transform: translateY(-2px); /* Efecto hover */
         }
         .btn-print {
@@ -64,31 +68,72 @@
             background-color: #2980b9;
             transform: translateY(-2px); /* Efecto hover */
         }
-        /* Clases personalizadas para degradado radial - ACTUALIZADO */
+        /* Clase para degradado radial */
         .bg-radial-gradient-blue-yellow {
              /* Degradado radial de Azul a Amarillo */
              background: radial-gradient(ellipse at center, #60a5fa, #fef08a);
         }
+        /* Estilos para impresión: Ocultar botones */
+        @media print {
+            body {
+                background: none; /* Sin fondo al imprimir */
+                font-size: 10pt; /* Tamaño de fuente base para impresión */
+            }
+            .no-print {
+                display: none; /* Oculta elementos con esta clase al imprimir */
+            }
+            .printable-content {
+                box-shadow: none; /* Sin sombra al imprimir */
+                width: 100%;
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+                background-color: white; /* Fondo blanco */
+                color: black; /* Texto negro */
+            }
+            table {
+                box-shadow: none;
+                border-radius: 0;
+                font-size: 9pt; /* Fuente más pequeña para la tabla en impresión */
+            }
+            th, td {
+                padding: 4px; /* Menos padding en impresión */
+                border: 1px solid #ccc; /* Borde más claro */
+            }
+            th {
+                 background-color: #eee; /* Fondo gris claro para encabezados en impresión */
+                 color: black; /* Texto negro */
+                 font-weight: bold;
+            }
+            header, footer {
+                color: black; /* Asegurar texto negro en cabecera/pie */
+            }
+            h1, h2, p {
+                color: black !important; /* Forzar color negro */
+            }
+            img {
+                /* Ocultar imagen del sello en impresión si se desea */
+                 display: none;
+                /* O comentar la línea anterior para mostrarla */
+            }
+        }
     </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-radial-gradient-blue-yellow text-gray-800 flex flex-col items-center p-4 md:p-8">
 
-    <div class="bg-white bg-opacity-80 p-6 md:p-10 rounded-lg shadow-xl w-full max-w-5xl backdrop-blur-sm">
+    <div class="bg-white bg-opacity-80 p-6 md:p-10 rounded-lg shadow-xl w-full max-w-5xl backdrop-blur-sm printable-content">
 
-        <header class="text-center mb-8 relative">
-            <img src="https://placehold.co/100x100/cccccc/333333?text=Sello"
-                 alt="Sello Unidad Educativa Dr. Camilo Gallegos Domínguez"
-                 class="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-full shadow-md"
-                 onerror="this.onerror=null; this.src='https://placehold.co/100x100/cccccc/333333?text=Error+Sello';"
-                 >
+        <header id="encabezadoNomina" class="text-center mb-8 relative">
+             <img src="https://placehold.co/100x100/cccccc/333333?text=Sello"
+                  alt="Sello Unidad Educativa Dr. Camilo Gallegos Domínguez"
+                  class="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-full shadow-md no-print"
+                  onerror="this.onerror=null; this.src='https://placehold.co/100x100/cccccc/333333?text=Error+Sello';"
+                  >
             <h1 class="text-2xl md:text-3xl font-bold text-blue-700">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
             <p class="text-lg md:text-xl font-semibold text-blue-600 mt-2">Tercero Bachillerato Técnico - Informática "B"</p>
             <p class="text-md md:text-lg text-gray-700 mt-1">Tutora: Mgs. Maricela Cun Rueda</p>
             <p class="text-md md:text-lg text-gray-600">Año Lectivo: 2025-2026</p>
-             <p class="mt-4 text-lg italic text-indigo-600">"La educación es el arma más poderosa que puedes usar para cambiar el mundo." - Nelson Mandela</p>
+             <p class="mt-4 text-lg italic text-indigo-600 no-print">"La educación es el arma más poderosa que puedes usar para cambiar el mundo." - Nelson Mandela</p>
         </header>
 
         <div class="overflow-x-auto">
@@ -136,9 +181,9 @@
             </table>
         </div>
 
-        <div class="text-center mt-8">
-            <button id="btnDescargarPdf" class="btn btn-pdf">
-                Descargar PDF
+        <div class="text-center mt-8 no-print">
+            <button id="btnDescargarExcel" class="btn btn-excel">
+                Descargar Excel
             </button>
             <button id="btnImprimir" class="btn btn-print">
                 Imprimir Nómina
@@ -156,66 +201,96 @@
         // Establecer el año actual en el pie de página
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Funcionalidad del botón Imprimir
+        // Funcionalidad del botón Imprimir (sin cambios)
         const btnImprimir = document.getElementById('btnImprimir');
         btnImprimir.addEventListener('click', () => {
             window.print(); // Abre el diálogo de impresión del navegador
         });
 
-        // Funcionalidad del botón Descargar PDF
-        const btnDescargarPdf = document.getElementById('btnDescargarPdf');
-        btnDescargarPdf.addEventListener('click', () => {
-            // Asegurarse de que jsPDF esté cargado
-            if (window.jspdf && window.jspdf.jsPDF) {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
+        // --- Funcionalidad del botón Descargar Excel (NUEVO) ---
+        const btnDescargarExcel = document.getElementById('btnDescargarExcel');
+        btnDescargarExcel.addEventListener('click', () => {
+            try {
+                // 1. Obtener datos del encabezado HTML
+                const headerDiv = document.getElementById('encabezadoNomina');
+                const institucion = headerDiv.querySelector('h1').innerText;
+                const curso = headerDiv.querySelectorAll('p')[0].innerText; // Primer <p>
+                const tutora = headerDiv.querySelectorAll('p')[1].innerText; // Segundo <p>
+                const anioLectivo = headerDiv.querySelectorAll('p')[2].innerText; // Tercer <p>
 
-                // Título del documento PDF
-                doc.setFontSize(16);
-                doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', 14, 15);
-                doc.setFontSize(12);
-                doc.text('Nómina de Estudiantes - Tercero Informática "B"', 14, 22);
-                doc.text('Tutora: Mgs. Maricela Cun Rueda', 14, 29);
-                doc.text('Año Lectivo: 2025-2026', 14, 36);
+                // 2. Preparar datos del encabezado para Excel
+                const headerData = [
+                    [institucion], // Fila 1
+                    [curso],       // Fila 2
+                    [tutora],      // Fila 3
+                    [anioLectivo], // Fila 4
+                    [] // Fila 5 (en blanco para separar)
+                ];
 
-
-                // Generar la tabla en el PDF usando jsPDF-AutoTable
-                doc.autoTable({
-                    html: '#tablaEstudiantes',
-                    startY: 45, // Posición inicial de la tabla
-                    theme: 'grid', // Estilo de la tabla (grid, striped, plain)
-                    headStyles: { fillColor: [74, 144, 226] }, // Color azul para encabezados
-                    styles: { fontSize: 8, cellPadding: 2 }, // Tamaño de fuente y padding
-                    columnStyles: { // Ajustar ancho de columnas si es necesario
-                       // 0: { cellWidth: 10 }, // Columna 'No'
-                       // 1: { cellWidth: 30 }, // Columna 'CÉDULA'
-                       // 2: { cellWidth: 'auto' }, // Columna 'NOMBRES COMPLETOS'
-                       // 3: { cellWidth: 'auto' }  // Columna 'CUENTA'
-                    }
+                // 3. Obtener datos de la tabla HTML
+                const table = document.getElementById('tablaEstudiantes');
+                const tableHeaders = Array.from(table.querySelectorAll('thead th')).map(th => th.innerText);
+                const tableBody = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+                    return Array.from(tr.querySelectorAll('td')).map(td => td.innerText);
                 });
 
-                // Guardar el PDF
-                doc.save('Nomina_Tercero_Informatica_B.pdf');
-            } else {
-                console.error("Error: jsPDF no está cargado.");
-                // Opcional: Mostrar un mensaje al usuario
-                // Usar un cuadro de mensaje personalizado en lugar de alert()
+                // 4. Combinar encabezado y tabla para la hoja de cálculo
+                // Se añade primero el headerData, luego los encabezados de la tabla, y finalmente el cuerpo de la tabla
+                const sheetData = headerData.concat([tableHeaders], tableBody);
+
+                // 5. Crear la hoja de cálculo (worksheet)
+                const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+                // 6. Ajustar anchos de columna (aproximado, en caracteres)
+                // 'No', 'CÉDULA', 'NOMBRES COMPLETOS', 'CUENTA ESTUDIANTE'
+                ws['!cols'] = [
+                    { wch: 5 },  // No
+                    { wch: 15 }, // CÉDULA
+                    { wch: 45 }, // NOMBRES COMPLETOS (más ancho)
+                    { wch: 40 }  // CUENTA ESTUDIANTE
+                ];
+
+                // 7. Combinar celdas para los títulos del encabezado
+                // Combinar las 4 columnas (A a D) para cada línea del encabezado
+                ws['!merges'] = [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 3 } }, // Institución (Fila 1, Col A-D)
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 3 } }, // Curso (Fila 2, Col A-D)
+                    { s: { r: 2, c: 0 }, e: { r: 2, c: 3 } }, // Tutora (Fila 3, Col A-D)
+                    { s: { r: 3, c: 0 }, e: { r: 3, c: 3 } }  // Año Lectivo (Fila 4, Col A-D)
+                ];
+
+                // Opcional: Centrar texto en las celdas combinadas del encabezado (requiere más formato)
+                // Esto es más complejo con aoa_to_sheet, se puede hacer celda por celda si es necesario.
+
+                // 8. Crear el libro de trabajo (workbook)
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Nómina'); // Nombrar la hoja 'Nómina'
+
+                // 9. Generar y descargar el archivo Excel
+                XLSX.writeFile(wb, 'Nomina_Tercero_Informatica_B.xlsx');
+
+            } catch (error) {
+                console.error("Error al generar el archivo Excel:", error);
+                // Mostrar mensaje de error al usuario (usando un div temporal)
                 const messageBox = document.createElement('div');
-                messageBox.textContent = "Error al generar el PDF. Por favor, inténtalo de nuevo más tarde.";
+                messageBox.textContent = "Error al generar el Excel. Por favor, inténtalo de nuevo.";
+                // (Estilos del messageBox como en el ejemplo anterior)
                 messageBox.style.position = 'fixed';
                 messageBox.style.top = '20px';
                 messageBox.style.left = '50%';
                 messageBox.style.transform = 'translateX(-50%)';
                 messageBox.style.padding = '10px 20px';
-                messageBox.style.backgroundColor = '#f8d7da'; // Color de fondo de error
-                messageBox.style.color = '#721c24'; // Color de texto de error
+                messageBox.style.backgroundColor = '#f8d7da';
+                messageBox.style.color = '#721c24';
                 messageBox.style.border = '1px solid #f5c6cb';
                 messageBox.style.borderRadius = '8px';
                 messageBox.style.zIndex = '1000';
                 document.body.appendChild(messageBox);
                 setTimeout(() => {
-                    document.body.removeChild(messageBox);
-                }, 3000); // El mensaje desaparece después de 3 segundos
+                    if (document.body.contains(messageBox)) {
+                         document.body.removeChild(messageBox);
+                    }
+                }, 3000);
             }
         });
     </script>
