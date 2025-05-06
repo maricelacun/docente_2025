@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horario de Clases - Unidad Educativa Dr. Camilo Gallegos Domínguez</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvCbOBVEkls1ZHauBEHBPbBXZcvWHDRbyZaGFUdTIAAE/BFVnX8/M+sKGYRfMvDCDxARZmkBflF/Yw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Graduate&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 
         /* Estilos para la impresión */
         @media print {
-            @page {
+             @page {
                 size: landscape; /* Orientación horizontal para impresión */
                 margin: 5mm; /* Márgenes de impresión REDUCIDOS */
             }
@@ -42,42 +42,41 @@
                 background: none; /* Sin fondo en impresión */
                 font-size: 11pt; /* Tamaño de fuente base REDUCIDO para impresión */
                 line-height: 1.5; /* Reduce interlineado */
-                 -webkit-print-color-adjust: exact !important; /* Mantiene colores en Chrome/Safari */
-                 print-color-adjust: exact !important; /* Mantiene colores en Firefox */
+                -webkit-print-color-adjust: exact !important; /* Mantiene colores en Chrome/Safari */
+                print-color-adjust: exact !important; /* Mantiene colores en Firefox */
             }
-          
-    
 
-        #schedule-container {
-            box-shadow: none !important;
-            background: white !important;
-        }
 
-        .view-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: nowrap;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
+            #schedule-container {
+                box-shadow: none !important;
+                background: white !important;
+            }
 
-        .header-logo-container,
+            .view-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: nowrap;
+                border-bottom: 1px solid #ccc;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+
+            .header-logo-container,
             .header-tic-container {
                 flex: 0 0 auto;
-        }
+            }
 
-        .header-text-container {
-            flex-grow: 1;
-            text-align: center;
-            margin: 0 10px;
-        }
+            .header-text-container {
+                flex-grow: 1;
+                text-align: center;
+                margin: 0 10px;
+            }
 
-        img {
-            max-width: 100%;
-            height: auto;
-        }
+            img {
+                max-width: 100%;
+                height: auto;
+            }
 
 
             /* Oculta botones y elementos no deseados al imprimir */
@@ -110,20 +109,20 @@
                 text-align: center;
             }
             th {
-                 background-color: #e0e7ff !important; /* Fondo claro para encabezados */
-                 color: #1e3a8a !important; /* Color de texto */
-                 font-weight: 600 !important;
-                 padding: 3px 2px; /* Ajuste padding encabezado */
+                background-color: #e0e7ff !important; /* Fondo claro para encabezados */
+                color: #1e3a8a !important; /* Color de texto */
+                font-weight: 600 !important;
+                padding: 3px 2px; /* Ajuste padding encabezado */
             }
-             /* Estilo para la fila de receso */
+            /* Estilo para la fila de receso */
             .recess-row th, .recess-row td {
-                 background-color: #fef3c7 !important; /* Similar a bg-yellow-100 */
-                 color: #92400e !important; /* Similar a text-yellow-800 */
-                 font-weight: 600 !important;
+                background-color: #fef3c7 !important; /* Similar a bg-yellow-100 */
+                color: #92400e !important; /* Similar a text-yellow-800 */
+                font-weight: 600 !important;
             }
 
-             /* --- AJUSTES HEADER PARA IMPRESIÓN --- */
-            header {
+            /* --- AJUSTES HEADER PARA IMPRESIÓN --- */
+            header.view-header { /* Apunta al header específico */
                 display: flex !important;
                 justify-content: space-between !important; /* Sello Izquierda, Texto Centro, TIC Derecha */
                 align-items: center !important;
@@ -134,8 +133,8 @@
             }
             /* Contenedor del logo (izquierda) */
             .header-logo-container {
-                 flex-shrink: 0; /* No se encoge */
-                 margin-right: 5px !important; /* Pequeño margen derecho */
+                flex-shrink: 0; /* No se encoge */
+                margin-right: 5px !important; /* Pequeño margen derecho */
             }
             .header-logo-container img {
                 max-width: 45px !important; /* Tamaño logo MÁS reducido */
@@ -148,14 +147,14 @@
                 text-align: center !important;
                 padding: 0 5px; /* Añade un poco de padding lateral */
             }
-             header h1 { font-size: 10pt !important; margin-bottom: 0 !important; }
-             header h2 { font-size: 12pt !important; margin-bottom: 2px !important; }
-             header p { font-size: 9pt !important; margin-top: 0 !important; }
+            header h1 { font-size: 10pt !important; margin-bottom: 0 !important; }
+            header h2 { font-size: 12pt !important; margin-bottom: 2px !important; }
+            header p { font-size: 9pt !important; margin-top: 0 !important; }
 
             /* Contenedor imagen TIC (derecha) - Asegura que sea visible */
             .header-tic-container {
-                 flex-shrink: 0; /* No se encoge */
-                 margin-left: 5px !important; /* Pequeño margen izquierdo */
+                flex-shrink: 0; /* No se encoge */
+                margin-left: 5px !important; /* Pequeño margen izquierdo */
             }
             .header-tic-container img { /* Apunta a la imagen dentro del contenedor */
                 display: block !important; /* Asegura que sea visible */
@@ -164,13 +163,13 @@
                 object-fit: cover; /* Ajusta la imagen */
             }
             /* Oculta la clase original si aún existe, aunque es mejor quitarla del HTML */
-             .print-hide-image {
-                 /* display: none !important; Ya no es necesario si la movemos */
-             }
+            .print-hide-image {
+                /* display: none !important; Ya no es necesario si la movemos */
+            }
             /* --- FIN AJUSTES HEADER --- */
 
 
-             /* Estilo para selectores en impresión (muestra el valor seleccionado) */
+            /* Estilo para selectores en impresión (muestra el valor seleccionado) */
             select {
                 border: none !important;
                 background: none !important;
@@ -248,48 +247,77 @@
         }
         /* Ajuste tamaño fuente horas editables (vista normal) */
         .time-slot {
-             font-size: 0.7rem; /* Tamaño reducido */
+            font-size: 0.7rem; /* Tamaño reducido */
         }
         /* Estilos Header Vista Normal (Flexbox para consistencia) */
-         header.view-header {
-             display: flex;
-             flex-direction: column; /* Apilado por defecto */
-             align-items: center; /* Centrado por defecto */
-             text-align: center;
-         }
-         @media (min-width: 768px) { /* md breakpoint */
+        header.view-header {
+            display: flex;
+            flex-direction: column; /* Apilado por defecto */
+            align-items: center; /* Centrado por defecto */
+            text-align: center;
+            border-bottom: 1px solid #ccc; /* Borde inferior */
+            padding-bottom: 0.75rem; /* Espaciado inferior */
+            margin-bottom: 1rem; /* Margen inferior */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
             header.view-header {
                 flex-direction: row; /* Fila en pantallas medianas y grandes */
                 justify-content: space-between;
                 text-align: left;
             }
             .view-header .header-text-container {
-                 text-align: center; /* Mantiene texto centrado incluso en fila */
+                text-align: center; /* Mantiene texto centrado incluso en fila */
+                flex-grow: 1; /* Permite que ocupe espacio */
+                margin: 0 1rem; /* Margen horizontal */
             }
             .view-header .header-logo-container {
-                 margin-bottom: 0; /* Quita margen inferior en vista de fila */
+                margin-bottom: 0; /* Quita margen inferior en vista de fila */
+                flex-shrink: 0; /* Evita que se encoja */
             }
-         }
+             .view-header .header-tic-container {
+                margin-top: 0; /* Quita margen superior en vista de fila */
+                 flex-shrink: 0; /* Evita que se encoja */
+            }
+        }
 
     </style>
 </head>
-<body class="p-4 md:p-6"> <div id="schedule-container" class="max-w-6xl w-full mx-auto bg-white bg-opacity-80 backdrop-blur-sm p-4 md:p-6 rounded-lg shadow-xl"> <header class="view-header mb-4 border-b pb-3 border-gray-300"> <div class="header-logo-container flex items-center space-x-3 mb-3 md:mb-0 flex-shrink-0"> <img src="sello.jpg" alt="Sello del Colegio" class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-blue-200" onerror="this.onerror=null; this.src='https://placehold.co/64x64/e2e8f0/64748b?text=Sello';"> </div>
-            <div class="header-text-container text-center flex-grow mx-3"> <h1 class="text-base md:text-xl font-bold text-blue-800 font-graduate">UNIDAD EDUCATIVA</h1> <h2 class="text-xl md:text-2xl font-bold text-blue-900 font-graduate">DR. CAMILO GALLEGOS DOMINGUEZ</h2> <p class="text-sm md:text-lg text-blue-700 mt-1">Tutor/a: Msc. Maricela Cun Rueda</p> </div>
-            <div class="header-tic-container flex-shrink-0 mt-3 md:mt-0"> <img src="tic.jpg" alt="Imagen TIC" class="w-28 h-auto md:w-32 rounded-md object-cover shadow-md" onerror="this.onerror=null; this.src='https://placehold.co/128/dbeafe/1e3a8a?text=TIC+Error';"> </div>
+<body class="p-4 md:p-6">
+
+    <div id="schedule-container" class="max-w-6xl w-full mx-auto bg-white bg-opacity-80 backdrop-blur-sm p-4 md:p-6 rounded-lg shadow-xl">
+
+        <header class="view-header">
+            <div class="header-logo-container flex items-center space-x-3 mb-3 md:mb-0 flex-shrink-0">
+                <img src="sello.jpg" alt="Sello del Colegio" class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-blue-200" onerror="this.onerror=null; this.src='https://placehold.co/64x64/e2e8f0/64748b?text=Sello';">
+            </div>
+            <div class="header-text-container">
+                <h1 class="text-base md:text-xl font-bold text-blue-800 font-graduate">UNIDAD EDUCATIVA</h1>
+                <h2 class="text-xl md:text-2xl font-bold text-blue-900 font-graduate">DR. CAMILO GALLEGOS DOMINGUEZ</h2>
+                <p class="text-sm md:text-lg text-blue-700 mt-1">Tutor/a: Msc. Maricela Cun Rueda</p>
+            </div>
+            <div class="header-tic-container flex-shrink-0 mt-3 md:mt-0">
+                <img src="tic.jpg" alt="Imagen TIC" class="w-28 h-auto md:w-32 rounded-md object-cover shadow-md" onerror="this.onerror=null; this.src='https://placehold.co/128/dbeafe/1e3a8a?text=TIC+Error';">
+            </div>
         </header>
 
-        <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Horario de Clases</h3> <div class="overflow-x-auto mb-4"> <table id="schedule-table" class="min-w-full bg-white bg-opacity-90 rounded-md shadow">
+        <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Horario de Clases</h3>
+
+        <div class="overflow-x-auto mb-4">
+            <table id="schedule-table" class="min-w-full bg-white bg-opacity-90 rounded-md shadow">
                 <thead class="bg-blue-100">
                     <tr>
-                        <th class="w-[10%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Hora</th> <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Lunes</th>
+                        <th class="w-[10%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Hora</th>
+                        <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Lunes</th>
                         <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Martes</th>
                         <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Miércoles</th>
                         <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Jueves</th>
                         <th class="w-[18%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Viernes</th>
                     </tr>
                 </thead>
-                <tbody class="text-gray-700 text-xs"> <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 1 <br><span contenteditable="true" class="font-normal time-slot">(12:40-13:20)</span></th> <td><select class="subject-select"></select></td>
+                <tbody class="text-gray-700 text-xs">
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 1 <br><span contenteditable="true" class="font-normal time-slot">(12:40-13:20)</span></th>
+                        <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
@@ -321,7 +349,8 @@
                     </tr>
                     <tr class="recess-row">
                         <th scope="row" class="font-semibold py-2 px-1">RECESO <br><span contenteditable="true" class="font-normal time-slot">(15:20-15:50)</span></th>
-                        <td colspan="5" class="text-center font-semibold py-2 px-1">TIEMPO DE DESCANSO ESTUDIANTIL</td> </tr>
+                        <td colspan="5" class="text-center font-semibold py-2 px-1">TIEMPO DE DESCANSO ESTUDIANTIL</td>
+                    </tr>
                      <tr>
                         <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 5 <br><span contenteditable="true" class="font-normal time-slot">(15:50-16:30)</span></th>
                         <td><select class="subject-select"></select></td>
@@ -358,24 +387,33 @@
             </table>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mt-4 no-print"> <button id="download-pdf" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mt-4 no-print">
+            <button id="download-excel" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
-                <span>Descargar PDF</span>
+                <span>Descargar Excel</span>
             </button>
-            <button id="print-schedule" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm"> <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+            <button id="print-schedule" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
                     <path d="M7 11h6v1H7v-1z"/>
                 </svg>
                 <span>Imprimir Horario</span>
             </button>
         </div>
 
-    </div> <script>
+    </div>
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const scheduleContainer = document.getElementById('schedule-container');
-            const downloadPdfButton = document.getElementById('download-pdf');
+            const downloadExcelButton = document.getElementById('download-excel'); // ID actualizado
             const printButton = document.getElementById('print-schedule');
             const subjectSelects = document.querySelectorAll('select.subject-select');
             const editableTimeSlots = document.querySelectorAll('.time-slot'); // Selecciona los spans de hora editables
+            const scheduleTable = document.getElementById('schedule-table'); // Obtener la tabla
+            const headerElement = document.querySelector('header.view-header'); // Obtener el header
 
             // --- Opciones para los menús desplegables ---
             const subjectOptions = [
@@ -389,7 +427,7 @@
                 "Acompañamiento Integral"
             ];
 
-            // --- Poblar los menús desplegables ---
+            // --- Poblar los menús desplegables y cargar/guardar selección ---
             subjectSelects.forEach((selectElement, index) => {
                 subjectOptions.forEach(optionText => {
                     const option = document.createElement('option');
@@ -398,8 +436,8 @@
                     selectElement.appendChild(option);
                 });
 
-                 // Asignar un ID único para guardar/cargar en localStorage
-                 selectElement.id = `select_cell_${index}`;
+                // Asignar un ID único para guardar/cargar en localStorage
+                selectElement.id = `select_cell_${index}`;
 
                 // Cargar valor guardado
                 const savedValue = localStorage.getItem(selectElement.id);
@@ -413,109 +451,153 @@
                 });
             });
 
-            // --- Funcionalidad del Botón Descargar PDF ---
-            downloadPdfButton.addEventListener('click', () => {
-                console.log('Iniciando descarga PDF...');
-                // Guardar horas editables antes de generar PDF
-                saveTimeSlots();
+            // --- Funcionalidad del Botón Descargar Excel ---
+            downloadExcelButton.addEventListener('click', () => {
+                console.log('Iniciando descarga Excel...');
+                saveTimeSlots(); // Guardar horas antes de exportar
 
-                // Ocultar temporalmente botones (elementos .no-print)
-                const elementsToHide = scheduleContainer.querySelectorAll('.no-print');
-                elementsToHide.forEach(el => el.style.display = 'none');
+                // --- Preparar datos para Excel ---
+                const data = [];
 
-                // Clonar el contenedor para asegurar que los estilos se apliquen
-                const elementToPrint = scheduleContainer.cloneNode(true);
+                // 1. Añadir Encabezado (simplificado para Excel)
+                const headerTextContainer = headerElement.querySelector('.header-text-container');
+                const h1Text = headerTextContainer.querySelector('h1')?.textContent || '';
+                const h2Text = headerTextContainer.querySelector('h2')?.textContent || '';
+                const pText = headerTextContainer.querySelector('p')?.textContent || '';
+                const scheduleTitle = scheduleContainer.querySelector('h3')?.textContent || 'Horario de Clases';
 
-                // **Asegurar que la imagen TIC sea visible en el clon para PDF**
-                // (Aunque los estilos de impresión deberían manejarlo, esto es un refuerzo)
-                const ticImageInClone = elementToPrint.querySelector('.header-tic-container img');
-                if (ticImageInClone) {
-                    // No es necesario forzar 'display: block !important' aquí si
-                    // los estilos de impresión ya lo hacen correctamente.
-                    // html2pdf intentará aplicar los estilos de impresión.
-                }
+                // Añadir filas de encabezado al array de datos
+                data.push([h1Text]); // Fila 1: Título 1
+                data.push([h2Text]); // Fila 2: Título 2
+                data.push([pText]);  // Fila 3: Tutor
+                data.push([]);       // Fila 4: Vacía para separación
+                data.push([scheduleTitle]); // Fila 5: Título del Horario
+                data.push([]); // Fila 6: Vacía para separación
 
-                 // **Importante para PDF:** Reemplazar selects con spans en el clon
-                 const clonedSelects = elementToPrint.querySelectorAll('select.subject-select');
-                 clonedSelects.forEach(select => {
-                     const selectedText = select.options[select.selectedIndex].text;
-                     const span = document.createElement('span');
-                     span.textContent = selectedText === "--- Seleccionar ---" ? "" : selectedText; // Muestra texto o vacío
-                     span.style.fontSize = '7.5pt'; // Asegura tamaño de fuente
-                     span.style.textAlign = 'center';
-                     span.style.display = 'block';
-                     span.style.width = '100%';
-                     select.parentNode.replaceChild(span, select); // Reemplaza select con span
-                 });
-
-                 // Asegurar que las horas editables tengan el contenido correcto en el clon
-                 const originalTimeSlots = scheduleContainer.querySelectorAll('.time-slot');
-                 const clonedTimeSlots = elementToPrint.querySelectorAll('.time-slot');
-                 originalTimeSlots.forEach((span, index) => {
-                     if (clonedTimeSlots[index]) {
-                         clonedTimeSlots[index].textContent = span.textContent;
-                     }
-                 });
-
-
-                // Opciones para html2pdf (márgenes reducidos)
-                const opt = {
-                    margin:       2, // Margen reducido uniforme en mm
-                    filename:     'horario_clases_camilo_gallegos.pdf',
-                    image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  {
-                        scale: 2, // Mantenemos escala 2 para resolución
-                        useCORS: true,
-                        logging: false, // Desactivar logs si no se necesitan
-                        windowWidth: elementToPrint.scrollWidth,
-                        windowHeight: elementToPrint.scrollHeight
-                    },
-                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } // Evita cortes donde sea posible
-                };
-
-                // Generar el PDF desde el elemento CLONADO y modificado
-                html2pdf().from(elementToPrint).set(opt).save().then(() => {
-                    console.log('PDF generado exitosamente.');
-                }).catch(err => {
-                    console.error('Error al generar el PDF:', err);
-                    alert('Hubo un error al generar el PDF. Revisa la consola para más detalles.');
-                }).finally(() => {
-                     // Restaurar visibilidad botones en la página original
-                     elementsToHide.forEach(el => el.style.display = ''); // O al valor original si era diferente
+                // 2. Añadir Cabecera de la Tabla
+                const headerRow = [];
+                scheduleTable.querySelectorAll('thead th').forEach(th => {
+                    headerRow.push(th.textContent.trim());
                 });
+                data.push(headerRow);
+
+                // 3. Añadir Filas de Datos de la Tabla
+                scheduleTable.querySelectorAll('tbody tr').forEach((tr, rowIndex) => {
+                    const rowData = [];
+                    // Celda de la Hora (TH)
+                    const th = tr.querySelector('th');
+                    if (th) {
+                        const hourText = th.childNodes[0]?.nodeValue?.trim() || ''; // Texto "Hora X"
+                        const timeSlotSpan = th.querySelector('.time-slot');
+                        const timeText = timeSlotSpan ? timeSlotSpan.textContent.trim() : '';
+                        rowData.push(`${hourText}\n${timeText}`); // Combina texto y hora
+                    }
+
+                    // Celdas de Materias (TD)
+                    tr.querySelectorAll('td').forEach((td, colIndex) => {
+                        if (td.colSpan === 5) { // Celda de Receso
+                             rowData.push(td.textContent.trim());
+                             // Añadir celdas vacías para completar la fila si es necesario
+                             for(let i = 0; i < 4; i++) rowData.push("");
+                        } else {
+                            const select = td.querySelector('select.subject-select');
+                            if (select) {
+                                const selectedText = select.options[select.selectedIndex].text;
+                                rowData.push(selectedText === "--- Seleccionar ---" ? "" : selectedText);
+                            } else {
+                                rowData.push(td.textContent.trim()); // Por si hay otras celdas sin select
+                            }
+                        }
+                    });
+                    data.push(rowData);
+                });
+
+                // --- Crear Hoja de Cálculo y Libro ---
+                const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+                // --- Ajustar Ancho de Columnas (Opcional, pero mejora la legibilidad) ---
+                 // Estimación simple del ancho basada en el contenido
+                const colWidths = data[6].map((_, i) => ({ wch: 15 })); // Ancho inicial para cabecera tabla
+                data.forEach(row => {
+                    row.forEach((cell, i) => {
+                        const len = cell ? cell.toString().length : 10;
+                        if (!colWidths[i] || colWidths[i].wch < len) {
+                             // Ajusta el ancho si la celda actual es más larga
+                             // Añade un poco de padding
+                            colWidths[i] = { wch: Math.max(15, len + 2) };
+                        }
+                    });
+                });
+                 // Ancho especial para la primera columna (Hora)
+                colWidths[0] = { wch: 20 };
+                worksheet['!cols'] = colWidths;
+
+
+                // --- Combinar Celdas para el Encabezado (Opcional) ---
+                // Asumiendo 6 columnas en la tabla (Hora + 5 días)
+                const mergeOptions = { '!merges': [] };
+                if (data[0] && data[0].length > 0) mergeOptions['!merges'].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }); // Fila 1
+                if (data[1] && data[1].length > 0) mergeOptions['!merges'].push({ s: { r: 1, c: 0 }, e: { r: 1, c: 5 } }); // Fila 2
+                if (data[2] && data[2].length > 0) mergeOptions['!merges'].push({ s: { r: 2, c: 0 }, e: { r: 2, c: 5 } }); // Fila 3
+                if (data[4] && data[4].length > 0) mergeOptions['!merges'].push({ s: { r: 4, c: 0 }, e: { r: 4, c: 5 } }); // Fila 5 (Título Horario)
+
+                // Combinar celda de Receso
+                 const recessRowIndex = data.findIndex(row => row.some(cell => typeof cell === 'string' && cell.includes('RECESO')));
+                 if (recessRowIndex > -1) {
+                     // La celda de receso está en la segunda columna (índice 1) y abarca 5 columnas
+                     mergeOptions['!merges'].push({ s: { r: recessRowIndex, c: 1 }, e: { r: recessRowIndex, c: 5 } });
+                 }
+
+
+                worksheet['!merges'] = mergeOptions['!merges'];
+
+
+                // --- Crear Libro y Descargar ---
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Horario"); // Nombre de la hoja
+
+                const fileName = 'horario_clases_camilo_gallegos.xlsx';
+                XLSX.writeFile(workbook, fileName);
+
+                console.log('Excel generado exitosamente.');
             });
 
             // --- Funcionalidad del Botón Imprimir ---
             printButton.addEventListener('click', () => {
-                 // Guardar los cambios de las horas editables antes de imprimir
-                 saveTimeSlots();
+                // Guardar los cambios de las horas editables antes de imprimir
+                saveTimeSlots();
                 // Abre el diálogo de impresión. Los estilos @media print ajustados se aplicarán.
                 window.print();
             });
 
 
-             // --- Guardar/Cargar horas editables en localStorage ---
-             function saveTimeSlots() {
-                 editableTimeSlots.forEach((span, index) => {
-                     localStorage.setItem(`time_slot_${index}`, span.textContent.trim());
-                 });
-                 console.log("Horas guardadas en localStorage.");
-             }
+            // --- Guardar/Cargar horas editables en localStorage ---
+            function saveTimeSlots() {
+                editableTimeSlots.forEach((span, index) => {
+                    localStorage.setItem(`time_slot_${index}`, span.textContent.trim());
+                });
+                // console.log("Horas guardadas en localStorage."); // Descomentar para depurar
+            }
 
-             function loadTimeSlots() {
-                 editableTimeSlots.forEach((span, index) => {
-                     const savedTime = localStorage.getItem(`time_slot_${index}`);
-                      if (savedTime) {
-                          span.textContent = savedTime;
-                      }
-                     // Guardar al perder el foco
-                     span.addEventListener('blur', saveTimeSlots);
-                 });
-             }
+            function loadTimeSlots() {
+                editableTimeSlots.forEach((span, index) => {
+                    const savedTime = localStorage.getItem(`time_slot_${index}`);
+                     if (savedTime) {
+                        span.textContent = savedTime;
+                    }
+                    // Guardar al perder el foco (blur) o al presionar Enter
+                    span.addEventListener('blur', saveTimeSlots);
+                    span.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault(); // Evita salto de línea
+                            span.blur(); // Pierde el foco para guardar
+                        }
+                    });
+                });
+            }
 
-             // Cargar horas al iniciar
-             loadTimeSlots();
+            // Cargar horas al iniciar
+            loadTimeSlots();
 
         }); // Fin de DOMContentLoaded
     </script>
