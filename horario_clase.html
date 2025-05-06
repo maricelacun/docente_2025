@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Horario de Clases - Unidad Educativa Dr. Camilo Gallegos Domínguez</title>
     <script src="https://cdn.tailwindcss.com"></script>
-     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Graduate&display=swap" rel="stylesheet">
     <style>
-        /* Estilo para el cuerpo con degradado radial */
+        /* Estilo para el cuerpo con degradado elíptico que mezcla amarillo y azul */
         body {
-            font-family: "Inter", sans-serif; /* Fuente principal */
-            background: radial-gradient(circle, rgba(255, 255, 0, 0.6), rgba(0, 0, 255, 0.6)); /* Amarillo a Azul */
-            min-height: 100vh; /* Asegura que el degradado cubra toda la altura */
+            font-family: "Inter", sans-serif;
+            /* Degradado elíptico: amarillo en el centro, azul en los bordes, con una mezcla suave */
+            background: radial-gradient(ellipse farthest-corner at center, rgba(255, 255, 0, 0.65) 10%, rgba(100, 100, 255, 0.65) 50%, rgba(0, 0, 255, 0.65) 90%);
+            min-height: 100vh;
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Alinea al inicio para ver el contenido desde arriba */
-            padding-top: 1.5rem; /* Reduce espacio superior */
-            padding-bottom: 1.5rem; /* Reduce espacio inferior */
+            align-items: flex-start;
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
         }
 
         /* Estilos específicos para la fuente del título */
@@ -31,7 +31,7 @@
 
         /* Estilos para la impresión */
         @media print {
-             @page {
+            @page {
                 size: landscape; /* Orientación horizontal para impresión */
                 margin: 5mm; /* Márgenes de impresión REDUCIDOS */
             }
@@ -41,270 +41,233 @@
                 margin: 0;
                 padding: 0;
                 background: none; /* Sin fondo en impresión */
-                font-size: 11pt; /* Tamaño de fuente base REDUCIDO para impresión */
-                line-height: 1.5; /* Reduce interlineado */
-                -webkit-print-color-adjust: exact !important; /* Mantiene colores en Chrome/Safari */
-                print-color-adjust: exact !important; /* Mantiene colores en Firefox */
+                font-size: 10pt; /* Tamaño de fuente base AJUSTADO para impresión */
+                line-height: 1.4; /* Interlineado ajustado */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
-
 
             #schedule-container {
                 box-shadow: none !important;
                 background: white !important;
+                padding: 0 !important;
+                margin: 0 auto !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                backdrop-filter: none !important;
             }
 
-            .view-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-wrap: nowrap;
-                border-bottom: 1px solid #ccc;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }
-
-            .header-logo-container,
-            .header-tic-container {
-                flex: 0 0 auto;
-            }
-
-            .header-text-container {
-                flex-grow: 1;
-                text-align: center;
-                margin: 0 10px;
-            }
-
-            img {
-                max-width: 100%;
-                height: auto;
-            }
-
-
-            /* Oculta botones y elementos no deseados al imprimir */
             .no-print {
                 display: none !important;
             }
-            /* Ajusta el contenedor para impresión */
-            #schedule-container {
-                margin: 0 auto; /* Centra el contenedor */
-                padding: 0;
-                border: none;
-                box-shadow: none;
-                width: 100%; /* Ocupa el ancho disponible */
-                max-width: 100%; /* Evita que se exceda */
-                background: none;
-                backdrop-filter: none;
+
+            /* --- AJUSTES HEADER PARA IMPRESIÓN --- */
+            header.view-header {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                border-bottom: 1px solid #ccc !important;
+                margin-bottom: 0.3rem !important; /* Reducido margen inferior header */
+                padding-bottom: 0.3rem !important; /* Reducido padding inferior header */
+                width: 100% !important;
             }
-            /* Asegura que la tabla use el ancho disponible */
+            .header-logo-container {
+                flex-shrink: 0;
+                margin-right: 5px !important;
+            }
+            .header-logo-container img {
+                max-width: 40px !important; /* Tamaño logo MÁS reducido */
+                max-height: 40px !important;
+                display: block !important;
+            }
+            .header-text-container {
+                flex-grow: 1;
+                text-align: center !important;
+                padding: 0 5px;
+            }
+            header.view-header h1 { font-size: 9pt !important; margin-bottom: 0 !important; font-weight: bold; }
+            header.view-header h2 { font-size: 11pt !important; margin-bottom: 1px !important; font-weight: bold; }
+            header.view-header p { font-size: 8pt !important; margin-top: 0 !important; }
+
+            .header-tic-container {
+                flex-shrink: 0;
+                margin-left: 5px !important;
+            }
+            .header-tic-container img {
+                display: block !important;
+                max-width: 40px !important; /* Mismo tamaño reducido que el logo */
+                max-height: 40px !important;
+                object-fit: cover;
+            }
+            /* --- FIN AJUSTES HEADER --- */
+
+            h3#schedule-title-print { /* Título del horario para impresión */
+                font-size: 10pt !important;
+                text-align: center;
+                margin-bottom: 0.3rem !important;
+                font-weight: bold;
+            }
+
             table {
                 width: 100% !important;
-                table-layout: fixed; /* Ayuda a controlar el ancho de las columnas */
-                font-size: 7.5pt; /* Tamaño de fuente más pequeño para impresión */
-                border-collapse: collapse !important; /* Asegura bordes colapsados */
+                table-layout: fixed;
+                font-size: 7pt !important; /* Tamaño de fuente MUY pequeño para celdas de tabla en impresión */
+                border-collapse: collapse !important;
             }
             th, td {
-                border: 1px solid #555 !important; /* Bordes más visibles en impresión */
-                padding: 2px; /* Reduce el padding AÚN MÁS para impresión */
-                word-wrap: break-word; /* Permite que el texto largo se ajuste */
+                border: 1px solid #555 !important;
+                padding: 1.5px 2px; /* Padding MÍNIMO para impresión */
+                word-wrap: break-word;
                 vertical-align: middle;
                 text-align: center;
             }
             th {
-                background-color: #e0e7ff !important; /* Fondo claro para encabezados */
-                color: #1e3a8a !important; /* Color de texto */
+                background-color: #e0e7ff !important;
+                color: #1e3a8a !important;
                 font-weight: 600 !important;
-                padding: 3px 2px; /* Ajuste padding encabezado */
+                padding: 2px;
             }
-            /* Estilo para la fila de receso */
             .recess-row th, .recess-row td {
-                background-color: #fef3c7 !important; /* Similar a bg-yellow-100 */
-                color: #92400e !important; /* Similar a text-yellow-800 */
+                background-color: #fef3c7 !important;
+                color: #92400e !important;
                 font-weight: 600 !important;
             }
-
-            /* --- AJUSTES HEADER PARA IMPRESIÓN --- */
-            header.view-header { /* Apunta al header específico */
-                display: flex !important;
-                justify-content: space-between !important; /* Sello Izquierda, Texto Centro, TIC Derecha */
-                align-items: center !important;
-                border-bottom: 1px solid #ccc !important;
-                margin-bottom: 0.5rem !important; /* Reduce margen inferior header */
-                padding-bottom: 0.5rem !important; /* Reduce padding inferior header */
-                width: 100% !important; /* Asegura ancho completo */
-            }
-            /* Contenedor del logo (izquierda) */
-            .header-logo-container {
-                flex-shrink: 0; /* No se encoge */
-                margin-right: 5px !important; /* Pequeño margen derecho */
-            }
-            .header-logo-container img {
-                max-width: 45px !important; /* Tamaño logo MÁS reducido */
-                max-height: 45px !important;
-                display: block !important; /* Asegura que sea bloque */
-            }
-            /* Contenedor del texto (centro) */
-            .header-text-container {
-                flex-grow: 1; /* Ocupa el espacio restante */
-                text-align: center !important;
-                padding: 0 5px; /* Añade un poco de padding lateral */
-            }
-            header h1 { font-size: 10pt !important; margin-bottom: 0 !important; }
-            header h2 { font-size: 12pt !important; margin-bottom: 2px !important; }
-            header p { font-size: 9pt !important; margin-top: 0 !important; }
-
-            /* Contenedor imagen TIC (derecha) - Asegura que sea visible */
-            .header-tic-container {
-                flex-shrink: 0; /* No se encoge */
-                margin-left: 5px !important; /* Pequeño margen izquierdo */
-            }
-            .header-tic-container img { /* Apunta a la imagen dentro del contenedor */
-                display: block !important; /* Asegura que sea visible */
-                max-width: 45px !important; /* Mismo tamaño reducido que el logo */
-                max-height: 45px !important;
-                object-fit: cover; /* Ajusta la imagen */
-            }
-            /* Oculta la clase original si aún existe, aunque es mejor quitarla del HTML */
-            .print-hide-image {
-                /* display: none !important; Ya no es necesario si la movemos */
-            }
-            /* --- FIN AJUSTES HEADER --- */
-
-
-            /* Estilo para selectores en impresión (muestra el valor seleccionado) */
-            select {
+            select { /* Estilo para selectores en impresión (muestra el valor seleccionado) */
                 border: none !important;
                 background: none !important;
                 -webkit-appearance: none !important;
                 -moz-appearance: none !important;
                 appearance: none !important;
-                padding: 1px !important; /* Padding mínimo */
-                font-size: inherit !important; /* Hereda tamaño de fuente de la celda */
-                color: inherit !important; /* Hereda color de texto */
-                width: 100%; /* Ocupa el espacio de la celda */
-                text-align: center; /* Centra el texto seleccionado */
-                line-height: 1; /* Ajusta interlineado del select */
+                padding: 0px !important; /* Padding mínimo */
+                font-size: inherit !important;
+                color: inherit !important;
+                width: 100%;
+                text-align: center;
+                line-height: 1;
+                font-weight: normal; /* Asegurar que no sea bold si no es necesario */
             }
-            /* Oculta la flecha del select en impresión */
-            select::-ms-expand { display: none; } /* IE/Edge */
+            select::-ms-expand { display: none; } /* Oculta la flecha del select en IE/Edge */
 
-            /* Título principal del horario */
-            h3 {
-                font-size: 11pt !important;
-                margin-bottom: 0.5rem !important; /* Reduce margen inferior título */
+            .time-slot { /* Horas específicas */
+                font-size: 6pt !important;
+                font-weight: normal;
+                display: block; /* Para que el <br> funcione bien */
+                margin-top: 1px;
             }
-            /* Reduce tamaño de fuente de las horas editables */
-            .time-slot {
-                font-size: 6.5pt !important;
-            }
+             th[scope="row"] { /* Para la columna de Horas */
+                font-size: 7pt !important; /* Un poco más grande que el time-slot */
+             }
         }
 
         /* Estilo para la tabla (vista normal) */
         table {
-            border-collapse: collapse; /* Colapsa los bordes */
+            border-collapse: collapse;
             width: 100%;
-            table-layout: fixed; /* Distribución uniforme de columnas */
+            table-layout: fixed;
         }
         th, td {
-            border: 1px solid rgba(0, 0, 0, 0.2); /* Bordes sutiles */
+            border: 1px solid rgba(0, 0, 0, 0.2);
             text-align: center;
-            padding: 6px; /* Espaciado interno ajustado */
-            vertical-align: middle; /* Alineación vertical */
+            padding: 5px; /* Espaciado interno ajustado */
+            vertical-align: middle;
         }
         th {
-            background-color: rgba(219, 234, 254, 0.8); /* Fondo azul claro semi-transparente */
+            background-color: rgba(219, 234, 254, 0.8);
             font-weight: 600;
-            color: #1e3a8a; /* Azul oscuro para texto de encabezado */
-            padding: 8px 6px; /* Padding encabezado normal */
+            color: #1e3a8a;
+            padding: 7px 5px; /* Padding encabezado normal */
         }
-        /* Estilo para los selectores (vista normal) */
         td select {
             width: 100%;
-            padding: 5px 4px; /* Padding ajustado */
+            padding: 4px 3px;
             border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 4px;
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.3);
             cursor: pointer;
-            font-size: 0.8rem; /* Tamaño fuente select reducido */
+            font-size: 0.75rem; /* Tamaño fuente select reducido */
             transition: background-color 0.3s ease, border-color 0.3s ease;
-            -webkit-appearance: none; /* Quita apariencia nativa en Webkit */
-            -moz-appearance: none; /* Quita apariencia nativa en Firefox */
-            appearance: none; /* Quita apariencia nativa estándar */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
             background-image: url('data:image/svg+xml;utf8,<svg fill="black" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
             background-repeat: no-repeat;
-            background-position: right 0.4rem center;
-            background-size: 1em;
-            padding-right: 1.8rem; /* Espacio para la flecha */
+            background-position: right 0.3rem center;
+            background-size: 0.9em;
+            padding-right: 1.5rem;
         }
         td select:focus {
             outline: none;
-            border-color: rgba(59, 130, 246, 0.5); /* Borde azul al enfocar */
-            background-color: rgba(255, 255, 255, 0.4);
+            border-color: rgba(59, 130, 246, 0.5);
+            background-color: rgba(255, 255, 255, 0.5);
         }
-        /* Estilo para la fila de receso */
         .recess-row th, .recess-row td {
-            background-color: rgba(254, 243, 199, 0.8) !important; /* bg-yellow-100 con opacidad */
-            color: #92400e !important; /* text-yellow-800 */
+            background-color: rgba(254, 243, 199, 0.85) !important;
+            color: #92400e !important;
             font-weight: 600 !important;
         }
-        /* Ajuste tamaño fuente horas editables (vista normal) */
         .time-slot {
-            font-size: 0.7rem; /* Tamaño reducido */
+            font-size: 0.7rem; /* Tamaño reducido para vista normal */
+            font-weight: normal;
+            display: block;
         }
-        /* Estilos Header Vista Normal (Flexbox para consistencia) */
+        /* Estilos Header Vista Normal */
         header.view-header {
             display: flex;
-            flex-direction: column; /* Apilado por defecto */
-            align-items: center; /* Centrado por defecto */
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            border-bottom: 1px solid #ccc; /* Borde inferior */
-            padding-bottom: 0.75rem; /* Espaciado inferior */
-            margin-bottom: 1rem; /* Margen inferior */
+            border-bottom: 1px solid rgba(0,0,0,0.15);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
         }
+        header.view-header img { /* Sombra sutil para imágenes del header */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
         @media (min-width: 768px) { /* md breakpoint */
             header.view-header {
-                flex-direction: row; /* Fila en pantallas medianas y grandes */
+                flex-direction: row;
                 justify-content: space-between;
                 text-align: left;
             }
             .view-header .header-text-container {
-                text-align: center; /* Mantiene texto centrado incluso en fila */
-                flex-grow: 1; /* Permite que ocupe espacio */
-                margin: 0 1rem; /* Margen horizontal */
+                text-align: center;
+                flex-grow: 1;
+                margin: 0 1rem;
             }
             .view-header .header-logo-container {
-                margin-bottom: 0; /* Quita margen inferior en vista de fila */
-                flex-shrink: 0; /* Evita que se encoja */
+                margin-bottom: 0;
+                flex-shrink: 0;
             }
-             .view-header .header-tic-container {
-                margin-top: 0; /* Quita margen superior en vista de fila */
-                 flex-shrink: 0; /* Evita que se encoja */
+            .view-header .header-tic-container {
+                margin-top: 0;
+                flex-shrink: 0;
             }
         }
-
     </style>
 </head>
-<body class="p-4 md:p-6">
+<body class="p-3 md:p-5">
 
-    <div id="schedule-container" class="max-w-6xl w-full mx-auto bg-white bg-opacity-80 backdrop-blur-sm p-4 md:p-6 rounded-lg shadow-xl">
+    <div id="schedule-container" class="max-w-6xl w-full mx-auto bg-white bg-opacity-85 backdrop-blur-md p-3 md:p-5 rounded-xl shadow-2xl">
 
         <header class="view-header">
             <div class="header-logo-container flex items-center space-x-3 mb-3 md:mb-0 flex-shrink-0">
-                <img src="sello.jpg" alt="Sello del Colegio" class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-blue-200" onerror="this.onerror=null; this.src='https://placehold.co/64x64/e2e8f0/64748b?text=Sello';">
+                <img src="sello.jpg" alt="Sello del Colegio" class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-blue-300" onerror="this.onerror=null; this.src='https://placehold.co/64x64/EBF4FF/3B82F6?text=Sello'; this.alt='Error Sello';">
             </div>
             <div class="header-text-container">
-                <h1 class="text-base md:text-xl font-bold text-blue-800 font-graduate">UNIDAD EDUCATIVA</h1>
-                <h2 class="text-xl md:text-2xl font-bold text-blue-900 font-graduate">DR. CAMILO GALLEGOS DOMINGUEZ</h2>
-                <p class="text-sm md:text-lg text-blue-700 mt-1">Tutor/a: Msc. Maricela Cun Rueda</p>
+                <h1 class="text-base md:text-lg font-bold text-blue-800 font-graduate">UNIDAD EDUCATIVA</h1>
+                <h2 class="text-xl md:text-2xl font-bold text-blue-900 font-graduate">DR. CAMILO GALLEGOS DOMÍNGUEZ</h2>
+                <p class="text-sm md:text-base text-blue-700 mt-1">Docente: Mgs. Maricela Cun Rueda</p>
             </div>
             <div class="header-tic-container flex-shrink-0 mt-3 md:mt-0">
-                <img src="tic.jpg" alt="Imagen TIC" class="w-28 h-auto md:w-32 rounded-md object-cover shadow-md" onerror="this.onerror=null; this.src='https://placehold.co/128/dbeafe/1e3a8a?text=TIC+Error';">
+                 <img src="tic.jpg" alt="Imagen TIC" class="w-14 h-14 md:w-16 md:h-16 rounded-md object-cover border-2 border-yellow-300" onerror="this.onerror=null; this.src='https://placehold.co/64x64/FFFBEB/F59E0B?text=TIC'; this.alt='Error TIC';">
             </div>
         </header>
 
-        <h3 class="text-xl font-semibold text-center text-gray-800 mb-4">Horario de Clases</h3>
+        <h3 id="schedule-title-print" class="text-xl font-semibold text-center text-gray-800 mb-4">Horario de Clases</h3>
 
         <div class="overflow-x-auto mb-4">
-            <table id="schedule-table" class="min-w-full bg-white bg-opacity-90 rounded-md shadow">
+            <table id="schedule-table" class="min-w-full bg-white bg-opacity-90 rounded-lg shadow-md">
                 <thead class="bg-blue-100">
                     <tr>
                         <th class="w-[10%] py-2 px-1 text-xs md:text-sm font-semibold text-blue-900 uppercase tracking-wider">Hora</th>
@@ -317,7 +280,7 @@
                 </thead>
                 <tbody class="text-gray-700 text-xs">
                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 1 <br><span contenteditable="true" class="font-normal time-slot">(12:40-13:20)</span></th>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 1 <span class="time-slot">(12:40-13:20)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
@@ -325,7 +288,7 @@
                         <td><select class="subject-select"></select></td>
                     </tr>
                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 2 <br><span contenteditable="true" class="font-normal time-slot">(13:20-14:00)</span></th>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 2 <span class="time-slot">(13:20-14:00)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
@@ -333,15 +296,15 @@
                         <td><select class="subject-select"></select></td>
                     </tr>
                      <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 3 <br><span contenteditable="true" class="font-normal time-slot">(14:00-14:40)</span></th>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 3 <span class="time-slot">(14:00-14:40)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                     </tr>
-                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 4 <br><span contenteditable="true" class="font-normal time-slot">(14:40-15:20)</span></th>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 4 <span class="time-slot">(14:40-15:20)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
@@ -349,35 +312,35 @@
                         <td><select class="subject-select"></select></td>
                     </tr>
                     <tr class="recess-row">
-                        <th scope="row" class="font-semibold py-2 px-1">RECESO <br><span contenteditable="true" class="font-normal time-slot">(15:20-15:50)</span></th>
-                        <td colspan="5" class="text-center font-semibold py-2 px-1">TIEMPO DE DESCANSO ESTUDIANTIL</td>
+                        <th scope="row" class="font-semibold py-2 px-1">RECESO <span class="time-slot">(15:20-15:50)</span></th>
+                        <td colspan="5" class="text-center font-semibold py-2 px-1">TIEMPO DE DESCANSO</td>
                     </tr>
-                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 5 <br><span contenteditable="true" class="font-normal time-slot">(15:50-16:30)</span></th>
-                        <td><select class="subject-select"></select></td>
-                        <td><select class="subject-select"></select></td>
-                        <td><select class="subject-select"></select></td>
-                        <td><select class="subject-select"></select></td>
-                        <td><select class="subject-select"></select></td>
-                    </tr>
-                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 6 <br><span contenteditable="true" class="font-normal time-slot">(16:30-17:10)</span></th>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 5 <span class="time-slot">(15:50-16:30)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                     </tr>
-                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 7 <br><span contenteditable="true" class="font-normal time-slot">(17:10-17:50)</span></th>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 6 <span class="time-slot">(16:30-17:10)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                     </tr>
-                     <tr>
-                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 8 <br><span contenteditable="true" class="font-normal time-slot">(17:50-18:30)</span></th>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 7 <span class="time-slot">(17:10-17:50)</span></th>
+                        <td><select class="subject-select"></select></td>
+                        <td><select class="subject-select"></select></td>
+                        <td><select class="subject-select"></select></td>
+                        <td><select class="subject-select"></select></td>
+                        <td><select class="subject-select"></select></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="font-semibold bg-blue-50 py-2 px-1">Hora 8 <span class="time-slot">(17:50-18:30)</span></th>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
                         <td><select class="subject-select"></select></td>
@@ -388,119 +351,200 @@
             </table>
         </div>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mt-4 no-print">
-            <button id="download-excel" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        <div class="flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4 mt-5 no-print">
+            <button id="download-excel" class="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 <span>Descargar Excel</span>
             </button>
-            <button id="print-schedule" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2 px-5 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <button id="print-schedule" class="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 hover:from-blue-600 hover:to-blue-800 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
                     <path d="M7 11h6v1H7v-1z"/>
                 </svg>
                 <span>Imprimir Horario</span>
             </button>
         </div>
-
     </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // ... código existente hasta la parte de descargar Excel ...
+        // Selección de elementos del DOM
+        const scheduleContainer = document.getElementById('schedule-container');
+        const headerElement = scheduleContainer.querySelector('header.view-header');
+        const scheduleTable = document.getElementById('schedule-table');
+        const downloadExcelButton = document.getElementById('download-excel');
+        const printScheduleButton = document.getElementById('print-schedule');
 
+        // Lista de asignaturas para los desplegables
+        const subjects = [
+            { value: "", text: "Seleccionar..." },
+            { value: "PROG_BD_A", text: "Programación y BD A" },
+            { value: "PROG_BD_B", text: "Programación y BD B" },
+            { value: "SOP_TEC_A", text: "Soporte Técnico A" },
+            { value: "SOP_TEC_B", text: "Soporte Técnico B" },
+            { value: "SO_RED_A", text: "Sistema Operativo y redes A" },
+            { value: "SO_RED_B", text: "Sistema Operativo y redes B" },
+            { value: "LIBRE", text: "Libre" } // Opción adicional
+        ];
+
+        // Poblar los selectores de asignaturas
+        document.querySelectorAll('.subject-select').forEach(select => {
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject.value;
+                option.textContent = subject.text;
+                select.appendChild(option);
+            });
+        });
+
+        // Funcionalidad del botón Imprimir
+        if (printScheduleButton) {
+            printScheduleButton.addEventListener('click', () => {
+                window.print();
+            });
+        }
+
+        // Funcionalidad del botón Descargar Excel
         if (downloadExcelButton) {
             downloadExcelButton.addEventListener('click', () => {
-                console.log('¡Clic detectado en Descargar Excel!');
+                console.log('Descargando Excel...');
 
-                // Verificar si la librería XLSX está cargada
                 if (typeof XLSX === 'undefined') {
-                    console.error("Error: La librería SheetJS (XLSX) no se ha cargado correctamente.");
-                    alert("Error: No se pudo encontrar la librería necesaria para generar el archivo Excel. Revise la conexión a internet.");
+                    console.error("Error: La librería SheetJS (XLSX) no se ha cargado.");
+                    // Mostrar un mensaje más amigable al usuario
+                    const msgDiv = document.createElement('div');
+                    msgDiv.textContent = "Error: No se pudo cargar la librería para Excel. Intente de nuevo o revise su conexión.";
+                    msgDiv.style.color = 'red';
+                    msgDiv.style.textAlign = 'center';
+                    msgDiv.style.padding = '10px';
+                    scheduleContainer.insertBefore(msgDiv, scheduleTable.nextSibling); // Insertar después de la tabla
+                    setTimeout(() => msgDiv.remove(), 5000);
                     return;
                 }
 
                 try {
-                    // Guardar las horas editadas antes de exportar
-                    saveTimeSlots();
-
-                    // Preparar datos para la hoja de cálculo
                     const data = [];
 
-                    // 1. Añadir encabezado (títulos, tutor, etc.)
-                    const headerTextContainer = headerElement?.querySelector('.header-text-container');
-                    const h1Text = headerTextContainer?.querySelector('h1')?.textContent.trim() || '';
-                    const h2Text = headerTextContainer?.querySelector('h2')?.textContent.trim() || '';
-                    const pText = headerTextContainer?.querySelector('p')?.textContent.trim() || '';
-                    const scheduleTitle = scheduleContainer.querySelector('h3')?.textContent.trim() || 'Horario de Clases';
+                    // 1. Añadir encabezado de la institución y docente
+                    const h1Text = headerElement?.querySelector('h1')?.textContent.trim() || '';
+                    const h2Text = headerElement?.querySelector('h2')?.textContent.trim() || '';
+                    const pText = headerElement?.querySelector('p')?.textContent.trim() || '';
+                    const scheduleTitle = scheduleContainer.querySelector('h3#schedule-title-print')?.textContent.trim() || 'Horario de Clases';
 
-                    data.push([h1Text]);
-                    data.push([h2Text]);
-                    data.push([pText]);
-                    data.push([]); // Fila vacía de separación
-                    data.push([scheduleTitle]);
-                    data.push([]); // Fila vacía de separación
+                    // Se añaden celdas vacías para espaciar y centrar visualmente en Excel
+                    data.push(['', '', h1Text]);
+                    data.push(['', '', h2Text]);
+                    data.push(['', '', pText]);
+                    data.push([]); // Fila vacía
+                    data.push(['', '', scheduleTitle]);
+                    data.push([]); // Fila vacía
 
-                    // 2. Añadir cabecera de la tabla
+                    // 2. Añadir cabecera de la tabla del horario
                     const headerRow = [];
                     scheduleTable.tHead.querySelectorAll('th').forEach(th => {
                         headerRow.push(th.textContent.replace(/\s+/g, ' ').trim());
                     });
                     data.push(headerRow);
 
-                    // 3. Añadir filas de datos
+                    // 3. Añadir filas de datos del horario
                     const tableBodyRows = scheduleTable.tBodies[0]?.querySelectorAll('tr') || [];
                     tableBodyRows.forEach((tr) => {
                         const rowData = [];
                         
-                        // Celda de la hora
+                        // Celda de la hora (TH)
                         const th = tr.querySelector('th');
                         if (th) {
-                            const hourText = th.childNodes[0]?.textContent.trim() || '';
-                            const timeSlotSpan = th.querySelector('.time-slot');
-                            const timeText = timeSlotSpan ? timeSlotSpan.textContent.trim() : '';
-                            rowData.push(`${hourText} ${timeText}`);
+                            // Combina el texto principal de la hora y el span del intervalo
+                            let hourTextContent = '';
+                            th.childNodes.forEach(node => {
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    hourTextContent += node.textContent.trim() + ' ';
+                                } else if (node.classList && node.classList.contains('time-slot')) {
+                                    hourTextContent += node.textContent.trim();
+                                }
+                            });
+                            rowData.push(hourTextContent.trim());
                         } else {
-                            rowData.push('');
+                            rowData.push(''); // Si no hay th, celda vacía
                         }
 
-                        // Celdas de materias
+                        // Celdas de materias (TD)
                         tr.querySelectorAll('td').forEach((td) => {
-                            if (td.colSpan > 1) {
+                            if (td.colSpan > 1) { // Para celdas combinadas como el receso
                                 rowData.push(td.textContent.trim());
+                                for (let i = 1; i < td.colSpan; i++) rowData.push(''); // Rellenar celdas combinadas
                             } else {
                                 const select = td.querySelector('select.subject-select');
                                 rowData.push(select ? select.options[select.selectedIndex]?.text || '' : td.textContent.trim());
                             }
                         });
-
                         data.push(rowData);
                     });
 
                     // Crear hoja de cálculo
                     const worksheet = XLSX.utils.aoa_to_sheet(data);
                     
-                    // Ajustar anchos de columnas
-                    const colWidths = data[0].map((_, colIndex) => ({
-                        wch: Math.max(...data.map(row => (row[colIndex] || '').toString().length) + 2
-                    }));
-                    worksheet['!cols'] = colWidths;
+                    // Ajustar anchos de columnas (aproximado)
+                    const colWidths = [];
+                    if (data.length > 0) {
+                        // Usar la fila de encabezado de la tabla para el cálculo base de anchos
+                        const headerTableIndex = data.findIndex(row => row[0] && row[0].toLowerCase().includes("hora"));
+                        const referenceRow = headerTableIndex !== -1 ? data[headerTableIndex] : data[0];
+
+                        referenceRow.forEach((_, colIndex) => {
+                            let maxWidth = 0;
+                            data.forEach(row => {
+                                const cellContent = (row[colIndex] || '').toString();
+                                if (cellContent.length > maxWidth) {
+                                    maxWidth = cellContent.length;
+                                }
+                            });
+                            // Ajustes para diferentes columnas
+                            if (colIndex === 0) { // Columna de Hora
+                                colWidths.push({ wch: Math.max(15, maxWidth + 2) });
+                            } else { // Columnas de Días
+                                colWidths.push({ wch: Math.max(25, maxWidth + 2) }); // Más ancho para asignaturas
+                            }
+                        });
+                        worksheet['!cols'] = colWidths;
+                    }
+                    
+                    // Combinar celdas para el encabezado de la institución y título del horario
+                    // Asumiendo 6 columnas en total (Hora + 5 días)
+                    const mergeOptions = { "!merges": [] };
+                    if (data[0][2]) mergeOptions["!merges"].push({ s: { r: 0, c: 2 }, e: { r: 0, c: 5 } }); // H1
+                    if (data[1][2]) mergeOptions["!merges"].push({ s: { r: 1, c: 2 }, e: { r: 1, c: 5 } }); // H2
+                    if (data[2][2]) mergeOptions["!merges"].push({ s: { r: 2, c: 2 }, e: { r: 2, c: 5 } }); // P
+                    if (data[4][2]) mergeOptions["!merges"].push({ s: { r: 4, c: 2 }, e: { r: 4, c: 5 } }); // Schedule Title
+                    
+                    // Combinar celda de RECESO
+                    const recessRowIndex = data.findIndex(row => row[0] && row[0].toUpperCase().includes("RECESO"));
+                    if (recessRowIndex !== -1) {
+                         mergeOptions["!merges"].push({ s: { r: recessRowIndex, c: 1 }, e: { r: recessRowIndex, c: 5 } });
+                    }
+                    worksheet["!merges"] = mergeOptions["!merges"];
+
 
                     // Crear libro y descargar
                     const workbook = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(workbook, worksheet, "Horario");
-                    XLSX.writeFile(workbook, "Horario_Clases.xlsx");
+                    XLSX.writeFile(workbook, "Horario_Clases_Mgs_Maricela_Cun.xlsx");
 
                 } catch (error) {
                     console.error("Error al generar Excel:", error);
-                    alert("Ocurrió un error al generar el Excel. Consulte la consola para más detalles.");
+                    const msgDiv = document.createElement('div');
+                    msgDiv.textContent = "Error al generar Excel. Revise la consola.";
+                    msgDiv.style.color = 'red';
+                    msgDiv.style.textAlign = 'center';
+                    msgDiv.style.padding = '10px';
+                    scheduleContainer.insertBefore(msgDiv, scheduleTable.nextSibling);
+                    setTimeout(() => msgDiv.remove(), 5000);
                 }
             });
         }
-
-        // ... resto del código existente ...
     });
-</script>
+  </script>
 </body>
 </html>
