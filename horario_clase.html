@@ -416,6 +416,9 @@
             const scheduleTable = document.getElementById('schedule-table');
             const headerElement = document.querySelector('header.view-header');
 
+            // *** DEBUG: Verificar si el botón se encontró ***
+            console.log("Botón Descargar Excel encontrado:", downloadExcelButton);
+
             // --- Opciones para los menús desplegables ---
             const subjectOptions = [
                 "", // Opción vacía por defecto
@@ -447,184 +450,201 @@
             });
 
             // --- Funcionalidad del Botón Descargar Excel ---
-            downloadExcelButton.addEventListener('click', () => {
-                console.log('Iniciando descarga Excel...');
-                // ** Añadido Try...Catch para manejo de errores **
-                try {
-                    saveTimeSlots(); // Guardar horas editables antes de exportar
+            // *** DEBUG: Verificar si el event listener se está añadiendo ***
+            if (downloadExcelButton) {
+                 console.log("Añadiendo event listener al botón Descargar Excel.");
+                 downloadExcelButton.addEventListener('click', () => {
+                    // *** DEBUG: Verificar si el evento click se dispara ***
+                    console.log('¡Clic detectado en Descargar Excel!');
 
-                    // --- Preparar datos para la hoja de cálculo ---
-                    const data = [];
-
-                    // 1. Añadir Encabezado (Títulos, Tutor, etc.)
-                    const headerTextContainer = headerElement?.querySelector('.header-text-container'); // Más seguro con ?
-                    const h1Text = headerTextContainer?.querySelector('h1')?.textContent.trim() || '';
-                    const h2Text = headerTextContainer?.querySelector('h2')?.textContent.trim() || '';
-                    const pText = headerTextContainer?.querySelector('p')?.textContent.trim() || '';
-                    const scheduleTitle = scheduleContainer.querySelector('h3')?.textContent.trim() || 'Horario de Clases';
-
-                    // Añadir filas de encabezado al array 'data'
-                    data.push([h1Text]);
-                    data.push([h2Text]);
-                    data.push([pText]);
-                    data.push([]); // Fila vacía como separador
-                    data.push([scheduleTitle]);
-                    data.push([]); // Fila vacía como separador
-
-                    // 2. Añadir Cabecera de la Tabla (Hora, Lunes, Martes...)
-                    const headerRow = [];
-                    // Verifica que la tabla y thead existan
-                    if (!scheduleTable || !scheduleTable.tHead) {
-                         console.error("Error: No se encontró la tabla o su encabezado (thead).");
-                         alert("Error al procesar la tabla para Excel.");
-                         return; // Detener ejecución si falta la cabecera
-                    }
-                    scheduleTable.tHead.querySelectorAll('th').forEach(th => {
-                        headerRow.push(th.textContent.trim());
-                    });
-                    if (headerRow.length > 0) {
-                        data.push(headerRow);
+                    // Verificar si la librería XLSX está cargada
+                    if (typeof XLSX === 'undefined') {
+                        console.error("Error: La librería SheetJS (XLSX) no se ha cargado correctamente.");
+                        alert("Error: No se pudo encontrar la librería necesaria para generar el archivo Excel. Revise la conexión a internet o la consola para errores de carga.");
+                        return; // Detener si la librería no está
                     } else {
-                        console.error("No se pudo extraer la cabecera de la tabla.");
-                        alert("Error al procesar la cabecera de la tabla para Excel.");
-                        return; // Detener si no hay cabecera
+                        console.log("Librería XLSX encontrada.");
                     }
 
-                    // 3. Añadir Filas de Datos de la Tabla (tbody)
-                    // Verifica que tbody exista
-                     if (!scheduleTable.tBodies || scheduleTable.tBodies.length === 0) {
-                        console.warn("Advertencia: No se encontró el cuerpo (tbody) de la tabla.");
-                        // Podría continuar y exportar solo el encabezado, o detenerse.
-                        // Por ahora, continuaremos, pero mostraremos una advertencia si no hay datos.
-                    }
-                    const tableBodyRows = scheduleTable.tBodies[0]?.querySelectorAll('tr') || []; // Usar tbody[0]
+                    // ** Añadido Try...Catch para manejo de errores **
+                    try {
+                        console.log('Dentro del bloque try...'); // DEBUG
+                        saveTimeSlots(); // Guardar horas editables antes de exportar
+                        console.log('Horas guardadas.'); // DEBUG
 
-                    if (tableBodyRows.length === 0) {
-                         console.warn("El cuerpo de la tabla está vacío.");
-                         // Considerar mostrar una alerta si no hay filas de datos
-                         // alert("No hay datos en el horario para exportar.");
-                         // return; // Podrías detener aquí si prefieres no exportar tablas vacías
-                    }
+                        // --- Preparar datos para la hoja de cálculo ---
+                        const data = [];
+                        console.log('Array de datos inicializado.'); // DEBUG
 
-                    tableBodyRows.forEach((tr) => {
-                        const rowData = [];
-                        // Celda de la Hora (TH en tbody)
-                        const th = tr.querySelector('th');
-                        if (th) {
-                            const hourText = th.childNodes[0]?.nodeValue?.trim() || ''; // Texto "Hora X"
-                            const timeSlotSpan = th.querySelector('.time-slot');
-                            const timeText = timeSlotSpan ? timeSlotSpan.textContent.trim() : '';
-                            rowData.push(`${hourText}\n${timeText}`); // Combina con salto de línea para Excel
+                        // 1. Añadir Encabezado (Títulos, Tutor, etc.)
+                        const headerTextContainer = headerElement?.querySelector('.header-text-container');
+                        const h1Text = headerTextContainer?.querySelector('h1')?.textContent.trim() || '';
+                        const h2Text = headerTextContainer?.querySelector('h2')?.textContent.trim() || '';
+                        const pText = headerTextContainer?.querySelector('p')?.textContent.trim() || '';
+                        const scheduleTitle = scheduleContainer.querySelector('h3')?.textContent.trim() || 'Horario de Clases';
+                        console.log('Encabezado extraído:', h1Text, h2Text, pText, scheduleTitle); // DEBUG
+
+                        data.push([h1Text]);
+                        data.push([h2Text]);
+                        data.push([pText]);
+                        data.push([]);
+                        data.push([scheduleTitle]);
+                        data.push([]);
+                        console.log('Datos del encabezado añadidos al array.'); // DEBUG
+
+                        // 2. Añadir Cabecera de la Tabla (Hora, Lunes, Martes...)
+                        const headerRow = [];
+                        if (!scheduleTable || !scheduleTable.tHead) {
+                             console.error("Error: No se encontró la tabla o su encabezado (thead).");
+                             alert("Error al procesar la tabla para Excel.");
+                             return;
+                        }
+                        scheduleTable.tHead.querySelectorAll('th').forEach(th => {
+                            headerRow.push(th.textContent.trim());
+                        });
+                        if (headerRow.length > 0) {
+                            data.push(headerRow);
+                            console.log('Cabecera de tabla añadida:', headerRow); // DEBUG
                         } else {
-                            rowData.push(''); // Celda vacía si no hay 'th' en esta fila
+                            console.error("No se pudo extraer la cabecera de la tabla.");
+                            alert("Error al procesar la cabecera de la tabla para Excel.");
+                            return;
                         }
 
-                        // Celdas de Materias (TD en tbody)
-                        const tds = tr.querySelectorAll('td');
-                        tds.forEach((td) => {
-                            if (td.colSpan === 5) { // Celda de Receso
-                                rowData.push(td.textContent.trim());
-                                // Añadir celdas vacías para las columnas combinadas
-                                for (let i = 0; i < 4; i++) rowData.push("");
+                        // 3. Añadir Filas de Datos de la Tabla (tbody)
+                        if (!scheduleTable.tBodies || scheduleTable.tBodies.length === 0) {
+                            console.warn("Advertencia: No se encontró el cuerpo (tbody) de la tabla.");
+                        }
+                        const tableBodyRows = scheduleTable.tBodies[0]?.querySelectorAll('tr') || [];
+                        console.log(`Procesando ${tableBodyRows.length} filas del tbody.`); // DEBUG
+
+                        if (tableBodyRows.length === 0) {
+                             console.warn("El cuerpo de la tabla está vacío.");
+                        }
+
+                        tableBodyRows.forEach((tr, rowIndex) => {
+                            const rowData = [];
+                            const th = tr.querySelector('th');
+                            if (th) {
+                                const hourText = th.childNodes[0]?.nodeValue?.trim() || '';
+                                const timeSlotSpan = th.querySelector('.time-slot');
+                                const timeText = timeSlotSpan ? timeSlotSpan.textContent.trim() : '';
+                                rowData.push(`${hourText}\n${timeText}`);
                             } else {
-                                const select = td.querySelector('select.subject-select');
-                                if (select) {
-                                    // Acceso más seguro a la opción seleccionada
-                                    const selectedOption = select.options[select.selectedIndex];
-                                    const selectedText = selectedOption ? selectedOption.text : '';
-                                    rowData.push(selectedText === "--- Seleccionar ---" ? "" : selectedText);
-                                } else {
-                                    // Si no es receso y no hay select, añadir el texto (si lo hubiera)
+                                rowData.push('');
+                            }
+
+                            const tds = tr.querySelectorAll('td');
+                            tds.forEach((td) => {
+                                if (td.colSpan === 5) {
                                     rowData.push(td.textContent.trim());
+                                    for (let i = 0; i < 4; i++) rowData.push("");
+                                } else {
+                                    const select = td.querySelector('select.subject-select');
+                                    if (select) {
+                                        const selectedOption = select.options[select.selectedIndex];
+                                        const selectedText = selectedOption ? selectedOption.text : '';
+                                        rowData.push(selectedText === "--- Seleccionar ---" ? "" : selectedText);
+                                    } else {
+                                        rowData.push(td.textContent.trim());
+                                    }
                                 }
+                            });
+
+                            const expectedColumns = headerRow.length;
+                            while (rowData.length < expectedColumns) {
+                                rowData.push('');
                             }
+                             if(rowData.some(cell => cell !== '')) {
+                                data.push(rowData);
+                             }
+                            // console.log(`Fila ${rowIndex} procesada:`, rowData); // DEBUG (puede ser mucho output)
                         });
 
-                        // Asegurar que la fila tenga el número correcto de columnas
-                        const expectedColumns = headerRow.length;
-                        while (rowData.length < expectedColumns) {
-                            rowData.push('');
+                        console.log('Datos de las filas procesados.'); // DEBUG
+
+                        if (data.length <= 7) {
+                            console.warn("No se encontraron datos en las filas del horario para exportar.");
+                            alert("El horario parece estar vacío. No se generó el archivo Excel.");
+                            return;
                         }
-                         // Solo añadir la fila si contiene datos significativos (evita filas completamente vacías)
-                         if(rowData.some(cell => cell !== '')) {
-                            data.push(rowData);
-                         }
-                    });
-
-                    // Verificar si se añadieron datos además del encabezado
-                    if (data.length <= 7) { // 6 filas de encabezado + 1 fila de cabecera tabla = 7
-                        console.warn("No se encontraron datos en las filas del horario para exportar.");
-                        alert("El horario parece estar vacío. No se generó el archivo Excel.");
-                        return; // No generar archivo si no hay datos
-                    }
 
 
-                    // --- Crear Hoja de Cálculo (Worksheet) y Libro (Workbook) ---
-                    const worksheet = XLSX.utils.aoa_to_sheet(data);
+                        // --- Crear Hoja de Cálculo (Worksheet) y Libro (Workbook) ---
+                        console.log('Creando hoja de cálculo...'); // DEBUG
+                        const worksheet = XLSX.utils.aoa_to_sheet(data);
+                        console.log('Hoja de cálculo creada.'); // DEBUG
 
-                    // --- Ajustar Ancho de Columnas (Mejora visual) ---
-                    const colWidths = data[6].map(() => ({ wch: 15 })); // Ancho base usando la fila de cabecera (índice 6)
-                    data.forEach(row => {
-                        row.forEach((cell, i) => {
-                            const cellContent = cell ? cell.toString() : '';
-                            // Considerar saltos de línea para el ancho
-                            const lines = cellContent.split('\n');
-                            const maxLineLength = lines.reduce((max, line) => Math.max(max, line.length), 0);
-                            const len = maxLineLength;
-
-                            if (colWidths[i] === undefined) colWidths[i] = { wch: 10 }; // Por si acaso
-
-                            if (colWidths[i].wch < len) {
-                                // Ajustar ancho si el contenido es más largo, con un mínimo y padding
-                                colWidths[i] = { wch: Math.max(15, len + 3) };
-                            }
+                        // --- Ajustar Ancho de Columnas (Mejora visual) ---
+                        const colWidths = data[6].map(() => ({ wch: 15 }));
+                        data.forEach(row => {
+                            row.forEach((cell, i) => {
+                                const cellContent = cell ? cell.toString() : '';
+                                const lines = cellContent.split('\n');
+                                const maxLineLength = lines.reduce((max, line) => Math.max(max, line.length), 0);
+                                const len = maxLineLength;
+                                if (colWidths[i] === undefined) colWidths[i] = { wch: 10 };
+                                if (colWidths[i].wch < len) {
+                                    colWidths[i] = { wch: Math.max(15, len + 3) };
+                                }
+                            });
                         });
-                    });
-                    colWidths[0] = { wch: 20 }; // Ancho específico para la columna 'Hora'
-                    worksheet['!cols'] = colWidths;
+                        colWidths[0] = { wch: 20 };
+                        worksheet['!cols'] = colWidths;
+                        console.log('Ancho de columnas ajustado.'); // DEBUG
 
-                    // --- Combinar Celdas (Merges) ---
-                    const merges = [];
-                    const numCols = headerRow.length > 0 ? headerRow.length - 1 : 5; // Usar número real de columnas
-                    // Combinar celdas del encabezado principal
-                    if (data[0]?.[0]) merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: numCols } }); // Fila 1
-                    if (data[1]?.[0]) merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: numCols } }); // Fila 2
-                    if (data[2]?.[0]) merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: numCols } }); // Fila 3
-                    if (data[4]?.[0]) merges.push({ s: { r: 4, c: 0 }, e: { r: 4, c: numCols } }); // Fila 5 (Título Horario)
+                        // --- Combinar Celdas (Merges) ---
+                        const merges = [];
+                        const numCols = headerRow.length > 0 ? headerRow.length - 1 : 5;
+                        if (data[0]?.[0]) merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: numCols } });
+                        if (data[1]?.[0]) merges.push({ s: { r: 1, c: 0 }, e: { r: 1, c: numCols } });
+                        if (data[2]?.[0]) merges.push({ s: { r: 2, c: 0 }, e: { r: 2, c: numCols } });
+                        if (data[4]?.[0]) merges.push({ s: { r: 4, c: 0 }, e: { r: 4, c: numCols } });
 
-                    // Combinar celda de Receso (buscarla en los datos procesados)
-                    const recessRowIndexInData = data.findIndex(row => row.some(cell => typeof cell === 'string' && cell.includes('RECESO')));
-                    if (recessRowIndexInData > -1) {
-                         // Encontrar la columna donde empieza el texto del receso
-                        const recessColIndex = data[recessRowIndexInData].findIndex(cell => typeof cell === 'string' && cell.includes('TIEMPO DE DESCANSO'));
-                         if (recessColIndex > -1) {
-                            // Combinar desde esa columna hasta la última
-                            merges.push({ s: { r: recessRowIndexInData, c: recessColIndex }, e: { r: recessRowIndexInData, c: numCols } });
+                        const recessRowIndexInData = data.findIndex(row => row.some(cell => typeof cell === 'string' && cell.includes('RECESO')));
+                        if (recessRowIndexInData > -1) {
+                            const recessColIndex = data[recessRowIndexInData].findIndex(cell => typeof cell === 'string' && cell.includes('TIEMPO DE DESCANSO'));
+                             if (recessColIndex > -1) {
+                                merges.push({ s: { r: recessRowIndexInData, c: recessColIndex }, e: { r: recessRowIndexInData, c: numCols } });
+                            }
                         }
+                        worksheet['!merges'] = merges;
+                        console.log('Celdas combinadas.'); // DEBUG
+
+                        // --- Crear Libro y Descargar Archivo ---
+                        console.log('Creando libro de Excel...'); // DEBUG
+                        const workbook = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(workbook, worksheet, "Horario");
+                        console.log('Hoja añadida al libro.'); // DEBUG
+
+                        const fileName = 'horario_clases_camilo_gallegos.xlsx';
+                        console.log(`Intentando descargar archivo: ${fileName}`); // DEBUG
+                        XLSX.writeFile(workbook, fileName); // Iniciar descarga
+
+                        console.log('Descarga de Excel iniciada exitosamente (si no hubo errores previos).');
+
+                    } catch (error) { // ** Bloque Catch para capturar errores **
+                        console.error('Error DENTRO del bloque try...catch al generar Excel:', error); // Mensaje más específico
+                        alert('Ocurrió un error al intentar descargar el horario en formato Excel. Por favor, revise la consola del navegador (F12) para obtener más detalles técnicos.');
                     }
-                    worksheet['!merges'] = merges; // Aplicar las combinaciones
+                 });
+            } else {
+                 // *** DEBUG: Mensaje si el botón no se encontró ***
+                 console.error("Error crítico: No se pudo encontrar el botón con ID 'download-excel'. El event listener no se pudo añadir.");
+                 alert("Error interno: No se encontró el botón de descarga. Contacte al administrador.");
+            }
 
-                    // --- Crear Libro y Descargar Archivo ---
-                    const workbook = XLSX.utils.book_new(); // Crear libro
-                    XLSX.utils.book_append_sheet(workbook, worksheet, "Horario"); // Añadir hoja
-
-                    const fileName = 'horario_clases_camilo_gallegos.xlsx'; // Nombre del archivo
-                    XLSX.writeFile(workbook, fileName); // Iniciar descarga
-
-                    console.log('Excel generado exitosamente.');
-
-                } catch (error) { // ** Bloque Catch para capturar errores **
-                    console.error('Error al generar o descargar el archivo Excel:', error);
-                    // Mostrar alerta al usuario
-                    alert('Ocurrió un error al intentar descargar el horario en formato Excel. Por favor, revise la consola del navegador (F12) para obtener más detalles técnicos.');
-                }
-            });
 
             // --- Funcionalidad del Botón Imprimir ---
-            printButton.addEventListener('click', () => {
-                saveTimeSlots(); // Guardar horas editables
-                window.print(); // Abrir diálogo de impresión
-            });
+            if(printButton) {
+                printButton.addEventListener('click', () => {
+                    console.log("Clic detectado en Imprimir Horario."); // DEBUG
+                    saveTimeSlots();
+                    window.print();
+                });
+            } else {
+                 console.error("Error: No se pudo encontrar el botón con ID 'print-schedule'.");
+            }
 
 
             // --- Guardar/Cargar horas editables en localStorage ---
@@ -632,7 +652,7 @@
                 editableTimeSlots.forEach((span, index) => {
                     localStorage.setItem(`time_slot_${index}`, span.textContent.trim());
                 });
-                // console.log("Horas guardadas en localStorage."); // Descomentar para depuración
+                // console.log("Horas guardadas en localStorage.");
             }
 
             function loadTimeSlots() {
@@ -641,12 +661,11 @@
                      if (savedTime) {
                         span.textContent = savedTime;
                     }
-                    // Guardar al perder el foco (blur) o al presionar Enter
                     span.addEventListener('blur', saveTimeSlots);
                     span.addEventListener('keydown', (event) => {
                         if (event.key === 'Enter') {
-                            event.preventDefault(); // Evita salto de línea en contenteditable
-                            span.blur(); // Simula perder el foco para guardar
+                            event.preventDefault();
+                            span.blur();
                         }
                     });
                 });
@@ -654,6 +673,7 @@
 
             // Cargar horas al iniciar la página
             loadTimeSlots();
+            console.log("Script de Horario inicializado completamente."); // DEBUG final
 
         }); // Fin de DOMContentLoaded
     </script>
