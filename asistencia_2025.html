@@ -40,14 +40,16 @@
         <label class="block text-blue-700 font-semibold mb-1">Curso:</label>
         <select id="curso" class="w-full border border-blue-300 rounded p-2" required>
           <option value="">Selecciona un curso</option>
-          <option>3ro Infor A</option>
-          <option>3ro Infor B</option>
+          <option value="3ro Infor A">3ro Infor A</option>
+          <option value="3ro Infor B">3ro Infor B</option>
         </select>
       </div>
 
       <div>
         <label class="block text-blue-700 font-semibold mb-1">Nombre del Estudiante:</label>
-        <input type="text" id="nombre" placeholder="Ej. Juan Pérez" class="w-full border border-blue-300 rounded p-2" required>
+        <select id="nombre" class="w-full border border-blue-300 rounded p-2" required disabled>
+            <option value="">Selecciona un curso primero</option>
+        </select>
       </div>
 
       <div>
@@ -57,7 +59,7 @@
           <option>Atrasado</option>
           <option>Ausente</option>
           <option>Justificado</option>
-        </select>
+          <option>Presente</option> </select>
       </div>
 
       <div class="col-span-1 md:col-span-2">
@@ -108,32 +110,125 @@
     const formulario = document.getElementById("formulario");
     const tabla = document.getElementById("tabla-asistencia");
     const buscador = document.getElementById("buscador");
+    const selectCurso = document.getElementById("curso");
+    const selectNombre = document.getElementById("nombre");
     let registros = JSON.parse(localStorage.getItem("asistencias")) || [];
+
+    // Nóminas de estudiantes
+    const nominas = {
+        "3ro Infor A": [
+            "AGREDA BONILLA ALBANO EMANUELE PIERLUIGI",
+            "AGUIRRE GOMEZ STALIN JAIR",
+            "AVILA MONTESDEOCA JOHNSON LEE",
+            "BONE VALENCIA NOELIA DAMARIS",
+            "CABRERA POGGIO JULIO XAVIER",
+            "CAPELO ROMERO JORGE REYNALDO",
+            "CARRILLO ESPINOZA DIEGO LEONARDO",
+            "CUN CHICOMA JORGE JOSUE",
+            "ESPINOZA CASTILLO JEFFERSON ROLANDO",
+            "GONZALES VALAREZO XIMENA ALEJANDRA",
+            "GONZALEZ CHERREZ MICHAEL DANIEL",
+            "GUAMAN SURIAGA ALEX DANILO",
+            "GUERRERO NARANJO JOEL ROGER",
+            "HERRERA FEIJOO MATEO SEBASTIAN",
+            "HERRERA PIEDRA STEFANY ANDREA",
+            "HIDALGO CUEVA OSCAR ALEXANDER",
+            "HOLGUIN DELGADO DENISSE ABIGAIL",
+            "JIMENEZ ABAD LUIS FERNANDO",
+            "MERECI VERA DANNA CAMILA",
+            "PONCE BUSTAMANTE JEAMPIERRE",
+            "RAMIREZ ASENCIO SLEIDER JAVIER",
+            "ROBLES ZAPATA JESUS ADRIAN",
+            "RODRIGUEZ GUARNIZO RAFAEL ALBERTO",
+            "ROMERO ERRAEZ NAHOMY LISSBETH",
+            "RUIZ SANCHEZ YASMIN JUSLEIDY",
+            "TENEMAZA GUARTAN RODDY LENIN",
+            "VIVANCO GRANDA ANTHONY JAIR",
+            "ZAPATA LUCERO JAIR ALEXANDER",
+            "ZUMBA ESPINOZA LUIS FERNANDO"
+        ].sort(), // Ordenar alfabéticamente
+        "3ro Infor B": [
+            "AGILA GUTIERREZ BRITTANY PAOLA",
+            "CAJAMARCA PEÑAFIEL DARWIN ALEXANDER",
+            "CAMACHO RODRIGUEZ LUZ MARIA",
+            "CASTILLO SARITAMA LUIS ALEXANDER",
+            "CRUZ VELASCO STEFANIE YULIANA",
+            "CUENCA CALVA YUSELLY DAYANNA",
+            "ESPINOZA AREVALO ERICKA DAYANNA",
+            "GUARNIZO SARANGO XIOMARA PAULETTE",
+            "GUTIERREZ RAMON AXEL XAVIER",
+            "JARAMILLO MORALES XIMENA KAROLINA",
+            "JUMBO SARANGO JEFFERSON VICENTE",
+            "LIANG FAREZ BAO YU",
+            "MANZANO RAMIREZ GABRIELA ALEXANDRA",
+            "MASAPANTA FLORES VICTOR MANUEL",
+            "MAZA CHUYA EMILY GABRIELA",
+            "MEDINA SANCHEZ CRISTOPHER ADRIAN",
+            "MENDOZA MANZANO KEVIN MANUEL",
+            "MOROCHO VILLALTA ESTEFANY MARIBEL",
+            "MOROCHO VILLALTA JOSE ALEXANDER",
+            "NAZARENO NAZARENO ALEXANDRA NOEMI",
+            "ORDOÑEZ BELTRAN ANGELA EUNICE",
+            "ORELLANA NOBLECILLA JEINER JAIR",
+            "REYES BEDOYA MARIA ISABEL",
+            "RODRIGUEZ ROMERO ELVIS DANIEL",
+            "ROMERO JIMENEZ GRACIELA MERCEDES",
+            "SANCHEZ ORDOÑEZ FELIX ADOLFO",
+            "SARANGO NARVAEZ DILAN JOSUE",
+            "SOTO PUCHA ESNEIDER ANDRES",
+            "VINCES BRAVO ARIEL ENRIQUE",
+            "VIVANCO GRANDA ANTHONY JAIR"
+        ].sort() // Ordenar alfabéticamente
+    };
+
+    // Función para llenar el select de nombres según el curso seleccionado
+    function llenarNombres() {
+        const cursoSeleccionado = selectCurso.value;
+        selectNombre.innerHTML = ""; // Limpiar opciones actuales
+        selectNombre.disabled = true; // Deshabilitar hasta que se seleccione un curso
+
+        if (cursoSeleccionado && nominas[cursoSeleccionado]) {
+            selectNombre.disabled = false; // Habilitar si hay un curso seleccionado
+            const optionDefault = document.createElement("option");
+            optionDefault.value = "";
+            optionDefault.textContent = "Selecciona un estudiante";
+            selectNombre.appendChild(optionDefault);
+
+            nominas[cursoSeleccionado].forEach(nombre => {
+                const option = document.createElement("option");
+                option.value = nombre;
+                option.textContent = nombre;
+                selectNombre.appendChild(option);
+            });
+        } else {
+             const optionDefault = document.createElement("option");
+            optionDefault.value = "";
+            optionDefault.textContent = "Selecciona un curso primero";
+            selectNombre.appendChild(optionDefault);
+        }
+    }
+
+    // Event listener para el cambio en el select de curso
+    selectCurso.addEventListener("change", llenarNombres);
 
     formulario.addEventListener("submit", function (e) {
       e.preventDefault();
 
       const fecha = document.getElementById("fecha").value;
-      const curso = document.getElementById("curso").value;
-      const nombre = document.getElementById("nombre").value.trim();
+      const curso = selectCurso.value; // Obtener valor del select de curso
+      const nombre = selectNombre.value; // Obtener valor del select de nombre
       const estado = document.getElementById("estado").value;
       const observaciones = document.getElementById("observaciones").value.trim();
 
       if (!fecha || !curso || !nombre || !estado) {
-        // Reemplazar alert con un mensaje en la UI si es posible, o mantener alert por simplicidad
         alert("Por favor, completa todos los campos.");
         return;
       }
 
-      if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) {
-         // Reemplazar alert con un mensaje en la UI si es posible
-        alert("El nombre debe contener solo letras.");
-        return;
-      }
+      // La validación de nombre solo con letras ya no es necesaria si se selecciona de una lista predefinida
 
       const hoy = new Date().toISOString().split("T")[0];
       if (fecha > hoy) {
-         // Reemplazar alert con un mensaje en la UI si es posible
         alert("La fecha no puede estar en el futuro.");
         return;
       }
@@ -143,8 +238,7 @@
       );
 
       if (yaExiste) {
-         // Reemplazar alert con un mensaje en la UI si es posible
-        alert("Ya se registró este estudiante para esta fecha.");
+        alert("Ya se registró este estudiante para esta fecha y curso.");
         return;
       }
 
@@ -152,12 +246,13 @@
       registros.push(nuevoRegistro);
       localStorage.setItem("asistencias", JSON.stringify(registros));
       formulario.reset();
+      // Restablecer el select de nombres después de resetear el formulario
+      llenarNombres();
       mostrarRegistros();
     });
 
     function mostrarRegistros() {
       tabla.innerHTML = "";
-      // Ordenar registros por fecha descendente (más reciente primero)
       const registrosOrdenados = [...registros].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
       registrosOrdenados.forEach(reg => {
@@ -185,8 +280,7 @@
     function exportarCSV() {
       let csv = "Fecha,Curso,Nombre,Estado,Observaciones\n";
       registros.forEach(r => {
-        // Asegurar que las observaciones con comas no rompan el CSV
-        const observacionesSeguras = r.observaciones.replace(/"/g, '""'); // Escapar comillas dobles
+        const observacionesSeguras = r.observaciones.replace(/"/g, '""');
         csv += `"${r.fecha}","${r.curso}","${r.nombre}","${r.estado}","${observacionesSeguras}"\n`;
       });
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -201,33 +295,27 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(10); // Reducir tamaño de fuente para más contenido
+      doc.setFontSize(10);
 
       let yPosition = 20;
       const margin = 15;
       const pageWidth = doc.internal.pageSize.getWidth();
 
-      // Título
       doc.setFontSize(14);
       doc.text("Control de Asistencia - Estudiantes", pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 10;
-      doc.setFontSize(10); // Volver a tamaño normal
-
-      // Encabezados (opcional, pero útil)
-      // doc.text("Fecha | Curso | Nombre | Estado | Observaciones", margin, yPosition);
-      // yPosition += 5;
+      doc.setFontSize(10);
 
       registros.forEach(r => {
         const line = `Fecha: ${r.fecha} | Curso: ${r.curso} | Nombre: ${r.nombre} | Estado: ${r.estado} | Observaciones: ${r.observaciones}`;
-        const splitText = doc.splitTextToSize(line, pageWidth - 2 * margin); // Dividir texto si es muy largo
+        const splitText = doc.splitTextToSize(line, pageWidth - 2 * margin);
         doc.text(splitText, margin, yPosition);
-        yPosition += (splitText.length * 4) + 2; // Aumentar posición Y según el número de líneas y un pequeño espacio
+        yPosition += (splitText.length * 4) + 2;
 
-        // Añadir nueva página si no hay suficiente espacio
         if (yPosition > doc.internal.pageSize.getHeight() - margin) {
             doc.addPage();
-            yPosition = margin; // Reiniciar posición Y en la nueva página
-             doc.setFontSize(14);
+            yPosition = margin;
+            doc.setFontSize(14);
             doc.text("Control de Asistencia - Estudiantes (Continuación)", pageWidth / 2, yPosition, { align: 'center' });
             yPosition += 10;
             doc.setFontSize(10);
@@ -237,44 +325,29 @@
       doc.save("asistencia-estudiantes.pdf");
     }
 
-    // Nueva función para limpiar los registros del día actual
     function limpiarRegistrosDelDia() {
-        const hoy = new Date().toISOString().split("T")[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
+        const hoy = new Date().toISOString().split("T")[0];
 
-        // Confirmar con el usuario antes de limpiar
         if (confirm(`¿Estás seguro de que quieres limpiar TODOS los registros de asistencia para la fecha ${hoy}? Esta acción no se puede deshacer.`)) {
-            // Filtrar los registros, manteniendo solo aquellos cuya fecha NO es hoy
             const registrosFiltrados = registros.filter(reg => reg.fecha !== hoy);
-
-            // Actualizar el array de registros
             registros = registrosFiltrados;
-
-            // Guardar el array actualizado en localStorage
             localStorage.setItem("asistencias", JSON.stringify(registros));
-
-            // Mostrar los registros actualizados en la tabla
             mostrarRegistros();
-
-            // Opcional: Mostrar un mensaje de éxito
             alert(`Registros de la fecha ${hoy} limpiados correctamente.`);
         } else {
-            // Si el usuario cancela, no hacer nada
             alert("La limpieza de registros ha sido cancelada.");
         }
     }
 
-
-    // Función para inicializar la fecha con el día actual al cargar la página
     function setFechaActual() {
         const fechaInput = document.getElementById("fecha");
         const hoy = new Date().toISOString().split("T")[0];
         fechaInput.value = hoy;
     }
 
-    // Llamar a la función para establecer la fecha actual al cargar la página
+    // Inicializar la fecha, llenar los nombres (inicialmente vacío o con mensaje) y mostrar registros al cargar la página
     setFechaActual();
-
-    // Mostrar los registros al cargar la página
+    llenarNombres(); // Llama a llenarNombres al cargar para mostrar el mensaje inicial
     mostrarRegistros();
 
   </script>
