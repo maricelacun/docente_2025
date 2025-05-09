@@ -11,10 +11,10 @@
 
   <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
   <header class="mb-12 text-gray-800 flex flex-col md:flex-row items-center justify-center md:justify-start">
-    <img  src="sello.jpg" alt="Sello de la Unidad Educativa Dr. Camilo Gallegos Domínguez" 
-      class="h-20 w-20 md:h-24 md:w-24 mb-4 md:mb-0 md:mr-6 rounded-full shadow-md object-cover flex-shrink-0" 
+    <img  src="sello.jpg" alt="Sello de la Unidad Educativa Dr. Camilo Gallegos Domínguez"
+      class="h-20 w-20 md:h-24 md:w-24 mb-4 md:mb-0 md:mr-6 rounded-full shadow-md object-cover flex-shrink-0"
       onerror="this.onerror=null; this.src='https://placehold.co/100x100/EBF4FF/3B82F6?text=Sello';"    >
-    
+
     <div class="text-center md:text-left">
       <h1 class="text-center text-xl md:text-2xl font-bold mb-2 text-blue-700 drop-shadow">
           UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"
@@ -27,9 +27,9 @@
       </p>
     </div>
   </header>
- 
+
     <h1 class="text-3xl font-bold text-blue-700 text-center mb-6">📋 CONTROL DE ASISTENCIA - ESTUDIANTES</h1>
-   
+
     <form id="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
         <label class="block text-blue-700 font-semibold mb-1">Fecha:</label>
@@ -91,12 +91,15 @@
       </table>
     </div>
 
-    <div class="flex justify-end mt-4 space-x-2">
-      <button onclick="exportarCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">
+    <div class="flex justify-end mt-4 space-x-2 flex-wrap">
+      <button onclick="exportarCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow mb-2 md:mb-0">
         💾 Exportar CSV
       </button>
-      <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">
+      <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow mb-2 md:mb-0">
         📄 Exportar PDF
+      </button>
+      <button onclick="limpiarRegistrosDelDia()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow">
+        🧹 Limpiar Registros del Día
       </button>
     </div>
   </div>
@@ -117,17 +120,20 @@
       const observaciones = document.getElementById("observaciones").value.trim();
 
       if (!fecha || !curso || !nombre || !estado) {
+        // Reemplazar alert con un mensaje en la UI si es posible, o mantener alert por simplicidad
         alert("Por favor, completa todos los campos.");
         return;
       }
 
       if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nombre)) {
+         // Reemplazar alert con un mensaje en la UI si es posible
         alert("El nombre debe contener solo letras.");
         return;
       }
 
       const hoy = new Date().toISOString().split("T")[0];
       if (fecha > hoy) {
+         // Reemplazar alert con un mensaje en la UI si es posible
         alert("La fecha no puede estar en el futuro.");
         return;
       }
@@ -137,6 +143,7 @@
       );
 
       if (yaExiste) {
+         // Reemplazar alert con un mensaje en la UI si es posible
         alert("Ya se registró este estudiante para esta fecha.");
         return;
       }
@@ -150,7 +157,10 @@
 
     function mostrarRegistros() {
       tabla.innerHTML = "";
-      registros.forEach(reg => {
+      // Ordenar registros por fecha descendente (más reciente primero)
+      const registrosOrdenados = [...registros].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+      registrosOrdenados.forEach(reg => {
         const fila = document.createElement("tr");
         fila.innerHTML = `
           <td class="border px-4 py-2">${reg.fecha}</td>
@@ -175,7 +185,9 @@
     function exportarCSV() {
       let csv = "Fecha,Curso,Nombre,Estado,Observaciones\n";
       registros.forEach(r => {
-        csv += `${r.fecha},${r.curso},${r.nombre},${r.estado},${r.observaciones}\n`;
+        // Asegurar que las observaciones con comas no rompan el CSV
+        const observacionesSeguras = r.observaciones.replace(/"/g, '""'); // Escapar comillas dobles
+        csv += `"${r.fecha}","${r.curso}","${r.nombre}","${r.estado}","${observacionesSeguras}"\n`;
       });
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
@@ -189,21 +201,83 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
+      doc.setFontSize(10); // Reducir tamaño de fuente para más contenido
 
-      doc.text("Control de Asistencia - Estudiantes", 20, 20);
+      let yPosition = 20;
+      const margin = 15;
+      const pageWidth = doc.internal.pageSize.getWidth();
 
-      let yPosition = 30;
+      // Título
+      doc.setFontSize(14);
+      doc.text("Control de Asistencia - Estudiantes", pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 10;
+      doc.setFontSize(10); // Volver a tamaño normal
+
+      // Encabezados (opcional, pero útil)
+      // doc.text("Fecha | Curso | Nombre | Estado | Observaciones", margin, yPosition);
+      // yPosition += 5;
+
       registros.forEach(r => {
-        doc.text(`Fecha: ${r.fecha} | Curso: ${r.curso} | Nombre: ${r.nombre} | Estado: ${r.estado} | Observaciones: ${r.observaciones}`, 20, yPosition);
-        yPosition += 10;
+        const line = `Fecha: ${r.fecha} | Curso: ${r.curso} | Nombre: ${r.nombre} | Estado: ${r.estado} | Observaciones: ${r.observaciones}`;
+        const splitText = doc.splitTextToSize(line, pageWidth - 2 * margin); // Dividir texto si es muy largo
+        doc.text(splitText, margin, yPosition);
+        yPosition += (splitText.length * 4) + 2; // Aumentar posición Y según el número de líneas y un pequeño espacio
+
+        // Añadir nueva página si no hay suficiente espacio
+        if (yPosition > doc.internal.pageSize.getHeight() - margin) {
+            doc.addPage();
+            yPosition = margin; // Reiniciar posición Y en la nueva página
+             doc.setFontSize(14);
+            doc.text("Control de Asistencia - Estudiantes (Continuación)", pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 10;
+            doc.setFontSize(10);
+        }
       });
 
       doc.save("asistencia-estudiantes.pdf");
     }
 
+    // Nueva función para limpiar los registros del día actual
+    function limpiarRegistrosDelDia() {
+        const hoy = new Date().toISOString().split("T")[0]; // Obtener la fecha de hoy en formato YYYY-MM-DD
+
+        // Confirmar con el usuario antes de limpiar
+        if (confirm(`¿Estás seguro de que quieres limpiar TODOS los registros de asistencia para la fecha ${hoy}? Esta acción no se puede deshacer.`)) {
+            // Filtrar los registros, manteniendo solo aquellos cuya fecha NO es hoy
+            const registrosFiltrados = registros.filter(reg => reg.fecha !== hoy);
+
+            // Actualizar el array de registros
+            registros = registrosFiltrados;
+
+            // Guardar el array actualizado en localStorage
+            localStorage.setItem("asistencias", JSON.stringify(registros));
+
+            // Mostrar los registros actualizados en la tabla
+            mostrarRegistros();
+
+            // Opcional: Mostrar un mensaje de éxito
+            alert(`Registros de la fecha ${hoy} limpiados correctamente.`);
+        } else {
+            // Si el usuario cancela, no hacer nada
+            alert("La limpieza de registros ha sido cancelada.");
+        }
+    }
+
+
+    // Función para inicializar la fecha con el día actual al cargar la página
+    function setFechaActual() {
+        const fechaInput = document.getElementById("fecha");
+        const hoy = new Date().toISOString().split("T")[0];
+        fechaInput.value = hoy;
+    }
+
+    // Llamar a la función para establecer la fecha actual al cargar la página
+    setFechaActual();
+
+    // Mostrar los registros al cargar la página
     mostrarRegistros();
+
   </script>
-  <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">INICIO</a>
+  <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block">INICIO</a>
 </body>
 </html>
