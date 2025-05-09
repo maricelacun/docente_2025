@@ -2,153 +2,373 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Informe Estudiantil</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       background: linear-gradient(to right, #1e3a8a, #facc15); /* Azul a amarillo */
+      font-family: 'Inter', sans-serif; /* Fuente Inter como sugiere la guía */
+    }
+    /* Estilos adicionales para mejorar la apariencia de los botones */
+    .btn {
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+    /* Estilo para el mensaje de alerta personalizado */
+    .custom-alert {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #f8d7da; /* Color de fondo rojo claro */
+        color: #721c24; /* Color de texto oscuro */
+        padding: 15px 20px;
+        border: 1px solid #f5c6cb; /* Borde rojo claro */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        z-index: 1000; /* Asegurar que esté por encima de otros elementos */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        font-size: 0.9rem;
+    }
+    .custom-alert.show {
+        opacity: 1;
+        visibility: visible;
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex flex-col items-center justify-start py-10 px-4 font-sans">
+<body class="min-h-screen flex flex-col items-center justify-start py-10 px-4">
 
-  <!-- ENCABEZADO -->
   <div class="bg-white rounded-xl shadow-xl p-6 mb-8 w-full max-w-3xl text-center">
-    <img src="sello.jpg" alt="Sello Institucional" class="mx-auto mb-2 w-1/6">
+    <img src="https://placehold.co/150x150/1e3a8a/ffffff?text=SELLO" alt="Sello Institucional" class="mx-auto mb-3 w-24 h-24 object-contain">
     <h1 class="text-2xl font-bold text-blue-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
   </div>
 
-  <!-- FORMULARIO -->
-  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-3xl transition hover:scale-[1.01]">
-    <h2 class="text-xl font-semibold text-blue-900 mb-4">Registrar Informe Estudiantil</h2>
-    <form id="formulario" class="space-y-4">
+  <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-3xl transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl">
+    <h2 class="text-xl font-semibold text-blue-900 mb-6 text-center">Registrar Informe Estudiantil</h2>
+    <form id="formulario" class="space-y-5">
       <div>
-        <label class="block text-gray-700 font-medium" for="para">Para:</label>
-        <input type="text" id="Para" class="w-full px-4 py-2 rounded-lg border border-gray-300" value="Mgs. Darwing Toledo G.      Rector" readonly>
+        <label class="block text-gray-700 font-medium mb-1" for="Para">Para:</label>
+        <input type="text" id="Para" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" value="Mgs. Darwing Toledo G.     Rector" readonly>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium" for="de">De:</label>
-        <input type="text" id="De" class="w-full px-4 py-2 rounded-lg border border-gray-300" value="Mgs. Maricela Cun Rueda Docente - Tutora" contenteditable="true">
+        <label class="block text-gray-700 font-medium mb-1" for="De">De:</label>
+        <input type="text" id="De" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" value="Mgs. Maricela Cun Rueda Docente - Tutora">
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium" for="nombre">Nombre del estudiante:</label>
-        <input type="text" id="nombre" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
+        <label class="block text-gray-700 font-medium mb-1" for="nombre">Nombre del estudiante:</label>
+        <input type="text" id="nombre" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium" for="curso">Curso:</label>
-        <select id="curso" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
-          <option value="">Seleccione</option>
-          <option value="Primero">Primero de Informática</option>
-          <option value="Segundo">Segundo de Informática</option>
-          <option value="Tercero">Tercero de Informática</option>
-        </select>
+        <label class="block text-gray-700 font-medium mb-1" for="curso">Curso:</label>
+        <select id="curso" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
+          <option value="">Seleccione un curso</option>
+          <option value='Tercero Informática "A"'>Tercero Informática "A"</option>
+          <option value='Tercero Informática "B"'>Tercero Informática "B"</option>
+          </select>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium" for="asunto">Motivo del informe:</label>
-        <select id="asunto" class="w-full px-4 py-2 rounded-lg border border-gray-300" required>
-          <option value="">Seleccione</option>
+        <label class="block text-gray-700 font-medium mb-1" for="asunto">Motivo del informe:</label>
+        <select id="asunto" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
+          <option value="">Seleccione un motivo</option>
           <option value="Bajo rendimiento">Bajo rendimiento</option>
           <option value="Comportamiento">Comportamiento</option>
           <option value="Acumulación de faltas">Acumulación de faltas</option>
+          <option value="Felicitaciones">Felicitaciones</option>
           <option value="Otro">Otro</option>
         </select>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium" for="detalle">Detalle del informe:</label>
-        <textarea id="detalle" rows="4" class="w-full px-4 py-2 rounded-lg border border-gray-300" required></textarea>
+        <label class="block text-gray-700 font-medium mb-1" for="detalle">Detalle del informe:</label>
+        <textarea id="detalle" rows="5" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required></textarea>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium">Fecha:</label>
-        <input type="text" id="fecha" class="w-full px-4 py-2 rounded-lg border border-gray-300 bg-gray-100" readonly>
+        <label class="block text-gray-700 font-medium mb-1">Fecha:</label>
+        <input type="text" id="fecha" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" readonly>
       </div>
 
-      <div class="flex justify-center gap-4 mt-6">
-        <button type="button" onclick="mostrarVistaPrevia()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-full">Vista previa</button>
-        <button type="button" onclick="descargarPDF()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-6 py-2 rounded-full">Descargar PDF</button>
+      <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
+        <button type="button" onclick="mostrarVistaPrevia()" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Vista previa</button>
+        <button type="button" onclick="guardarPDF()" class="btn bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Guardar PDF</button>
+        <button type="button" onclick="imprimirPDF()" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Imprimir</button>
       </div>
     </form>
   </div>
 
-  <!-- VISTA PREVIA -->
-  <div id="vistaPrevia" class="bg-white rounded-xl shadow-md p-6 mt-8 w-full max-w-3xl hidden">
-    <h3 class="text-lg font-bold text-gray-800 mb-4">Vista previa del informe</h3>
-    <div class="text-left text-gray-700 space-y-2">
+  <div id="vistaPrevia" class="bg-white rounded-xl shadow-lg p-6 mt-8 w-full max-w-3xl hidden">
+    <h3 class="text-xl font-bold text-gray-800 mb-5 text-center">Vista Previa del Informe</h3>
+    <div class="text-left text-gray-700 space-y-3 text-sm">
+      <p><strong>Para:</strong> Mgs. Darwing Toledo G. Rector</p>
+      <p><strong>De:</strong> <span id="vp-de"></span></p>
+      <hr class="my-2">
       <p><strong>Estudiante:</strong> <span id="vp-nombre"></span></p>
       <p><strong>Curso:</strong> <span id="vp-curso"></span></p>
       <p><strong>Motivo:</strong> <span id="vp-asunto"></span></p>
-      <p><strong>Detalle:</strong> <span id="vp-detalle"></span></p>
+      <p><strong>Detalle:</strong></p>
+      <p class="pl-2 border-l-2 border-gray-200" id="vp-detalle" style="white-space: pre-wrap;"></p>
+      <hr class="my-2">
       <p><strong>Fecha:</strong> <span id="vp-fecha"></span></p>
     </div>
   </div>
 
-  <!-- SCRIPT -->
+  <div id="customAlert" class="custom-alert">
+    <span id="customAlertMessage"></span>
+  </div>
+
+  <div class="mt-8 w-full max-w-3xl text-center">
+    <a href="index.html" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-full inline-block">INICIO</a>
+  </div>
+
   <script>
+    // Inicializar jsPDF. Asegúrate de que jspdf esté definido globalmente.
+    const { jsPDF } = window.jspdf;
+
     // Fecha automática
-    document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC');
+    document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' });
+
+    function showCustomAlert(message) {
+        const alertBox = document.getElementById("customAlert");
+        const alertMessage = document.getElementById("customAlertMessage");
+        alertMessage.textContent = message;
+        alertBox.classList.add("show");
+        setTimeout(() => {
+            alertBox.classList.remove("show");
+        }, 3000); // El mensaje desaparece después de 3 segundos
+    }
+
+    function validateForm() {
+      const nombre = document.getElementById("nombre").value.trim();
+      const curso = document.getElementById("curso").value;
+      const asunto = document.getElementById("asunto").value;
+      const detalle = document.getElementById("detalle").value.trim();
+
+      if (!nombre || !curso || !asunto || !detalle) {
+        showCustomAlert("Por favor, complete todos los campos obligatorios del formulario.");
+        return false;
+      }
+      return true;
+    }
 
     function mostrarVistaPrevia() {
-      const nombre = document.getElementById("nombre").value;
-      const curso = document.getElementById("curso").value;
-      const asunto = document.getElementById("asunto").value;
-      const detalle = document.getElementById("detalle").value;
-      const fecha = document.getElementById("fecha").value;
+      if (!validateForm()) return;
 
-      document.getElementById("vp-nombre").textContent = nombre;
-      document.getElementById("vp-curso").textContent = curso;
-      document.getElementById("vp-asunto").textContent = asunto;
-      document.getElementById("vp-detalle").textContent = detalle;
-      document.getElementById("vp-fecha").textContent = fecha;
+      document.getElementById("vp-de").textContent = document.getElementById("De").value;
+      document.getElementById("vp-nombre").textContent = document.getElementById("nombre").value;
+      document.getElementById("vp-curso").textContent = document.getElementById("curso").value;
+      document.getElementById("vp-asunto").textContent = document.getElementById("asunto").value;
+      document.getElementById("vp-detalle").textContent = document.getElementById("detalle").value;
+      document.getElementById("vp-fecha").textContent = document.getElementById("fecha").value;
 
       document.getElementById("vistaPrevia").classList.remove("hidden");
+      // Scroll hacia la vista previa para mejor UX en móviles
+      document.getElementById("vistaPrevia").scrollIntoView({ behavior: 'smooth' });
     }
 
-    function descargarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
+    /**
+     * Función central para generar el contenido del PDF.
+     * @param {jsPDF} doc Instancia de jsPDF.
+     * @param {string} nombre Nombre del estudiante.
+     * @param {string} curso Curso del estudiante.
+     * @param {string} asunto Asunto del informe.
+     * @param {string} detalle Detalle del informe.
+     * @param {string} fecha Fecha del informe.
+     * @param {string} deValor Valor del campo "De".
+     * @param {boolean} imageLoaded Indica si la imagen del sello se cargó.
+     */
+    function addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, imageLoaded) {
+      let currentY = 20; // Posición Y inicial
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const margin = 20;
+      const contentWidth = pageWidth - (2 * margin);
 
+      // SELLO (si se cargó)
+      // La imagen ya fue añadida en la función llamadora (generatePDFDocument) si imageLoaded es true.
+      // El espacio para la imagen ya está considerado al ajustar currentY en generatePDFDocument.
+      if (imageLoaded) {
+        currentY = 15 + 25 + 10; // imageY + imageHeight + padding
+      }
+
+
+      // TÍTULO DE LA INSTITUCIÓN
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', pageWidth / 2, currentY, { align: 'center' });
+      currentY += 12;
+
+      // LÍNEA HORIZONTAL
+      doc.setDrawColor(180, 180, 180); // Color gris para la línea
+      doc.setLineWidth(0.5);
+      doc.line(margin, currentY, pageWidth - margin, currentY);
+      currentY += 10;
+
+
+      // INFORMACIÓN "PARA" Y "DE"
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      const paraText = `Para: ${document.getElementById("Para").value}`;
+      doc.text(paraText, margin, currentY);
+      currentY += 7;
+      const deText = `De: ${deValor}`;
+      doc.text(deText, margin, currentY);
+      currentY += 12;
+
+      // TÍTULO DEL INFORME
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(14);
+      doc.text("INFORME ESTUDIANTIL", pageWidth / 2, currentY, { align: 'center' });
+      currentY += 10;
+
+      // DATOS DEL ESTUDIANTE
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(12);
+      const fieldTitleSpacing = 40; // Espacio para el título del campo
+
+      function addField(label, value) {
+        if (currentY > pageHeight - margin - 10) { // Check for page break
+            doc.addPage();
+            currentY = margin;
+        }
+        doc.setFont("helvetica", "bold");
+        doc.text(label, margin, currentY);
+        doc.setFont("helvetica", "normal");
+        const textLines = doc.splitTextToSize(value, contentWidth - fieldTitleSpacing - 5);
+        doc.text(textLines, margin + fieldTitleSpacing, currentY);
+        currentY += (textLines.length * 5) + 5; // Ajustar espaciado basado en líneas
+      }
+      
+      addField("Fecha:", fecha);
+      addField("Estudiante:", nombre);
+      addField("Curso:", curso);
+      addField("Motivo:", asunto);
+      currentY += 5; // Espacio extra antes del detalle
+
+      // DETALLE DEL INFORME
+      if (currentY > pageHeight - margin - 20) { // Check for page break before detail
+            doc.addPage();
+            currentY = margin;
+      }
+      doc.setFont("helvetica", "bold");
+      doc.text("Detalle del Informe:", margin, currentY);
+      currentY += 7;
+      doc.setFont("helvetica", "normal");
+      const detailLines = doc.splitTextToSize(detalle, contentWidth);
+      doc.text(detailLines, margin, currentY);
+      currentY += (detailLines.length * 5) + 10;
+
+
+      // FIRMA (Ejemplo, ajustar según necesidad)
+      if (currentY > pageHeight - margin - 30) { // Check for page break before signature
+            doc.addPage();
+            currentY = margin;
+      } else {
+        currentY = pageHeight - margin - 30; // Posicionar firma al final
+        if (currentY < margin + 150) currentY = margin + 150; // Asegurar que no se superponga mucho
+      }
+
+
+      doc.setLineWidth(0.3);
+      doc.line(margin + 10, currentY, margin + 80, currentY); // Línea para la firma
+      currentY += 5;
+      doc.text(deValor, margin + 10, currentY);
+      doc.setFontSize(10);
+      doc.text("Docente - Tutor/a", margin + 10, currentY + 5);
+
+    }
+
+
+    /**
+     * Prepara el documento PDF y maneja la carga de la imagen.
+     * @param {string} action - 'save' o 'print'.
+     */
+    function generatePDFDocument(action) {
+      if (!validateForm()) return;
+
+      const doc = new jsPDF();
       const nombre = document.getElementById("nombre").value;
       const curso = document.getElementById("curso").value;
       const asunto = document.getElementById("asunto").value;
       const detalle = document.getElementById("detalle").value;
       const fecha = document.getElementById("fecha").value;
+      const deValor = document.getElementById("De").value;
 
-      // Encabezado
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(16);
-      doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', 105, 20, null, null, 'center');
-      
-      // Insertar Sello
       const img = new Image();
-      img.src = 'sello.jpg';
+      // IMPORTANTE: Reemplaza esta URL con la URL de tu imagen real o un Data URI.
+      // Para Data URI: img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ...';
+      img.src = 'https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO';
+      img.crossOrigin = "Anonymous"; // Necesario si la imagen es de otro dominio para canvas/PDF
+
       img.onload = function() {
-        doc.addImage(img, 'JPEG', 105, 25, 30, 30, '', 'NONE');
+        try {
+            const imageWidth = 25;
+            const imageHeight = 25;
+            const imageX = (doc.internal.pageSize.getWidth() - imageWidth) / 2;
+            const imageY = 15; // Posicionar imagen cerca de la parte superior
+            doc.addImage(this, 'PNG', imageX, imageY, imageWidth, imageHeight); // Asumir PNG para placeholder, ajustar si es JPEG
+            addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, true);
+        } catch (e) {
+            console.error("Error al añadir imagen al PDF:", e);
+            // Continuar sin la imagen si hay un error al añadirla (ej. formato no soportado por addImage)
+            addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, false);
+        }
+        finalizePDF(doc, action, nombre);
       };
 
-      doc.setFontSize(12);
-      doc.text(`Para: Mgs. Darwing Toledo G. Rector`, 20, 50);
-      doc.text(`De: ${document.getElementById("de").value}`, 20, 57);
-      doc.text(`\n\nNombre del estudiante: ${nombre}`, 20, 70);
-      doc.text(`Curso: ${curso}`, 20, 90);
-      doc.text(`Motivo del informe: ${asunto}`, 20, 100);
-      doc.text(`Detalle del informe:`, 20, 110);
-
-      // Aseguramos que el texto largo no se monte usando "splitTextToSize"
-      const lines = doc.splitTextToSize(detalle, 170);
-      doc.text(lines, 20, 120);
-
-      doc.text(`Fecha: ${fecha}`, 20, 155);
-
-      doc.save(`Informe_${nombre}.pdf`);
+      img.onerror = function() {
+        console.error("Error al cargar la imagen del sello. El PDF se generará sin la imagen.");
+        showCustomAlert("Advertencia: No se pudo cargar la imagen del sello. El PDF se generará sin ella.");
+        addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, false);
+        finalizePDF(doc, action, nombre);
+      };
     }
+
+    /**
+     * Finaliza el PDF según la acción (guardar o imprimir).
+     * @param {jsPDF} doc Instancia de jsPDF.
+     * @param {string} action 'save' o 'print'.
+     * @param {string} nombre Nombre del estudiante para el archivo.
+     */
+    function finalizePDF(doc, action, nombre) {
+        if (action === 'save') {
+            doc.save(`Informe_${nombre.replace(/ /g, '_')}.pdf`);
+            showCustomAlert("Informe guardado como PDF.");
+        } else if (action === 'print') {
+            doc.autoPrint();
+            // Abrir en una nueva ventana para la impresión. Algunos navegadores bloquean pop-ups.
+            // Considerar dar feedback al usuario si el pop-up es bloqueado.
+            const pdfDataUri = doc.output('dataurlnewwindow');
+            if (!pdfDataUri) { // Si el navegador bloqueó la nueva ventana
+                 showCustomAlert("La ventana de impresión fue bloqueada por el navegador. Intente desactivar el bloqueador de pop-ups.");
+                 // Como fallback, se podría intentar descargar el PDF
+                 // doc.save(`Informe_${nombre.replace(/ /g, '_')}_para_imprimir.pdf`);
+            } else {
+                 showCustomAlert("Preparando informe para impresión...");
+            }
+        }
+    }
+
+    function guardarPDF() {
+      generatePDFDocument('save');
+    }
+
+    function imprimirPDF() {
+      generatePDFDocument('print');
+    }
+
   </script>
- <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">INICIO</a>
 </body>
 </html>
