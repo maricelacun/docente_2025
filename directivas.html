@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Agregar SheetJS para Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.19.3/package/dist/xlsx.full.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -69,10 +71,44 @@
             border-radius: 50%;
             object-fit: cover;
         }
+
+        /* Estilos para el menú desplegable de descarga */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
     </style>
 </head>
 <body class="min-h-screen py-8">
-    <div class="max-w-6xl mx-auto px-4">
+    <div class="max-w-6xl mx-auto px-4" id="printableArea">
         <!-- Encabezado -->
         <div class="header-gradient rounded-t-2xl shadow-xl overflow-hidden relative">
             <div class="py-4 px-6 text-center">
@@ -85,11 +121,17 @@
                 <p class="text-xl font-semibold text-yellow-300 mt-2">Tercero de Bachillerato Técnico en Informática</p>
                 <p class="text-lg text-blue-100">Paralelo "B" - Tutora: Mgs. Maricela Cun Rueda</p>
                 
-                <!-- Botón de descarga en el encabezado -->
+                <!-- Botón de descarga en el encabezado - Modificado para menú desplegable -->
                 <div class="absolute top-4 right-4">
-                    <button id="downloadBtn" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-100 transition flex items-center">
-                        <i class="fas fa-download mr-2"></i> Descargar
-                    </button>
+                    <div class="dropdown">
+                        <button id="downloadBtn" class="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-100 transition flex items-center">
+                            <i class="fas fa-download mr-2"></i> Descargar <i class="fas fa-caret-down ml-2"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="#" id="downloadExcel"><i class="fas fa-file-excel mr-2 text-green-600"></i> Descargar Excel</a>
+                            <a href="#" id="downloadPdf"><i class="fas fa-file-pdf mr-2 text-red-600"></i> Descargar PDF</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -414,8 +456,44 @@
             }
         };
         
-        // Función para descargar PDF
-        document.getElementById('downloadBtn').addEventListener('click', async () => {
+        // Función para descargar como Excel
+        document.getElementById('downloadExcel').addEventListener('click', () => {
+            // Crear un libro de trabajo
+            const wb = XLSX.utils.book_new();
+            
+            // Preparar datos de padres
+            const padresData = miembrosPadres.map(miembro => ({
+                'Tipo': 'Padre de Familia',
+                'Cargo': miembro.cargo.charAt(0).toUpperCase() + miembro.cargo.slice(1),
+                'Nombre': miembro.nombre,
+                'Teléfono': miembro.telefono,
+                'Correo Electrónico': miembro.email
+            }));
+            
+            // Preparar datos de estudiantes
+            const estudiantesData = miembrosEstudiantes.map(miembro => ({
+                'Tipo': 'Estudiante',
+                'Cargo': miembro.cargo.charAt(0).toUpperCase() + miembro.cargo.slice(1),
+                'Nombre': miembro.nombre,
+                'Representante': miembro.representante,
+                'Teléfono de Contacto': miembro.telefono
+            }));
+            
+            // Combinar ambos conjuntos de datos
+            const combinedData = [...padresData, ...estudiantesData];
+            
+            // Crear hoja de cálculo
+            const ws = XLSX.utils.json_to_sheet(combinedData);
+            
+            // Añadir hoja al libro
+            XLSX.utils.book_append_sheet(wb, ws, "Directivas");
+            
+            // Generar archivo y descargar
+            XLSX.writeFile(wb, 'Directivas_Tercero_Informatica_B.xlsx');
+        });
+        
+        // Función para descargar PDF (original)
+        document.getElementById('downloadPdf').addEventListener('click', async () => {
             const pdf = new jsPDF('p', 'mm', 'a4');
             const element = document.getElementById('printableArea');
             
