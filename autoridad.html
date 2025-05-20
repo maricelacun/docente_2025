@@ -3,310 +3,376 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informe para Vicerrectora</title>
+    <title>Informe Educativo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/docx@latest/build/browser.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            /* Fondo degradado circular azul y amarillo */
+            background: radial-gradient(circle at center, #FFEB3B, #2196F3);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
         }
-        .circular-gradient {
-             background: radial-gradient(circle, #facc15, #1e40af); /* Gradiente circular amarillo y azul */
-        }
-
-        .header-container {
+        /* Estilo para el contenedor principal del informe */
+        .report-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 1.5rem; /* Bordes más redondeados */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 2.5rem;
+            max-width: 900px; /* Ancho máximo del contenedor principal */
+            width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            margin-bottom: 2rem;
-            text-align: center;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease-out;
         }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 0.5rem;
+
+        /* Animación de entrada */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .header-label {
-            font-weight: 600;
-            color: #4a5568;
-            width: 100px;
-            text-align: left;
+
+        /* Estilos para los campos de formulario */
+        .input-field {
+            @apply block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out;
         }
-        .header-value {
-            color: #718096;
-            text-align: left;
-            flex: 1;
+
+        /* Estilos para los botones */
+        .btn {
+            @apply px-4 py-2 rounded-lg font-semibold text-white shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2;
         }
-        .input-header {
-            border: 1px solid #cbd5e0;
-            border-radius: 0.375rem;
-            padding: 0.5rem;
-            width: 100%;
-            max-width: 400px;
-            font-size: 0.875rem;
-            color: #718096;
+        .btn-primary {
+            @apply bg-blue-600 hover:bg-blue-700;
         }
-        .main-container {
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            padding: 2rem;
-            width: 100%;
-            max-width: 800px;
-            margin-top: 1rem;
+        .btn-secondary {
+            @apply bg-yellow-600 hover:bg-yellow-700;
         }
-        .form-label {
-            display: block;
-            font-weight: 600;
-            color: #4a5568;
-            margin-bottom: 0.5rem;
-            font-size: 0.875rem;
+        .btn-tertiary {
+            @apply bg-green-600 hover:bg-green-700;
         }
-        .form-input, .form-select, .form-textarea {
-            border: 1px solid #cbd5e0;
-            border-radius: 0.375rem;
-            padding: 0.75rem;
-            width: 100%;
-            font-size: 1rem;
-            color: #718096;
-            outline: none;
-            transition: border-color 0.15s ease-in-out, shadow-sm 0.15s ease-in-out;
+        .btn img {
+            width: 24px; /* Tamaño de los iconos en los botones */
+            height: 24px;
+            filter: invert(1); /* Para que los iconos se vean blancos */
         }
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+
+        /* Estilo para el área de texto del informe */
+        textarea {
+            @apply resize-y min-h-[400px] input-field; /* Aumentado el tamaño mínimo y ocupa el ancho completo */
         }
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvgxmlns='http://www.w3.org/2000/svg'viewBox='0 0 20 20'%3E%3Cpathfill='currentColor'd='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
+
+        /* Estilo para el modal de vista previa */
+        .modal {
+            @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50 p-4;
         }
-        .form-textarea {
-            resize: vertical;
-            height: auto;
-            min-height: 150px;
-            /* Aquí se aumenta el ancho del textarea */
-            width: 100%;
-            max-width: 600px; /* Puedes ajustar este valor según tus necesidades */
+        .modal-content {
+            @apply bg-white rounded-lg shadow-xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative;
         }
-        .button-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        .primary-button, .secondary-button {
-            border-radius: 0.375rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out;
-            font-size: 1rem;
-            flex: 1 0 auto;
-            max-width: 300px;
-            text-align: center;
-        }
-        .primary-button {
-            background-color: #3b82f6;
-        }
-        .primary-button:hover {
-            background-color: #2563eb;
-            transform: translateY(-2px);
-        }
-        .secondary-button {
-            background-color: #gray-500;
-        }
-        .secondary-button:hover {
-            background-color: #4b5563;
-            transform: translateY(-2px);
-        }
-        @media (max-width: 640px) {
-            .header-section {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .header-label {
-                margin-bottom: 0.25rem;
-            }
-            .button-group {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .primary-button, .secondary-button {
-                max-width: none;
-                flex: 1 0 auto;
-            }
+        .modal-close-btn {
+            @apply absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl font-bold;
         }
     </style>
 </head>
-<body class="bg-gray-100 circular-gradient flex justify-center items-center min-h-screen p-4">
-    <div class="main-container">
-        <div class="header-container">
-            <img src="sello.jpg" alt="Sello del Colegio" class="w-48 h-48 rounded-full border-2 border-gray-300 mb-4 mx-auto">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h2>
-            <div class="header-section">
-                <span class="header-label">Fecha:</span>
-                <div style="display: flex; align-items: center;">
-                    <span id="fecha-arenillas" class="header-value" style="margin-right: 0.5rem;">Arenillas,</span>
-                    <input type="date" id="fecha" class="header-value input-header" style="width: auto; max-width: 150px;">
-                    <span id="fecha-actual" class="header-value" style="margin-left: 0.5rem;"></span>
-                </div>
-            </div>
-            <div class="header-section">
-                <span class="header-label">Para:</span>
-                <select id="para" class="form-select">
-                    <option value="Mgs. Darwing Toledo G.">Mgs. Darwing Toledo G.</option>
-                    <option value="Mgs. Vanessa Tocto C.">Mgs. Vanessa Tocto C.</option>
-                    <option value="Mgs. Maria Ricchac">Mgs. Maria Ricchac</option>
-                     <option value="Psic. Educ. Klever Anasco">Psic. Educ. Klever Anasco</option>
-                </select>
-            </div>
-            <div class="header-section">
-                <span class="header-label">De:</span>
-                <input type="text" id="de" class="header-value input-header" value="Mgs. Maricela Cun Rueda - Docente del área TIC" readonly>
-            </div>
-            <div class="header-section" style="margin-bottom: 0;">
-                <span class="header-label">Asunto:</span>
-                <select id="asunto" class="form-select">
-                    <option value="expediente">Expediente</option>
-                    <option value="inasistencia">Inasistencia de Alumnos</option>
-                    <option value="bajo_rendimiento">Bajo Rendimiento</option>
-                </select>
-            </div>
+<body>
+    <div class="report-container" id="reportContainer">
+        <div class="text-center mb-6">
+            <img src="https://placehold.co/150x150/ADD8E6/000000?text=Sello+Colegio" alt="Sello del Colegio" class="mx-auto rounded-full shadow-lg">
         </div>
 
-        <div class="mb-4">
-            <label for="estudiante" class="form-label">Estudiante:</label>
-            <input type="text" id="estudiante" list="lista-estudiantes" placeholder="Ingrese nombre del estudiante" class="form-input">
-            <datalist id="lista-estudiantes">
-                <option value="AGILA GUTIERREZ BRITTANY PAOLA">
-                 <option value="CAJAMARCA PEÑAFIEL DARWIN ALEXANDER">
-                 <option value="CAMACHO RODRIGUEZ LUZ MARIA">
-                 <option value="CASTILLO SARITAMA LUIS ALEXANDER">
-                 <option value="CRUZ VELASCO STEFANIE YULIANA">
-                 <option value="CUENCA CALVA YUSELLY DAYANNA">
-                 <option value="ESPINOZA AREVALO ERICKA DAYANNA">
-                 <option value="ESPINOZA CASTILLO JEFFERSON ROLANDO">
-                 <option value="GUARNIZO SARANGO XIOMARA PAULETTE">
-                 <option value="GUTIERREZ RAMON AXEL XAVIER">
-                 <option value="JARAMILLO MORALES XIMENA KAROLINA">
-                 <option value="JUMBO SARANGO JEFFERSON VICENTE">
-                 <option value="LIANG FAREZ BAO YU">
-                 <option value="MANZANO RAMIREZ GABRIELA ALEXANDRA">
-                 <option value="MASAPANTA FLORES VICTOR MANUEL">
-                 <option value="MAZA CHUYA EMILY GABRIELA">
-                 <option value="MEDINA SANCHEZ CRISTOPHER ADRIAN">
-                 <option value="MENDOZA MANZANO KEVIN MANUEL">
-                 <option value="MOROCHO VILLALTA ESTEFANY MARIBEL">
-                 <option value="MOROCHO VILLALTA JOSE ALEXANDER">
-                 <option value="NAZARENO NAZARENO ALEXANDRA NOEMI">
-                 <option value="ORDOÑEZ BELTRAN ANGELA EUNICE">
-                 <option value="REYES BEDOYA MARIA ISABEL">
-                 <option value="RODRIGUEZ ROMERO ELVIS DANIEL">
-                 <option value="ROMERO JIMENEZ GRACIELA MERCEDES">
-                 <option value="SANCHEZ ORDOÑEZ FELIX ADOLFO">
-                 <option value="SARANGO NARVAEZ DILAN JOSUE">
-                 <option value="SOTO PUCHA ESNEIDER ANDRES">
-                 <option value="VIVANCO SARITAMA JENNER ANDRY">
-                 <option value="ZUMBA ESPINOZA LUIS FERNANDO">
-            </datalist>
+        <div class="space-y-4">
+            <div>
+                <label for="reportDate" class="block text-gray-700 text-sm font-bold mb-2">Fecha: Arenillas y</label>
+                <input type="date" id="reportDate" class="input-field" value="">
+            </div>
+            <div>
+                <label for="paraSelect" class="block text-gray-700 text-sm font-bold mb-2">Para:</label>
+                <select id="paraSelect" class="input-field">
+                    <option value="">Seleccione un destinatario</option>
+                    <option value="Mgs. Darwing Toledo G. Rector">Mgs. Darwing Toledo G. Rector</option>
+                    <option value="Mgs. Vanessa Tocto C. Vicerrectora secc vespertina">Mgs. Vanessa Tocto C. Vicerrectora secc vespertina</option>
+                    <option value="Mgs. Maria Ricchac Betun subinspectora">Mgs. Maria Ricchac Betun subinspectora</option>
+                    <option value="Psic. Educ. Klever Añasco Departamento del DECE">Psic. Educ. Klever Añasco Departamento del DECE</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="deText" class="block text-gray-700 text-sm font-bold mb-2">De:</label>
+                <input type="text" id="deText" class="input-field" value="Mgs. Maricela Cun Rueda Docente del área Tic" readonly>
+            </div>
+            <div>
+                <label for="asuntoSelect" class="block text-gray-700 text-sm font-bold mb-2">Asunto:</label>
+                <select id="asuntoSelect" class="input-field">
+                    <option value="">Seleccione un asunto</option>
+                    <option value="Expediente">Expediente</option>
+                    <option value="Inasistencia de alumnos">Inasistencia de alumnos</option>
+                    <option value="Bajo rendimiento">Bajo rendimiento</option>
+                    <option value="Comportamiento estudiantil">Comportamiento estudiantil</option>
+                    <option value="Solicitud de material">Solicitud de material</option>
+                    <option value="Reunión de padres">Reunión de padres</option>
+                </select>
+            </div>
+            <div>
+                <label for="studentSelect" class="block text-gray-700 text-sm font-bold mb-2">Estudiante:</label>
+                <select id="studentSelect" class="input-field">
+                    <option value="">Seleccione un estudiante</option>
+                    </select>
+            </div>
         </div>
 
         <div class="mb-6">
-            <label for="informe" class="form-label">Informe:</label>
-            <textarea id="informe" rows="8" placeholder="Ingrese el informe aquí..." class="form-textarea"></textarea>
+            <label for="reportContent" class="block text-gray-700 text-sm font-bold mb-2">Informe:</label>
+            <textarea id="reportContent" placeholder="Escriba aquí la descripción de lo sucedido..." class="input-field"></textarea>
         </div>
 
-        <div class="button-group">
-            <button id="descargar-word" class="primary-button">
-                Descargar en PDF
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button id="downloadWordBtn" class="btn btn-primary">
+                <img src="https://placehold.co/24x24/FFFFFF/000000?text=Word" alt="Descargar Word"> Descargar Word
             </button>
-            <button class="secondary-button">
-                Vista Previa
+            <button id="downloadPdfBtn" class="btn btn-secondary">
+                <img src="https://placehold.co/24x24/FFFFFF/000000?text=PDF" alt="Descargar PDF"> Descargar PDF
+            </button>
+            <button id="previewBtn" class="btn btn-tertiary">
+                <img src="https://placehold.co/24x24/FFFFFF/000000?text=👁️" alt="Vista Previa"> Vista Previa
             </button>
         </div>
     </div>
+
+    <div id="previewModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal()">&times;</button>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Vista Previa del Informe</h2>
+            <div id="previewContent" class="prose max-w-none">
+                </div>
+        </div>
+    </div>
+
     <script>
-        const asuntoSelect = document.getElementById("asunto");
-        const asuntoInput = document.querySelector(".header-section:last-child .header-value");
-        const fechaActualSpan = document.getElementById("fecha-actual");
-        const fechaInput = document.getElementById("fecha");
-        const descargarWordBtn = document.getElementById("descargar-word");
-        const informeInput = document.getElementById("informe");
-        const paraInput = document.getElementById("para");
-        const deInput = document.getElementById("de");
-        const estudianteInput = document.getElementById("estudiante");
+        // Establecer la fecha actual en el campo de fecha
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('reportDate').value = `${year}-${month}-${day}`;
 
+            // Lista de estudiantes obtenida del PDF y otros añadidos
+            const studentNames = [
+                "AGILA GUTIERREZ BRITTANY PAOLA",
+                "CAJAMARCA PEÑAFIEL DARWIN ALEXANDER",
+                "CAMACHO RODRIGUEZ LUZ MARIA",
+                "CASTILLO SARITAMA LUIS ALEXANDER",
+                "CRUZ VELASCO STEFANIE YULIANA",
+                "CUENCA CALVA YUSELLY DAYANNA",
+                "ESPINOZA AREVALO ERICKA DAYANNA",
+                "ESPINOZA CASTILLO JEFFERSON ROLANDO",
+                "GUARNIZO SARANGO XIOMARA PAULETTE",
+                "GUTIERREZ RAMON AXEL XAVIER",
+                "JARAMILLO MORALES XIMENA KAROLINA",
+                "JUMBO SARANGO JEFFERSON VICENTE",
+                "LIANG FAREZ BAO YU",
+                "MANZANO RAMIREZ GABRIELA ALEXANDRA",
+                "MASAPANTA FLORES VICTOR MANUEL",
+                "MAZA CHUYA EMILY GABRIELA",
+                "MEDINA SANCHEZ CRISTOPHER ADRIAN",
+                "MENDOZA MANZANO KEVIN MANUEL",
+                "MOROCHO VILLALTA ESTEFANY MARIBEL",
+                "MOROCHO VILLALTA JOSE ALEXANDER",
+                "NAZARENO NAZARENO ALEXANDRA NOEMI",
+                "ORDOÑEZ BELTRAN ANGELA EUNICE",
+                "REYES BEDOYA MARIA ISABEL",
+                "RODRIGUEZ ROMERO ELVIS DANIEL",
+                "ROMERO JIMENEZ GRACIELA MERCEDES",
+                "SANCHEZ ORDOÑEZ FELIX ADOLFO",
+                "SARANGO NARVAEZ DILAN JOSUE",
+                "SOTO PUCHA ESNEIDER ANDRES",
+                "VIVANCO SARITAMA JENNER ANDRY",
+                "ZUMBA ESPINOZA LUIS FERNANDO",
+                // Aquí puedes añadir más estudiantes
+                "NUEVO ESTUDIANTE UNO",
+                "OTRO ESTUDIANTE MAS",
+                "ALUMNO DE EJEMPLO",
+                "ESTUDIANTE ADICIONAL A",
+                "ESTUDIANTE ADICIONAL B",
+                "ESTUDIANTE ADICIONAL C"
+            ];
 
-        asuntoSelect.addEventListener("change", function() {
-            asuntoInput.textContent = this.value;
-        });
-
-        fechaInput.addEventListener("change", function() {
-            if (this.value) {
-                fechaActualSpan.textContent = "";
-            } else {
-                fechaActualSpan.textContent = "";
-            }
-        });
-
-        const fechaHoy = new Date();
-        const dia = fechaHoy.getDate();
-        const mes = fechaHoy.getMonth() + 1;
-        const anio = fechaHoy.getFullYear();
-        const fechaFormateada = `${dia}/${mes}/${anio}`;
-        fechaActualSpan.textContent = fechaFormateada;
-        fechaInput.value = fechaFormateada;
-
-        descargarWordBtn.addEventListener("click", async function() {
-            const para = paraInput.value;
-            const de = deInput.value;
-            const asunto = asuntoSelect.value;
-            const estudiante = estudianteInput.value;
-            const informe = informeInput.value;
-            const fecha = fechaInput.value;
-
-            if (!para || !de || !asunto || !informe || !fecha || !estudiante) {
-                alert("Por favor, complete todos los campos.");
-                return;
-            }
-
-            const doc = new jsPDF();
-            doc.setFontSize(12);
-
-            let y = 20;
-            const lineHeight = 5;
-
-            doc.text("UNIDAD EDUCATIVA \"DR. CAMILO GALLEGOS DOMÍNGUEZ\"", 10, y);
-            y += lineHeight + 2;
-            doc.text(`Fecha: ${fecha}`, 10, y);
-            y += lineHeight + 2;
-            doc.text(`Para: ${para}`, 10, y);
-            y += lineHeight + 2;
-            doc.text(`De: ${de}`, 10, y);
-            y += lineHeight + 2;
-            doc.text(`Asunto: ${asunto}`, 10, y);
-            y += lineHeight + 2;
-            doc.text(`Estudiante: ${estudiante}`, 10, y);
-            y += lineHeight + 5;
-
-            const textLines = doc.splitTextToSize(informe, 180);
-            textLines.forEach(line => {
-                doc.text(line, 10, y);
-                y += lineHeight;
+            // Cargar estudiantes en el select
+            const studentSelect = document.getElementById('studentSelect');
+            studentNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                studentSelect.appendChild(option);
             });
-
-            doc.save(`Informe_${asunto.replace(/\s+/g, '_')}.pdf`);
         });
+
+        /**
+         * Genera el contenido HTML del informe para vista previa o descarga.
+         * @returns {string} El contenido HTML formateado del informe.
+         */
+        function generateReportHtml() {
+            const reportDateInput = document.getElementById('reportDate').value;
+            const para = document.getElementById('paraSelect').value;
+            const de = document.getElementById('deText').value;
+            const asunto = document.getElementById('asuntoSelect').value;
+            const reportContent = document.getElementById('reportContent').value;
+
+            // Obtener el estudiante seleccionado (ahora es selección única)
+            const studentSelectElement = document.getElementById('studentSelect');
+            const selectedStudent = studentSelectElement.value; // Obtiene el valor de la opción seleccionada
+            const studentsText = selectedStudent && selectedStudent !== "" ? studentSelectElement.options[studentSelectElement.selectedIndex].textContent : 'N/A';
+
+
+            // Formatear la fecha para la presentación: "Arenillas, lunes 19 de mayo del 2025"
+            // Se añade 'T00:00:00' para asegurar que la fecha se interprete en la zona horaria local
+            // y evitar posibles desfases de un día debido a la zona horaria del sistema.
+            const dateObj = new Date(reportDateInput + 'T00:00:00');
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+            const formattedDate = dateObj.toLocaleDateString('es-ES', options);
+
+            return `
+                <div style="font-family: 'Inter', sans-serif; padding: 2rem; color: #333;">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <img src="https://placehold.co/150x150/ADD8E6/000000?text=Sello+Colegio" alt="Sello del Colegio" style="margin: 0 auto; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </div>
+                    <p style="text-align: right; margin-bottom: 1rem;"><strong>Fecha:</strong> Arenillas, ${formattedDate}</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Para:</strong> ${para || 'N/A'}</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>De:</strong> ${de}</p>
+                    <p style="margin-bottom: 0.5rem;"><strong>Asunto:</strong> ${asunto || 'N/A'}</p>
+                    <p style="margin-bottom: 1.5rem;"><strong>Estudiante:</strong> ${studentsText}</p>
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #2196F3;">Informe:</h3>
+                    <div style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 0.5rem; padding: 1.5rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">
+                        ${reportContent || 'No se ha ingresado contenido para el informe.'}
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * Abre el modal de vista previa y muestra el informe generado.
+         */
+        function openModal() {
+            const previewContentDiv = document.getElementById('previewContent');
+            previewContentDiv.innerHTML = generateReportHtml();
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        /**
+         * Cierra el modal de vista previa.
+         */
+        function closeModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        // Asignar eventos a los botones
+        document.getElementById('previewBtn').addEventListener('click', openModal);
+
+        document.getElementById('downloadWordBtn').addEventListener('click', () => {
+            console.log("DEBUG: Iniciando descarga de Word...");
+            try {
+                // Generar el contenido HTML
+                const htmlContent = generateReportHtml();
+                // Añadir las cabeceras específicas para que Word lo interprete como HTML
+                const content = `
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'><title>Informe</title></head>
+<body>
+${htmlContent}
+</body>
+</html>`;
+                console.log("DEBUG: Contenido HTML para Word generado.");
+                const blob = new Blob([content], { type: 'application/msword;charset=utf-8' });
+                console.log("DEBUG: Blob de Word creado. Intentando saveAs...");
+                saveAs(blob, 'informe.doc');
+                console.log("DEBUG: Función saveAs para Word llamada.");
+            } catch (error) {
+                console.error("ERROR: Error al descargar Word:", error);
+                showErrorMessage('Hubo un error al descargar el archivo Word. Por favor, inténtelo de nuevo.');
+            }
+        });
+
+        document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
+            console.log("DEBUG: Iniciando descarga de PDF...");
+            // Crear un div temporal y oculto para renderizar el contenido del informe para html2canvas
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'absolute';
+            tempDiv.style.left = '-9999px'; // Moverlo fuera de la pantalla
+            tempDiv.style.width = '800px'; // Darle un ancho fijo para una renderización consistente
+            tempDiv.style.padding = '2rem'; // Añadir padding para que el contenido no esté pegado a los bordes
+            tempDiv.style.backgroundColor = 'white'; // Fondo blanco para el PDF
+            tempDiv.innerHTML = generateReportHtml(); // Generar el HTML del informe
+            document.body.appendChild(tempDiv); // Añadirlo al DOM
+            console.log("DEBUG: Div temporal para PDF creado y añadido al DOM.");
+
+            try {
+                console.log("DEBUG: Generando canvas para PDF con html2canvas...");
+                const canvas = await html2canvas(tempDiv, {
+                    scale: 2, // Aumentar la escala para mejor calidad
+                    useCORS: true, // Habilitar CORS para imágenes si es necesario
+                    logging: true // Habilitar logs de html2canvas para depuración
+                });
+                console.log("DEBUG: Canvas generado.");
+
+                const imgData = canvas.toDataURL('image/png');
+                console.log("DEBUG: Datos de imagen del canvas obtenidos.");
+
+                // Asegurarse de que jsPDF esté disponible globalmente
+                if (typeof window.jspdf === 'undefined') {
+                    console.error("ERROR: jsPDF no está cargado. Asegúrate de que la librería jspdf.umd.min.js esté correctamente enlazada.");
+                    showErrorMessage('Error: La librería de PDF no se cargó correctamente. Por favor, recargue la página.');
+                    return; // Salir si jsPDF no está disponible
+                }
+
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'px',
+                    format: 'a4'
+                });
+                console.log("DEBUG: Instancia de jsPDF creada.");
+
+                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                console.log("DEBUG: Imagen añadida al PDF. Intentando guardar...");
+                pdf.save('informe.pdf');
+                console.log("DEBUG: PDF guardado.");
+            } catch (error) {
+                console.error("ERROR: Error al generar el PDF:", error);
+                showErrorMessage('Hubo un error al generar el PDF. Por favor, inténtelo de nuevo. Verifique la consola para más detalles.');
+            } finally {
+                // Limpiar el div temporal del DOM
+                if (tempDiv.parentNode) {
+                    tempDiv.parentNode.removeChild(tempDiv);
+                    console.log("DEBUG: Div temporal de PDF eliminado del DOM.");
+                }
+            }
+        });
+
+        /**
+         * Muestra un mensaje de error temporal en la pantalla.
+         * @param {string} message - El mensaje de error a mostrar.
+         */
+        function showErrorMessage(message) {
+            const errorMessage = document.createElement('div');
+            errorMessage.textContent = message;
+            errorMessage.style.cssText = 'position: fixed; top: 20px; right: 20px; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; z-index: 1000;';
+            document.body.appendChild(errorMessage);
+            setTimeout(() => errorMessage.remove(), 7000); // Eliminar el mensaje después de 7 segundos
+        }
     </script>
 </body>
 </html>
