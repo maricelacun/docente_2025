@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe para Vicerrectora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/docx@latest/build/browser.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .circular-gradient {
+             background: radial-gradient(circle, #facc15, #1e40af); /* Gradiente circular amarillo y azul */
+        }
+
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 0.5rem;
+        }
+        .header-label {
+            font-weight: 600;
+            color: #4a5568;
+            width: 100px;
+            text-align: left;
+        }
+        .header-value {
+            color: #718096;
+            text-align: left;
+            flex: 1;
+        }
+        .input-header {
+            border: 1px solid #cbd5e0;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            width: 100%;
+            max-width: 400px;
+            font-size: 0.875rem;
+            color: #718096;
+        }
+        .main-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        .form-input, .form-select, .form-textarea {
+            border: 1px solid #cbd5e0;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 1rem;
+            color: #718096;
+            outline: none;
+            transition: border-color 0.15s ease-in-out, shadow-sm 0.15s ease-in-out;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvgxmlns='http://www.w3.org/2000/svg'viewBox='0 0 20 20'%3E%3Cpathfill='currentColor'd='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1rem;
+            padding-right: 2.5rem;
+        }
+        .form-textarea {
+            resize: vertical;
+            height: auto;
+            min-height: 150px;
+            /* Aquí se aumenta el ancho del textarea */
+            width: 100%;
+            max-width: 600px; /* Puedes ajustar este valor según tus necesidades */
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .primary-button, .secondary-button {
+            border-radius: 0.375rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+            font-size: 1rem;
+            flex: 1 0 auto;
+            max-width: 300px;
+            text-align: center;
+        }
+        .primary-button {
+            background-color: #3b82f6;
+        }
+        .primary-button:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        .secondary-button {
+            background-color: #gray-500;
+        }
+        .secondary-button:hover {
+            background-color: #4b5563;
+            transform: translateY(-2px);
+        }
+        @media (max-width: 640px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-label {
+                margin-bottom: 0.25rem;
+            }
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .primary-button, .secondary-button {
+                max-width: none;
+                flex: 1 0 auto;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 circular-gradient flex justify-center items-center min-h-screen p-4">
+    <div class="main-container">
+        <div class="header-container">
+            <img src="URL_DEL_SELLO_DEL_COLEGIO" alt="Sello del Colegio" class="w-48 h-48 rounded-full border-2 border-gray-300 mb-4 mx-auto">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h2>
+            <div class="header-section">
+                <span class="header-label">Fecha:</span>
+                <div style="display: flex; align-items: center;">
+                    <span id="fecha-arenillas" class="header-value" style="margin-right: 0.5rem;">Arenillas,</span>
+                    <input type="date" id="fecha" class="header-value input-header" style="width: auto; max-width: 150px;">
+                    <span id="fecha-actual" class="header-value" style="margin-left: 0.5rem;"></span>
+                </div>
+            </div>
+            <div class="header-section">
+                <span class="header-label">Para:</span>
+                <select id="para" class="form-select">
+                    <option value="Mgs. Darwing Toledo G.">Mgs. Darwing Toledo G.</option>
+                    <option value="Mgs. Vanessa Tocto C.">Mgs. Vanessa Tocto C.</option>
+                    <option value="Mgs. Maria Ricchac">Mgs. Maria Ricchac</option>
+                     <option value="Psic. Educ. Klever Anasco">Psic. Educ. Klever Anasco</option>
+                </select>
+            </div>
+            <div class="header-section">
+                <span class="header-label">De:</span>
+                <input type="text" id="de" class="header-value input-header" value="Mgs. Maricela Cun Rueda - Docente del área TIC" readonly>
+            </div>
+            <div class="header-section" style="margin-bottom: 0;">
+                <span class="header-label">Asunto:</span>
+                <select id="asunto" class="form-select">
+                    <option value="expediente">Expediente</option>
+                    <option value="inasistencia">Inasistencia de Alumnos</option>
+                    <option value="bajo_rendimiento">Bajo Rendimiento</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label for="estudiante" class="form-label">Estudiante:</label>
+            <input type="text" id="estudiante" list="lista-estudiantes" placeholder="Ingrese nombre del estudiante" class="form-input">
+            <datalist id="lista-estudiantes">
+                <option value="AGILA GUTIERREZ BRITTANY PAOLA">
+                 <option value="CAJAMARCA PEÑAFIEL DARWIN ALEXANDER">
+                 <option value="CAMACHO RODRIGUEZ LUZ MARIA">
+                 <option value="CASTILLO SARITAMA LUIS ALEXANDER">
+                 <option value="CRUZ VELASCO STEFANIE YULIANA">
+                 <option value="CUENCA CALVA YUSELLY DAYANNA">
+                 <option value="ESPINOZA AREVALO ERICKA DAYANNA">
+                 <option value="ESPINOZA CASTILLO JEFFERSON ROLANDO">
+                 <option value="GUARNIZO SARANGO XIOMARA PAULETTE">
+                 <option value="GUTIERREZ RAMON AXEL XAVIER">
+                 <option value="JARAMILLO MORALES XIMENA KAROLINA">
+                 <option value="JUMBO SARANGO JEFFERSON VICENTE">
+                 <option value="LIANG FAREZ BAO YU">
+                 <option value="MANZANO RAMIREZ GABRIELA ALEXANDRA">
+                 <option value="MASAPANTA FLORES VICTOR MANUEL">
+                 <option value="MAZA CHUYA EMILY GABRIELA">
+                 <option value="MEDINA SANCHEZ CRISTOPHER ADRIAN">
+                 <option value="MENDOZA MANZANO KEVIN MANUEL">
+                 <option value="MOROCHO VILLALTA ESTEFANY MARIBEL">
+                 <option value="MOROCHO VILLALTA JOSE ALEXANDER">
+                 <option value="NAZARENO NAZARENO ALEXANDRA NOEMI">
+                 <option value="ORDOÑEZ BELTRAN ANGELA EUNICE">
+                 <option value="REYES BEDOYA MARIA ISABEL">
+                 <option value="RODRIGUEZ ROMERO ELVIS DANIEL">
+                 <option value="ROMERO JIMENEZ GRACIELA MERCEDES">
+                 <option value="SANCHEZ ORDOÑEZ FELIX ADOLFO">
+                 <option value="SARANGO NARVAEZ DILAN JOSUE">
+                 <option value="SOTO PUCHA ESNEIDER ANDRES">
+                 <option value="VIVANCO SARITAMA JENNER ANDRY">
+                 <option value="ZUMBA ESPINOZA LUIS FERNANDO">
+            </datalist>
+        </div>
+
+        <div class="mb-6">
+            <label for="informe" class="form-label">Informe:</label>
+            <textarea id="informe" rows="8" placeholder="Ingrese el informe aquí..." class="form-textarea"></textarea>
+        </div>
+
+        <div class="button-group">
+            <button id="descargar-word" class="primary-button">
+                Descargar en PDF
+            </button>
+            <button class="secondary-button">
+                Vista Previa
+            </button>
+        </div>
+    </div>
+    <script>
+        const asuntoSelect = document.getElementById("asunto");
+        const asuntoInput = document.querySelector(".header-section:last-child .header-value");
+        const fechaActualSpan = document.getElementById("fecha-actual");
+        const fechaInput = document.getElementById("fecha");
+        const descargarWordBtn = document.getElementById("descargar-word");
+        const informeInput = document.getElementById("informe");
+        const paraInput = document.getElementById("para");
+        const deInput = document.getElementById("de");
+        const estudianteInput = document.getElementById("estudiante");
+
+
+        asuntoSelect.addEventListener("change", function() {
+            asuntoInput.textContent = this.value;
+        });
+
+        fechaInput.addEventListener("change", function() {
+            if (this.value) {
+                fechaActualSpan.textContent = "";
+            } else {
+                fechaActualSpan.textContent = "";
+            }
+        });
+
+        const fechaHoy = new Date();
+        const dia = fechaHoy.getDate();
+        const mes = fechaHoy.getMonth() + 1;
+        const anio = fechaHoy.getFullYear();
+        const fechaFormateada = `${dia}/${mes}/${anio}`;
+        fechaActualSpan.textContent = fechaFormateada;
+        fechaInput.value = fechaFormateada;
+
+        descargarWordBtn.addEventListener("click", async function() {
+            const para = paraInput.value;
+            const de = deInput.value;
+            const asunto = asuntoSelect.value;
+            const estudiante = estudianteInput.value;
+            const informe = informeInput.value;
+            const fecha = fechaInput.value;
+
+            if (!para || !de || !asunto || !informe || !fecha || !estudiante) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+
+            const doc = new jsPDF();
+            doc.setFontSize(12);
+
+            let y = 20;
+            const lineHeight = 5;
+
+            doc.text("UNIDAD EDUCATIVA \"DR. CAMILO GALLEGOS DOMÍNGUEZ\"", 10, y);
+            y += lineHeight + 2;
+            doc.text(`Fecha: ${fecha}`, 10, y);
+            y += lineHeight + 2;
+            doc.text(`Para: ${para}`, 10, y);
+            y += lineHeight + 2;
+            doc.text(`De: ${de}`, 10, y);
+            y += lineHeight + 2;
+            doc.text(`Asunto: ${asunto}`, 10, y);
+            y += lineHeight + 2;
+            doc.text(`Estudiante: ${estudiante}`, 10, y);
+            y += lineHeight + 5;
+
+            const textLines = doc.splitTextToSize(informe, 180);
+            textLines.forEach(line => {
+                doc.text(line, 10, y);
+                y += lineHeight;
+            });
+
+            doc.save(`Informe_${asunto.replace(/\s+/g, '_')}.pdf`);
+        });
+    </script>
+</body>
+</html>
