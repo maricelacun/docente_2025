@@ -1,356 +1,709 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CONTROL DE ASISTENCIA - ESTUDIANTES</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Asistencia - UE "Dr. Camilo Gallegos Domínguez"</title>
+    <style>
+        :root {
+            --azul: #1e88e5;
+            --amarillo: #ffeb3b;
+            --blanco: #ffffff;
+            --negro: #333333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--azul), var(--amarillo));
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--negro);
+        }
+        
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 1000px;
+            margin: 30px 0;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 235, 59, 0.1) 0%, rgba(30, 136, 229, 0.1) 70%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--blanco);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: var(--azul);
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        h2 {
+            color: var(--amarillo);
+            background-color: var(--azul);
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 15px 0;
+            font-size: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .control-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--azul);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: var(--azul);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+        
+        .student-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+        
+        .student-item:last-child {
+            border-bottom: none;
+        }
+        
+        .student-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .student-info {
+            flex: 1;
+        }
+        
+        .student-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .student-id {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .attendance-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .attendance-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .present {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .late {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .absent {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .attendance-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .attendance-btn.selected {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .download-btn {
+            background-color: var(--azul);
+            color: white;
+        }
+        
+        .preview-btn {
+            background-color: var(--amarillo);
+            color: var(--negro);
+        }
+        
+        .reset-btn {
+            background-color: #9e9e9e;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .action-btn i {
+            font-size: 18px;
+        }
+        
+        .summary {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .summary h3 {
+            margin-top: 0;
+            color: var(--azul);
+            border-bottom: 2px solid var(--azul);
+            padding-bottom: 10px;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .control-group {
+                width: 100%;
+            }
+            
+            .attendance-options {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="bg-gradient-to-b from-yellow-100 via-yellow-50 to-blue-100 min-h-screen p-4">
-
-  <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-6">
-  <header class="mb-12 text-gray-800 flex flex-col md:flex-row items-center justify-center md:justify-start">
-    <img  src="sello.jpg" alt="Sello de la Unidad Educativa Dr. Camilo Gallegos Domínguez"
-      class="h-20 w-20 md:h-24 md:w-24 mb-4 md:mb-0 md:mr-6 rounded-full shadow-md object-cover flex-shrink-0"
-      onerror="this.onerror=null; this.src='https://placehold.co/100x100/EBF4FF/3B82F6?text=Sello';"    >
-
-    <div class="text-center md:text-left">
-      <h1 class="text-center text-xl md:text-2xl font-bold mb-2 text-blue-700 drop-shadow">
-          UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"
-      </h1>
-      <h2 class="text-center text-lg md:text-xl font-semibold mb-1 text-blue-300 drop-shadow">
-        Tercero Informática Paralelo:"B"
-      </h2>
-      <p class="text-center text-lg md:text-xl font-semibold mb-1 text-blue-300 drop-shadow">
-        Tutora: Mgs. Maricela Cun Rueda
-      </p>
-    </div>
-  </header>
-
-    <h1 class="text-3xl font-bold text-blue-700 text-center mb-6">📋 CONTROL DE ASISTENCIA - ESTUDIANTES</h1>
-
-    <form id="formulario" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label class="block text-blue-700 font-semibold mb-1">Fecha:</label>
-        <input type="date" id="fecha" class="w-full border border-blue-300 rounded p-2" required>
-      </div>
-
-      <div>
-        <label class="block text-blue-700 font-semibold mb-1">Curso:</label>
-        <select id="curso" class="w-full border border-blue-300 rounded p-2" required>
-          <option value="">Selecciona un curso</option>
-          <option value="3ro Infor A">3ro Infor A</option>
-          <option value="3ro Infor B">3ro Infor B</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-blue-700 font-semibold mb-1">Nombre del Estudiante:</label>
-        <select id="nombre" class="w-full border border-blue-300 rounded p-2" required disabled>
-            <option value="">Selecciona un curso primero</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-blue-700 font-semibold mb-1">Estado:</label>
-        <select id="estado" class="w-full border border-blue-300 rounded p-2" required>
-          <option value="">Selecciona estado</option>
-          <option>Atrasado</option>
-          <option>Ausente</option>
-          <option>Justificado</option>
-          <option>Presente</option> </select>
-      </div>
-
-      <div class="col-span-1 md:col-span-2">
-        <label class="block text-blue-700 font-semibold mb-1">Observaciones:</label>
-        <textarea id="observaciones" placeholder="Escribe una observación aquí..." class="w-full border border-blue-300 rounded p-2"></textarea>
-      </div>
-
-      <div class="col-span-1 md:col-span-2 flex justify-center mt-4">
-        <button type="submit" class="bg-gradient-to-r from-yellow-400 to-blue-500 hover:from-yellow-300 hover:to-blue-600 text-white font-bold px-6 py-2 rounded-lg shadow-md">
-          Registrar Asistencia
-        </button>
-      </div>
-    </form>
-
-    <div class="mt-6">
-      <input type="text" id="buscador" placeholder="🔍 Buscar estudiante..." onkeyup="filtrarTabla()" class="w-full border border-yellow-400 rounded p-2">
+<body>
+    <div class="container">
+        <header>
+            <img src="sello.jpg" alt="Logo Colegio" class="logo">
+            <h1>UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+            <h2>CONTROL DE ASISTENCIA</h2>
+        </header>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="curso">Curso:</label>
+                <select id="curso">
+                    <option value="">Seleccione un curso</option>
+                    <option value="3infA">Tercero Informática A</option>
+                    <option value="3infB">Tercero Informática B</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="fecha">Fecha:</label>
+                <input type="date" id="fecha">
+            </div>
+        </div>
+        
+        <div class="student-list" id="studentList">
+            <!-- Los estudiantes se cargarán aquí dinámicamente -->
+            <p style="text-align: center; color: #666;">Seleccione un curso para ver la lista de estudiantes</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="action-btn download-btn" id="downloadBtn" disabled>
+                <i class="fas fa-download"></i> Descargar Lista
+            </button>
+            <button class="action-btn preview-btn" id="previewBtn" disabled>
+                <i class="fas fa-eye"></i> Vista Previa
+            </button>
+            <button class="action-btn reset-btn" id="resetBtn">
+                <i class="fas fa-redo"></i> Reiniciar
+            </button>
+        </div>
+        
+        <div class="summary" id="summary">
+            <h3>Resumen de Asistencia</h3>
+            <div id="summaryContent"></div>
+        </div>
     </div>
 
-    <div class="overflow-x-auto mt-6 rounded-lg">
-      <table class="min-w-full bg-white border border-blue-300 text-center">
-        <thead class="bg-gradient-to-r from-blue-600 to-yellow-400 text-white font-semibold">
-          <tr>
-            <th class="py-2 px-4 border">Fecha</th>
-            <th class="py-2 px-4 border">Curso</th>
-            <th class="py-2 px-4 border">Nombre</th>
-            <th class="py-2 px-4 border">Estado</th>
-            <th class="py-2 px-4 border">Observaciones</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-asistencia" class="text-gray-700"></tbody>
-      </table>
-    </div>
-
-    <div class="flex justify-end mt-4 space-x-2 flex-wrap">
-      <button onclick="exportarCSV()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow mb-2 md:mb-0">
-        💾 Exportar CSV
-      </button>
-      <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow mb-2 md:mb-0">
-        📄 Exportar PDF
-      </button>
-      <button onclick="limpiarRegistrosDelDia()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded shadow">
-        🧹 Limpiar Registros del Día
-      </button>
-    </div>
-  </div>
-
-  <script>
-    const formulario = document.getElementById("formulario");
-    const tabla = document.getElementById("tabla-asistencia");
-    const buscador = document.getElementById("buscador");
-    const selectCurso = document.getElementById("curso");
-    const selectNombre = document.getElementById("nombre");
-    let registros = JSON.parse(localStorage.getItem("asistencias")) || [];
-
-    // Nóminas de estudiantes
-    const nominas = {
-        "3ro Infor A": [
-            "AGREDA BONILLA ALBANO EMANUELE PIERLUIGI",
-            "AGUIRRE GOMEZ STALIN JAIR",
-            "AVILA MONTESDEOCA JOHNSON LEE",
-            "BONE VALENCIA NOELIA DAMARIS",
-            "CABRERA POGGIO JULIO XAVIER",
-            "CAPELO ROMERO JORGE REYNALDO",
-            "CARRILLO ESPINOZA DIEGO LEONARDO",
-            "CUN CHICOMA JORGE JOSUE",
-            "ESPINOZA CASTILLO JEFFERSON ROLANDO",
-            "GONZALES VALAREZO XIMENA ALEJANDRA",
-            "GONZALEZ CHERREZ MICHAEL DANIEL",
-            "GUAMAN SURIAGA ALEX DANILO",
-            "GUERRERO NARANJO JOEL ROGER",
-            "HERRERA FEIJOO MATEO SEBASTIAN",
-            "HERRERA PIEDRA STEFANY ANDREA",
-            "HIDALGO CUEVA OSCAR ALEXANDER",
-            "HOLGUIN DELGADO DENISSE ABIGAIL",
-            "JIMENEZ ABAD LUIS FERNANDO",
-            "MERECI VERA DANNA CAMILA",
-            "PONCE BUSTAMANTE JEAMPIERRE",
-            "RAMIREZ ASENCIO SLEIDER JAVIER",
-            "ROBLES ZAPATA JESUS ADRIAN",
-            "RODRIGUEZ GUARNIZO RAFAEL ALBERTO",
-            "ROMERO ERRAEZ NAHOMY LISSBETH",
-            "RUIZ SANCHEZ YASMIN JUSLEIDY",
-            "TENEMAZA GUARTAN RODDY LENIN",
-            "VIVANCO GRANDA ANTHONY JAIR",
-            "ZAPATA LUCERO JAIR ALEXANDER",
-            "ZUMBA ESPINOZA LUIS FERNANDO"
-        ].sort(), // Ordenar alfabéticamente
-        "3ro Infor B": [
-            "AGILA GUTIERREZ BRITTANY PAOLA",
-            "CAJAMARCA PEÑAFIEL DARWIN ALEXANDER",
-            "CAMACHO RODRIGUEZ LUZ MARIA",
-            "CASTILLO SARITAMA LUIS ALEXANDER",
-            "CRUZ VELASCO STEFANIE YULIANA",
-            "CUENCA CALVA YUSELLY DAYANNA",
-            "ESPINOZA AREVALO ERICKA DAYANNA",
-            "GUARNIZO SARANGO XIOMARA PAULETTE",
-            "GUTIERREZ RAMON AXEL XAVIER",
-            "JARAMILLO MORALES XIMENA KAROLINA",
-            "JUMBO SARANGO JEFFERSON VICENTE",
-            "LIANG FAREZ BAO YU",
-            "MANZANO RAMIREZ GABRIELA ALEXANDRA",
-            "MASAPANTA FLORES VICTOR MANUEL",
-            "MAZA CHUYA EMILY GABRIELA",
-            "MEDINA SANCHEZ CRISTOPHER ADRIAN",
-            "MENDOZA MANZANO KEVIN MANUEL",
-            "MOROCHO VILLALTA ESTEFANY MARIBEL",
-            "MOROCHO VILLALTA JOSE ALEXANDER",
-            "NAZARENO NAZARENO ALEXANDRA NOEMI",
-            "ORDOÑEZ BELTRAN ANGELA EUNICE",
-            "ORELLANA NOBLECILLA JEINER JAIR",
-            "REYES BEDOYA MARIA ISABEL",
-            "RODRIGUEZ ROMERO ELVIS DANIEL",
-            "ROMERO JIMENEZ GRACIELA MERCEDES",
-            "SANCHEZ ORDOÑEZ FELIX ADOLFO",
-            "SARANGO NARVAEZ DILAN JOSUE",
-            "SOTO PUCHA ESNEIDER ANDRES",
-            "VINCES BRAVO ARIEL ENRIQUE",
-            "VIVANCO SARITAMA JENNER ANDRY"
-        ].sort() // Ordenar alfabéticamente
-    };
-
-    // Función para llenar el select de nombres según el curso seleccionado
-    function llenarNombres() {
-        const cursoSeleccionado = selectCurso.value;
-        selectNombre.innerHTML = ""; // Limpiar opciones actuales
-        selectNombre.disabled = true; // Deshabilitar hasta que se seleccione un curso
-
-        if (cursoSeleccionado && nominas[cursoSeleccionado]) {
-            selectNombre.disabled = false; // Habilitar si hay un curso seleccionado
-            const optionDefault = document.createElement("option");
-            optionDefault.value = "";
-            optionDefault.textContent = "Selecciona un estudiante";
-            selectNombre.appendChild(optionDefault);
-
-            nominas[cursoSeleccionado].forEach(nombre => {
-                const option = document.createElement("option");
-                option.value = nombre;
-                option.textContent = nombre;
-                selectNombre.appendChild(option);
+    <script>
+        // Datos de los estudiantes
+        const students = {
+            "3infA": [
+                {id: "0706341146", name: "AGREDA BONILLA ALBANO EMANUELE PIERLUIGI"},
+                {id: "0707260741", name: "AGUIRRE GOMEZ STALIN JAIR"},
+                {id: "0706306180", name: "AVILA MONTESDEOCA JOHNSON LEE"},
+                {id: "0751019134", name: "BONE VALENCIA NOELIA DAMARIS"},
+                {id: "0750549040", name: "CABRERA POGGIO JULIO XAVIER"},
+                {id: "0954022265", name: "CAPELO ROMERO JORGE REYNALDO"},
+                {id: "0707261772", name: "CARRILLO ESPINOZA DIEGO LEONARDO"},
+                {id: "0750585127", name: "CUN CHICOMA JORGE JOSUE"},
+                {id: "0707307864", name: "GONZALES VALAREZO XIMENA ALEJANDRA"},
+                {id: "0751067760", name: "GONZALEZ CHERREZ MICHAEL DANIEL"},
+                {id: "0750591554", name: "GUAMAN SURIAGA ALEX DANILO"},
+                {id: "0706598760", name: "GUERRERO NARANJO JOEL ROGER"},
+                {id: "0750869349", name: "HERRERA FEIJOO MATEO SEBASTIAN"},
+                {id: "0750558645", name: "HERRERA PIEDRA STEFANY ANDREA"},
+                {id: "0707266201", name: "HIDALGO CUEVA OSCAR ALEXANDER"},
+                {id: "0750848061", name: "HOLGUIN DELGADO DENISSE ABIGAIL"},
+                {id: "0706961349", name: "JIMENEZ ABAD LUIS FERNANDO"},
+                {id: "0706320058", name: "MERECI VERA DANNA CAMILA"},
+                {id: "0750554305", name: "ORELLANA NOBLECILLA JEINER JAIR"},
+                {id: "0706963279", name: "PONCE BUSTAMANTE JEAMPIERRE"},
+                {id: "0929871747", name: "RAMIREZ ASENCIO SLEIDER JAVIER"},
+                {id: "0750185639", name: "ROBLES ZAPATA JESUS ADRIAN"},
+                {id: "0750774523", name: "RODRIGUEZ GUARNIZO RAFAEL ALBERTO"},
+                {id: "0750585150", name: "ROMERO ERRAEZ NAHOMY LISSBETH"},
+                {id: "3050041312", name: "RUIZ SANCHEZ YASMIN JUSLEIDY"},
+                {id: "0706962016", name: "TENEMAZA GUARTAN RODDY LENIN"},
+                {id: "0750844888", name: "VINCES BRAVO ARIEL ENRIQUE"},
+                {id: "0750585408", name: "VIVANCO GRANDA ANTHONY JAIR"},
+                {id: "0706963287", name: "ZAPATA LUCERO JAIR ALEXANDER"}
+            ],
+            "3infB": [
+                {id: "0751030768", name: "AGILA GUTIERREZ BRITTANY PAOLA"},
+                {id: "0706833860", name: "CAJAMARCA PEÑAFIEL DARWIN ALEXANDER"},
+                {id: "0706078102", name: "CAMACHO RODRIGUEZ LUZ MARIA"},
+                {id: "0706864352", name: "CASTILLO SARITAMA LUIS ALEXANDER"},
+                {id: "2101073233", name: "CRUZ VELASCO STEFANIE YULIANA"},
+                {id: "0706824703", name: "CUENCA CALVA YUSELLY DAYANNA"},
+                {id: "0930915236", name: "ESPINOZA AREVALO ERICKA DAYANNA"},
+                {id: "0150188779", name: "ESPINOZA CASTILLO JEFFERSON ROLANDO"},
+                {id: "0750144529", name: "GUARNIZO SARANGO XIOMARA PAULETTE"},
+                {id: "0956564660", name: "GUTIERREZ RAMON AXEL XAVIER"},
+                {id: "0750696049", name: "JARAMILLO MORALES XIMENA KAROLINA"},
+                {id: "0706960747", name: "JUMBO SARANGO JEFFERSON VICENTE"},
+                {id: "0706963691", name: "LIANG FAREZ BAO YU"},
+                {id: "0706807732", name: "MANZANO RAMIREZ GABRIELA ALEXANDRA"},
+                {id: "0750058927", name: "MASAPANTA FLORES VICTOR MANUEL"},
+                {id: "0706267382", name: "MAZA CHUYA EMILY GABRIELA"},
+                {id: "1105444507", name: "MEDINA SANCHEZ CRISTOPHER ADRIAN"},
+                {id: "0750227084", name: "MENDOZA MANZANO KEVIN MANUEL"},
+                {id: "1752533370", name: "MOROCHO VILLALTA ESTEFANY MARIBEL"},
+                {id: "1752533701", name: "MOROCHO VILLALTA JOSE ALEXANDER"},
+                {id: "0750375289", name: "NAZARENO NAZARENO ALEXANDRA NOEMI"},
+                {id: "1251384978", name: "ORDOÑEZ BELTRAN ANGELA EUNICE"},
+                {id: "0750831026", name: "REYES BEDOYA MARIA ISABEL"},
+                {id: "0706622370", name: "RODRIGUEZ ROMERO ELVIS DANIEL"},
+                {id: "0750046922", name: "ROMERO JIMENEZ GRACIELA MERCEDES"},
+                {id: "0750699886", name: "SANCHEZ ORDOÑEZ FELIX ADOLFO"},
+                {id: "0750536757", name: "SARANGO NARVAEZ DILAN JOSUE"},
+                {id: "0750924565", name: "SOTO PUCHA ESNEIDER ANDRES"},
+                {id: "0706285772", name: "VIVANCO SARITAMA JENNER ANDRY"},
+                {id: "0706960770", name: "ZUMBA ESPINOZA LUIS FERNANDO"}
+            ]
+        };
+        
+        // Variables globales
+        let selectedStudents = [];
+        let currentCourse = "";
+        let currentDate = "";
+        
+        // Elementos del DOM
+        const courseSelect = document.getElementById("curso");
+        const dateInput = document.getElementById("fecha");
+        const studentList = document.getElementById("studentList");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const previewBtn = document.getElementById("previewBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const summary = document.getElementById("summary");
+        const summaryContent = document.getElementById("summaryContent");
+        
+        // Event listeners
+        courseSelect.addEventListener("change", loadStudents);
+        dateInput.addEventListener("change", updateDate);
+        downloadBtn.addEventListener("click", downloadReport);
+        previewBtn.addEventListener("click", showPreview);
+        resetBtn.addEventListener("click", resetForm);
+        
+        // Establecer fecha actual por defecto
+        function setDefaultDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, "0");
+            const day = String(today.getDate()).padStart(2, "0");
+            dateInput.value = `${year}-${month}-${day}`;
+            currentDate = dateInput.value;
+        }
+        
+        setDefaultDate();
+        
+        // Cargar lista de estudiantes según el curso seleccionado
+        function loadStudents() {
+            const course = courseSelect.value;
+            
+            if (!course) {
+                studentList.innerHTML = '<p style="text-align: center; color: #666;">Seleccione un curso para ver la lista de estudiantes</p>';
+                downloadBtn.disabled = true;
+                previewBtn.disabled = true;
+                return;
+            }
+            
+            currentCourse = course;
+            
+            // Verificar si hay datos guardados en localStorage
+            const savedData = localStorage.getItem(`attendance_${currentCourse}_${currentDate}`);
+            
+            if (savedData) {
+                selectedStudents = JSON.parse(savedData);
+            } else {
+                selectedStudents = [];
+            }
+            
+            // Generar la lista de estudiantes
+            studentList.innerHTML = "";
+            
+            students[course].forEach(student => {
+                const studentItem = document.createElement("div");
+                studentItem.className = "student-item";
+                
+                // Verificar si el estudiante ya tiene un estado guardado
+                const savedStudent = selectedStudents.find(s => s.id === student.id);
+                const status = savedStudent ? savedStudent.status : "";
+                
+                studentItem.innerHTML = `
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-id">Cédula: ${student.id}</div>
+                    </div>
+                    <div class="attendance-options">
+                        <button class="attendance-btn present ${status === "present" ? "selected" : ""}" data-id="${student.id}" data-status="present">
+                            <i class="fas fa-check"></i> Presente
+                        </button>
+                        <button class="attendance-btn late ${status === "late" ? "selected" : ""}" data-id="${student.id}" data-status="late">
+                            <i class="fas fa-clock"></i> Tarde
+                        </button>
+                        <button class="attendance-btn absent ${status === "absent" ? "selected" : ""}" data-id="${student.id}" data-status="absent">
+                            <i class="fas fa-times"></i> Falta
+                        </button>
+                    </div>
+                `;
+                
+                studentList.appendChild(studentItem);
             });
-        } else {
-             const optionDefault = document.createElement("option");
-            optionDefault.value = "";
-            optionDefault.textContent = "Selecciona un curso primero";
-            selectNombre.appendChild(optionDefault);
+            
+            // Habilitar botones
+            downloadBtn.disabled = false;
+            previewBtn.disabled = false;
+            
+            // Agregar event listeners a los botones de asistencia
+            document.querySelectorAll(".attendance-btn").forEach(btn => {
+                btn.addEventListener("click", function() {
+                    const studentId = this.getAttribute("data-id");
+                    const status = this.getAttribute("data-status");
+                    
+                    // Remover selección de otros botones del mismo estudiante
+                    this.parentElement.querySelectorAll(".attendance-btn").forEach(b => {
+                        b.classList.remove("selected");
+                    });
+                    
+                    // Añadir selección al botón clickeado
+                    this.classList.add("selected");
+                    
+                    // Actualizar o añadir el estudiante a la lista de seleccionados
+                    const existingIndex = selectedStudents.findIndex(s => s.id === studentId);
+                    
+                    if (existingIndex !== -1) {
+                        selectedStudents[existingIndex].status = status;
+                    } else {
+                        const student = students[course].find(s => s.id === studentId);
+                        selectedStudents.push({
+                            id: studentId,
+                            name: student.name,
+                            status: status
+                        });
+                    }
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem(`attendance_${currentCourse}_${currentDate}`, JSON.stringify(selectedStudents));
+                });
+            });
         }
-    }
-
-    // Event listener para el cambio en el select de curso
-    selectCurso.addEventListener("change", llenarNombres);
-
-    formulario.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const fecha = document.getElementById("fecha").value;
-      const curso = selectCurso.value; // Obtener valor del select de curso
-      const nombre = selectNombre.value; // Obtener valor del select de nombre
-      const estado = document.getElementById("estado").value;
-      const observaciones = document.getElementById("observaciones").value.trim();
-
-      if (!fecha || !curso || !nombre || !estado) {
-        alert("Por favor, completa todos los campos.");
-        return;
-      }
-
-      // La validación de nombre solo con letras ya no es necesaria si se selecciona de una lista predefinida
-
-      const hoy = new Date().toISOString().split("T")[0];
-      if (fecha > hoy) {
-        alert("La fecha no puede estar en el futuro.");
-        return;
-      }
-
-      const yaExiste = registros.some(r =>
-        r.fecha === fecha && r.curso === curso && r.nombre.toLowerCase() === nombre.toLowerCase()
-      );
-
-      if (yaExiste) {
-        alert("Ya se registró este estudiante para esta fecha y curso.");
-        return;
-      }
-
-      const nuevoRegistro = { fecha, curso, nombre, estado, observaciones };
-      registros.push(nuevoRegistro);
-      localStorage.setItem("asistencias", JSON.stringify(registros));
-      formulario.reset();
-      // Restablecer el select de nombres después de resetear el formulario
-      llenarNombres();
-      mostrarRegistros();
-    });
-
-    function mostrarRegistros() {
-      tabla.innerHTML = "";
-      const registrosOrdenados = [...registros].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-      registrosOrdenados.forEach(reg => {
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-          <td class="border px-4 py-2">${reg.fecha}</td>
-          <td class="border px-4 py-2">${reg.curso}</td>
-          <td class="border px-4 py-2">${reg.nombre}</td>
-          <td class="border px-4 py-2">${reg.estado}</td>
-          <td class="border px-4 py-2">${reg.observaciones}</td>
-        `;
-        tabla.appendChild(fila);
-      });
-    }
-
-    function filtrarTabla() {
-      const filtro = buscador.value.toLowerCase();
-      const filas = tabla.getElementsByTagName("tr");
-      Array.from(filas).forEach(fila => {
-        const texto = fila.textContent.toLowerCase();
-        fila.style.display = texto.includes(filtro) ? "" : "none";
-      });
-    }
-
-    function exportarCSV() {
-      let csv = "Fecha,Curso,Nombre,Estado,Observaciones\n";
-      registros.forEach(r => {
-        const observacionesSeguras = r.observaciones.replace(/"/g, '""');
-        csv += `"${r.fecha}","${r.curso}","${r.nombre}","${r.estado}","${observacionesSeguras}"\n`;
-      });
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.setAttribute("href", url);
-      a.setAttribute("download", "asistencia-estudiantes.csv");
-      a.click();
-    }
-
-    function exportarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-
-      let yPosition = 20;
-      const margin = 15;
-      const pageWidth = doc.internal.pageSize.getWidth();
-
-      doc.setFontSize(14);
-      doc.text("Control de Asistencia - Estudiantes", pageWidth / 2, yPosition, { align: 'center' });
-      yPosition += 10;
-      doc.setFontSize(10);
-
-      registros.forEach(r => {
-        const line = `Fecha: ${r.fecha} | Curso: ${r.curso} | Nombre: ${r.nombre} | Estado: ${r.estado} | Observaciones: ${r.observaciones}`;
-        const splitText = doc.splitTextToSize(line, pageWidth - 2 * margin);
-        doc.text(splitText, margin, yPosition);
-        yPosition += (splitText.length * 4) + 2;
-
-        if (yPosition > doc.internal.pageSize.getHeight() - margin) {
-            doc.addPage();
-            yPosition = margin;
-            doc.setFontSize(14);
-            doc.text("Control de Asistencia - Estudiantes (Continuación)", pageWidth / 2, yPosition, { align: 'center' });
-            yPosition += 10;
-            doc.setFontSize(10);
+        
+        // Actualizar fecha seleccionada
+        function updateDate() {
+            currentDate = dateInput.value;
+            
+            if (currentCourse) {
+                // Verificar si hay datos guardados para la nueva fecha
+                const savedData = localStorage.getItem(`attendance_${currentCourse}_${currentDate}`);
+                
+                if (savedData) {
+                    selectedStudents = JSON.parse(savedData);
+                } else {
+                    selectedStudents = [];
+                }
+                
+                // Recargar la lista de estudiantes con los nuevos datos
+                loadStudents();
+            }
         }
-      });
-
-      doc.save("asistencia-estudiantes.pdf");
-    }
-
-    function limpiarRegistrosDelDia() {
-        const hoy = new Date().toISOString().split("T")[0];
-
-        if (confirm(`¿Estás seguro de que quieres limpiar TODOS los registros de asistencia para la fecha ${hoy}? Esta acción no se puede deshacer.`)) {
-            const registrosFiltrados = registros.filter(reg => reg.fecha !== hoy);
-            registros = registrosFiltrados;
-            localStorage.setItem("asistencias", JSON.stringify(registros));
-            mostrarRegistros();
-            alert(`Registros de la fecha ${hoy} limpiados correctamente.`);
-        } else {
-            alert("La limpieza de registros ha sido cancelada.");
+        
+        // Descargar reporte
+        function downloadReport() {
+            if (!currentCourse || !currentDate || selectedStudents.length === 0) {
+                alert("No hay datos para descargar");
+                return;
+            }
+            
+            // Filtrar solo estudiantes con faltas o llegadas tarde
+            const filteredStudents = selectedStudents.filter(s => s.status === "absent" || s.status === "late");
+            
+            if (filteredStudents.length === 0) {
+                alert("No hay estudiantes con faltas o llegadas tarde para reportar");
+                return;
+            }
+            
+            // Crear contenido del documento Word
+            const courseName = courseSelect.options[courseSelect.selectedIndex].text;
+            let content = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Reporte de Asistencia - ${courseName} - ${currentDate}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 2cm; }
+                        h1 { color: #1e88e5; text-align: center; }
+                        h2 { color: #333; text-align: center; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th { background-color: #1e88e5; color: white; padding: 10px; text-align: left; }
+                        td { padding: 8px; border-bottom: 1px solid #ddd; }
+                        .logo { text-align: center; margin-bottom: 20px; }
+                        .footer { margin-top: 30px; text-align: right; font-style: italic; }
+                    </style>
+                </head>
+                <body>
+                    <div class="logo">
+                        <img src="sello.jpg" alt="Logo Colegio" style="height: 100px;">
+                        <h1>UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+                    </div>
+                    <h2>REPORTE DE ASISTENCIA - ${courseName}</h2>
+                    <h2>FECHA: ${currentDate}</h2>
+                    
+                    <table>
+                        <tr>
+                            <th>No.</th>
+                            <th>CÉDULA</th>
+                            <th>NOMBRE COMPLETO</th>
+                            <th>ESTADO</th>
+                        </tr>
+            `;
+            
+            filteredStudents.forEach((student, index) => {
+                const statusText = student.status === "absent" ? "FALTA" : "LLEGADA TARDE";
+                content += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${statusText}</td>
+                    </tr>
+                `;
+            });
+            
+            content += `
+                    </table>
+                    
+                    <div class="footer">
+                        <p>Reporte generado el ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Crear blob y descargar
+            const blob = new Blob([content], { type: "application/msword" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Asistencia_${courseName}_${currentDate}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
-    }
-
-    function setFechaActual() {
-        const fechaInput = document.getElementById("fecha");
-        const hoy = new Date().toISOString().split("T")[0];
-        fechaInput.value = hoy;
-    }
-
-    // Inicializar la fecha, llenar los nombres (inicialmente vacío o con mensaje) y mostrar registros al cargar la página
-    setFechaActual();
-    llenarNombres(); // Llama a llenarNombres al cargar para mostrar el mensaje inicial
-    mostrarRegistros();
-
-  </script>
-  <a href="index.html" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 inline-block">INICIO</a>
+        
+        // Mostrar vista previa
+        function showPreview() {
+            if (!currentCourse || !currentDate || selectedStudents.length === 0) {
+                alert("No hay datos para mostrar");
+                return;
+            }
+            
+            // Filtrar solo estudiantes con faltas o llegadas tarde
+            const filteredStudents = selectedStudents.filter(s => s.status === "absent" || s.status === "late");
+            
+            if (filteredStudents.length === 0) {
+                alert("Todos los estudiantes están presentes");
+                return;
+            }
+            
+            const courseName = courseSelect.options[courseSelect.selectedIndex].text;
+            
+            let summaryHTML = `
+                <h3>${courseName} - ${currentDate}</h3>
+                <div class="summary-item">
+                    <span><strong>Total estudiantes:</strong></span>
+                    <span>${students[currentCourse].length}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>Presentes:</strong></span>
+                    <span>${selectedStudents.filter(s => s.status === "present").length}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>Llegadas tarde:</strong></span>
+                    <span>${selectedStudents.filter(s => s.status === "late").length}</span>
+                </div>
+                <div class="summary-item">
+                    <span><strong>Faltas:</strong></span>
+                    <span>${selectedStudents.filter(s => s.status === "absent").length}</span>
+                </div>
+                
+                <h3 style="margin-top: 20px;">Detalle de faltas y llegadas tarde</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="background-color: #f0f0f0;">
+                        <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">No.</th>
+                        <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">Cédula</th>
+                        <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">Nombre</th>
+                        <th style="padding: 8px; text-align: left; border-bottom: 1px solid #ddd;">Estado</th>
+                    </tr>
+            `;
+            
+            filteredStudents.forEach((student, index) => {
+                const statusText = student.status === "absent" ? "FALTA" : "LLEGADA TARDE";
+                summaryHTML += `
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${index + 1}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${student.id}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${student.name}</td>
+                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${statusText}</td>
+                    </tr>
+                `;
+            });
+            
+            summaryHTML += `</table>`;
+            
+            summaryContent.innerHTML = summaryHTML;
+            summary.style.display = "block";
+            
+            // Desplazarse a la vista previa
+            summary.scrollIntoView({ behavior: "smooth" });
+        }
+        
+        // Reiniciar formulario
+        function resetForm() {
+            if (confirm("¿Está seguro que desea reiniciar el formulario? Se perderán todos los datos no guardados.")) {
+                courseSelect.value = "";
+                setDefaultDate();
+                studentList.innerHTML = '<p style="text-align: center; color: #666;">Seleccione un curso para ver la lista de estudiantes</p>';
+                downloadBtn.disabled = true;
+                previewBtn.disabled = true;
+                summary.style.display = "none";
+                selectedStudents = [];
+                currentCourse = "";
+            }
+        }
+    </script>
 </body>
 </html>
