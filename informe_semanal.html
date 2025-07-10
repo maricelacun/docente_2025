@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informe Semanal - UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMINGUEZ"</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter for general text, Playfair Display for the title -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to bottom right, #e0f2fe, #fff); /* Light blue to white gradient */
+        }
+        .header-title {
+            font-family: 'Playfair Display', serif;
+            color: #1a237e; /* Deep blue */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #1a237e; /* Deep blue */
+            color: #ffffff;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #283593; /* Slightly lighter blue */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn-secondary {
+            background-color: #ffc107; /* Amber yellow */
+            color: #333333;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #ffca28; /* Slightly lighter yellow */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem; /* More rounded */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 2.5rem;
+        }
+        input[type="text"], input[type="date"], select, textarea {
+            border: 1px solid #e0e0e0;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            color: #333333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #42a5f5; /* Light blue focus */
+            box-shadow: 0 0 0 3px rgba(66, 165, 245, 0.2);
+        }
+        .table-header {
+            background-color: #e3f2fd; /* Very light blue */
+            color: #1a237e; /* Deep blue */
+        }
+        .table-row:nth-child(even) {
+            background-color: #f8f8f8; /* Light gray for alternating rows */
+        }
+        .action-icon {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .action-icon:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+
+    <!-- Header Section -->
+    <header class="w-full max-w-5xl text-center mb-12">
+        <h1 class="header-title text-5xl md:text-6xl font-extrabold mb-4 leading-tight">
+            UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMINGUEZ"
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-700 font-medium">
+            Informe Semanal de Seguimiento Estudiantil
+        </p>
+    </header>
+
+    <!-- Main Content Card -->
+    <main class="card w-full max-w-5xl">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Detalles del Informe</h2>
+
+        <!-- Report Metadata Form -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+                <label for="tutorName" class="block text-gray-700 text-sm font-semibold mb-2">Tutora:</label>
+                <input type="text" id="tutorName" value="Lcda. Jenny Sanchez Toro" readonly class="w-full bg-gray-50 cursor-not-allowed">
+            </div>
+            <div>
+                <label for="course" class="block text-gray-700 text-sm font-semibold mb-2">Curso:</label>
+                <input type="text" id="course" value="Tercero Informática A" readonly class="w-full bg-gray-50 cursor-not-allowed">
+            </div>
+            <div>
+                <label for="teacherName" class="block text-gray-700 text-sm font-semibold mb-2">Docente Técnica:</label>
+                <input type="text" id="teacherName" value="Mgs. Maricela Cun Rueda" readonly class="w-full bg-gray-50 cursor-not-allowed">
+            </div>
+            <div>
+                <label for="reportWeek" class="block text-gray-700 text-sm font-semibold mb-2">Semana del Informe:</label>
+                <input type="date" id="reportWeek" class="w-full">
+            </div>
+        </div>
+
+        <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">Registro de Incidencias Estudiantiles</h3>
+
+        <!-- Student Incident Form -->
+        <div class="bg-blue-50 p-6 rounded-xl mb-8 border border-blue-100">
+            <h4 class="text-xl font-semibold text-blue-800 mb-4">Añadir Nueva Incidencia</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="studentName" class="block text-gray-700 text-sm font-semibold mb-2">Nombre del Estudiante:</label>
+                    <input type="text" id="studentName" placeholder="Ej: Juan Pérez" class="w-full">
+                </div>
+                <div>
+                    <label for="incidentType" class="block text-gray-700 text-sm font-semibold mb-2">Tipo de Incidencia:</label>
+                    <select id="incidentType" class="w-full">
+                        <option value="">Seleccione...</option>
+                        <option value="Falta">Falta</option>
+                        <option value="Retraso">Retraso</option>
+                        <option value="Tarea no cumplida">Tarea no cumplida</option>
+                        <option value="Problema de Conducta">Problema de Conducta</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="module" class="block text-gray-700 text-sm font-semibold mb-2">Módulo:</label>
+                    <select id="module" class="w-full">
+                        <option value="">Seleccione...</option>
+                        <option value="Programación y Bases de Datos">Programación y Bases de Datos</option>
+                        <option value="Sistema Operativo y Redes">Sistema Operativo y Redes</option>
+                        <option value="Soporte Técnico">Soporte Técnico</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-6">
+                <label for="description" class="block text-gray-700 text-sm font-semibold mb-2">Descripción / Observaciones:</label>
+                <textarea id="description" rows="3" placeholder="Detalle la situación..." class="w-full"></textarea>
+            </div>
+            <button id="addIncidentBtn" class="btn-primary px-6 py-3 rounded-xl font-semibold text-lg w-full md:w-auto">
+                Añadir Incidencia
+            </button>
+        </div>
+
+        <!-- Incidents Table -->
+        <div class="overflow-x-auto mb-10">
+            <table class="min-w-full bg-white rounded-xl shadow-inner">
+                <thead>
+                    <tr class="table-header text-left">
+                        <th class="py-3 px-4 rounded-tl-xl">Estudiante</th>
+                        <th class="py-3 px-4">Incidencia</th>
+                        <th class="py-3 px-4">Módulo</th>
+                        <th class="py-3 px-4">Observaciones</th>
+                        <th class="py-3 px-4 rounded-tr-xl text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="incidentsTableBody">
+                    <!-- Incident rows will be added here by JavaScript -->
+                </tbody>
+            </table>
+            <p id="noIncidentsMessage" class="text-center text-gray-500 mt-4 hidden">No hay incidencias registradas para esta semana.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col md:flex-row justify-center gap-6">
+            <button id="downloadWordBtn" class="btn-primary px-8 py-4 rounded-xl font-bold text-xl shadow-lg">
+                Descargar en Word
+            </button>
+            <button id="printPreviewBtn" class="btn-secondary px-8 py-4 rounded-xl font-bold text-xl shadow-lg">
+                Vista Preliminar
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal for custom alerts/confirmations -->
+    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-xl shadow-xl max-w-sm w-full text-center">
+            <p id="modalMessage" class="text-lg font-semibold mb-6 text-gray-800"></p>
+            <button id="modalCloseBtn" class="btn-primary px-6 py-2 rounded-lg font-semibold text-base">Aceptar</button>
+        </div>
+    </div>
+
+
+    <script>
+        // Custom Modal function instead of alert/confirm
+        function showCustomModal(message) {
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        document.getElementById('modalCloseBtn').addEventListener('click', () => {
+            document.getElementById('customModal').classList.add('hidden');
+        });
+
+        const incidents = [];
+        const incidentsTableBody = document.getElementById('incidentsTableBody');
+        const noIncidentsMessage = document.getElementById('noIncidentsMessage');
+
+        // Function to render incidents in the table
+        function renderIncidents() {
+            incidentsTableBody.innerHTML = ''; // Clear existing rows
+            if (incidents.length === 0) {
+                noIncidentsMessage.classList.remove('hidden');
+            } else {
+                noIncidentsMessage.classList.add('hidden');
+                incidents.forEach((incident, index) => {
+                    const row = document.createElement('tr');
+                    row.classList.add('table-row', 'border-b', 'border-gray-100');
+                    row.innerHTML = `
+                        <td class="py-3 px-4">${incident.studentName}</td>
+                        <td class="py-3 px-4">${incident.incidentType}</td>
+                        <td class="py-3 px-4">${incident.module}</td>
+                        <td class="py-3 px-4">${incident.description}</td>
+                        <td class="py-3 px-4 text-center">
+                            <span class="action-icon text-red-500 hover:text-red-700" data-index="${index}" onclick="deleteIncident(${index})">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </span>
+                        </td>
+                    `;
+                    incidentsTableBody.appendChild(row);
+                });
+            }
+        }
+
+        // Function to delete an incident
+        function deleteIncident(index) {
+            incidents.splice(index, 1);
+            renderIncidents();
+            showCustomModal('Incidencia eliminada correctamente.');
+        }
+
+        // Add Incident Button Event Listener
+        document.getElementById('addIncidentBtn').addEventListener('click', () => {
+            const studentName = document.getElementById('studentName').value.trim();
+            const incidentType = document.getElementById('incidentType').value;
+            const module = document.getElementById('module').value;
+            const description = document.getElementById('description').value.trim();
+
+            if (!studentName || !incidentType || !module || !description) {
+                showCustomModal('Por favor, complete todos los campos para añadir una incidencia.');
+                return;
+            }
+
+            incidents.push({ studentName, incidentType, module, description });
+            renderIncidents();
+
+            // Clear form fields
+            document.getElementById('studentName').value = '';
+            document.getElementById('incidentType').value = '';
+            document.getElementById('module').value = '';
+            document.getElementById('description').value = '';
+
+            showCustomModal('Incidencia añadida correctamente.');
+        });
+
+        // Download Word Button Event Listener
+        document.getElementById('downloadWordBtn').addEventListener('click', () => {
+            const tutorName = document.getElementById('tutorName').value;
+            const course = document.getElementById('course').value;
+            const teacherName = document.getElementById('teacherName').value;
+            const reportWeek = document.getElementById('reportWeek').value;
+
+            if (incidents.length === 0) {
+                showCustomModal('No hay incidencias para generar el informe. Por favor, añada algunas.');
+                return;
+            }
+            if (!reportWeek) {
+                showCustomModal('Por favor, seleccione la semana del informe.');
+                return;
+            }
+
+            let docContent = `
+                UNIDAD EDUCATIVA "DR. CAMILO GALLEGOS DOMINGUEZ"
+                Informe Semanal de Seguimiento Estudiantil
+
+                Tutora: ${tutorName}
+                Curso: ${course}
+                Docente Técnica: ${teacherName}
+                Semana del Informe: ${reportWeek}
+
+                Registro de Incidencias Estudiantiles:
+            `;
+
+            if (incidents.length === 0) {
+                docContent += "\nNo se registraron incidencias esta semana.";
+            } else {
+                incidents.forEach((incident, index) => {
+                    docContent += `
+                    \n${index + 1}. Estudiante: ${incident.studentName}
+                       Tipo de Incidencia: ${incident.incidentType}
+                       Módulo: ${incident.module}
+                       Observaciones: ${incident.description}
+                    `;
+                });
+            }
+
+            // Create a Blob with the content
+            const blob = new Blob([docContent], { type: 'application/msword' });
+
+            // Create a temporary URL for the blob
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary anchor element and trigger the download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Informe_Semanal_${reportWeek}.doc`; // .doc for basic word document
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url); // Clean up the URL object
+
+            showCustomModal('El informe se ha generado y descargado como un archivo Word.');
+        });
+
+        // Print Preview Button Event Listener
+        document.getElementById('printPreviewBtn').addEventListener('click', () => {
+            window.print();
+        });
+
+        // Initial render to show "No incidents" message if applicable
+        renderIncidents();
+
+        // Set current date as default for report week
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            document.getElementById('reportWeek').value = `${year}-${month}-${day}`;
+        });
+
+    </script>
+</body>
+</html>
