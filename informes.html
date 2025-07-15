@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -42,13 +42,18 @@
         opacity: 1;
         visibility: visible;
     }
+    /* Estilo para el select múltiple */
+    select[multiple] {
+      min-height: 120px; /* Altura mínima para mostrar varias opciones */
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen flex flex-col items-center justify-start py-10 px-4">
 
   <div class="bg-white rounded-xl shadow-xl p-6 mb-8 w-full max-w-3xl text-center">
-    <img src="sello.jpg" alt="Sello Institucional" class="mx-auto mb-3 w-24 h-24 object-contain">
+    <!-- Placeholder de imagen para el sello institucional -->
+    <img src="https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO" alt="Sello Institucional" class="mx-auto mb-3 w-24 h-24 object-contain">
     <h1 class="text-2xl font-bold text-blue-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
   </div>
 
@@ -56,8 +61,8 @@
     <h2 class="text-xl font-semibold text-blue-900 mb-6 text-center">Registrar Informe Estudiantil</h2>
     <form id="formulario" class="space-y-5">
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="Para">Para:</label>
-        <input type="text" id="Para" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" value="Mgs. Darwing Toledo G.     Rector" readonly>
+        <label class="block text-gray-700 font-medium mb-1" for="Para">Para (ingrese nombres separados por saltos de línea):</label>
+        <textarea id="Para" rows="3" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Ej: Mgs. Darwing Toledo G. Rector&#10;Lic. Ana García (Inspector)"></textarea>
       </div>
 
       <div>
@@ -66,8 +71,8 @@
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="nombre">Nombre del estudiante:</label>
-        <input type="text" id="nombre" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
+        <label class="block text-gray-700 font-medium mb-1" for="nombre">Nombre(s) del estudiante (ingrese nombres separados por saltos de línea):</label>
+        <textarea id="nombre" rows="3" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required placeholder="Ej: Juan Pérez&#10;María López"></textarea>
       </div>
 
       <div>
@@ -76,17 +81,20 @@
           <option value="">Seleccione un curso</option>
           <option value='Tercero Informática "A"'>Tercero Informática "A"</option>
           <option value='Tercero Informática "B"'>Tercero Informática "B"</option>
-          </select>
+          <option value='Primero Contabilidad "A"'>Primero Contabilidad "A"</option>
+          <option value='Segundo Ciencias "C"'>Segundo Ciencias "C"</option>
+        </select>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="asunto">Motivo del informe:</label>
-        <select id="asunto" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
-          <option value="">Seleccione un motivo</option>
+        <label class="block text-gray-700 font-medium mb-1" for="asunto">Motivo(s) del informe (seleccione uno o más):</label>
+        <select id="asunto" multiple class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
           <option value="Bajo rendimiento">Bajo rendimiento</option>
           <option value="Comportamiento">Comportamiento</option>
           <option value="Acumulación de faltas">Acumulación de faltas</option>
           <option value="Felicitaciones">Felicitaciones</option>
+          <option value="Necesidad de apoyo académico">Necesidad de apoyo académico</option>
+          <option value="Participación destacada">Participación destacada</option>
           <option value="Otro">Otro</option>
         </select>
       </div>
@@ -112,12 +120,12 @@
   <div id="vistaPrevia" class="bg-white rounded-xl shadow-lg p-6 mt-8 w-full max-w-3xl hidden">
     <h3 class="text-xl font-bold text-gray-800 mb-5 text-center">Vista Previa del Informe</h3>
     <div class="text-left text-gray-700 space-y-3 text-sm">
-      <p><strong>Para:</strong> Mgs. Darwing Toledo G. Rector</p>
+      <p><strong>Para:</strong> <span id="vp-para"></span></p>
       <p><strong>De:</strong> <span id="vp-de"></span></p>
       <hr class="my-2">
-      <p><strong>Estudiante:</strong> <span id="vp-nombre"></span></p>
+      <p><strong>Estudiante(s):</strong> <span id="vp-nombre"></span></p>
       <p><strong>Curso:</strong> <span id="vp-curso"></span></p>
-      <p><strong>Motivo:</strong> <span id="vp-asunto"></span></p>
+      <p><strong>Motivo(s):</strong> <span id="vp-asunto"></span></p>
       <p><strong>Detalle:</strong></p>
       <p class="pl-2 border-l-2 border-gray-200" id="vp-detalle" style="white-space: pre-wrap;"></p>
       <hr class="my-2">
@@ -140,6 +148,10 @@
     // Fecha automática
     document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' });
 
+    /**
+     * Muestra una alerta personalizada en la parte superior de la pantalla.
+     * @param {string} message - El mensaje a mostrar en la alerta.
+     */
     function showCustomAlert(message) {
         const alertBox = document.getElementById("customAlert");
         const alertMessage = document.getElementById("customAlertMessage");
@@ -150,46 +162,77 @@
         }, 3000); // El mensaje desaparece después de 3 segundos
     }
 
+    /**
+     * Valida los campos del formulario para asegurar que no estén vacíos.
+     * @returns {boolean} - True si el formulario es válido, false en caso contrario.
+     */
     function validateForm() {
+      const para = document.getElementById("Para").value.trim();
       const nombre = document.getElementById("nombre").value.trim();
       const curso = document.getElementById("curso").value;
-      const asunto = document.getElementById("asunto").value;
+      const asuntoSelect = document.getElementById("asunto");
       const detalle = document.getElementById("detalle").value.trim();
 
-      if (!nombre || !curso || !asunto || !detalle) {
+      // Verificar que los campos de texto y select no estén vacíos
+      if (!para || !nombre || !curso || !detalle) {
         showCustomAlert("Por favor, complete todos los campos obligatorios del formulario.");
+        return false;
+      }
+
+      // Verificar que al menos una opción esté seleccionada en el select múltiple de motivos
+      if (asuntoSelect.selectedOptions.length === 0) {
+        showCustomAlert("Por favor, seleccione al menos un motivo para el informe.");
         return false;
       }
       return true;
     }
 
+    /**
+     * Muestra una vista previa del informe en la interfaz de usuario.
+     */
     function mostrarVistaPrevia() {
       if (!validateForm()) return;
 
-      document.getElementById("vp-de").textContent = document.getElementById("De").value;
-      document.getElementById("vp-nombre").textContent = document.getElementById("nombre").value;
-      document.getElementById("vp-curso").textContent = document.getElementById("curso").value;
-      document.getElementById("vp-asunto").textContent = document.getElementById("asunto").value;
-      document.getElementById("vp-detalle").textContent = document.getElementById("detalle").value;
-      document.getElementById("vp-fecha").textContent = document.getElementById("fecha").value;
+      // Obtener los valores de los campos
+      const paraValue = document.getElementById("Para").value.trim();
+      const deValue = document.getElementById("De").value;
+      const nombreValue = document.getElementById("nombre").value.trim();
+      const cursoValue = document.getElementById("curso").value;
+      const asuntoSelect = document.getElementById("asunto");
+      const detalleValue = document.getElementById("detalle").value;
+      const fechaValue = document.getElementById("fecha").value;
 
+      // Obtener los motivos seleccionados y unirlos con una coma
+      const selectedAsuntos = Array.from(asuntoSelect.selectedOptions).map(option => option.textContent).join(', ');
+
+      // Actualizar los elementos de la vista previa
+      document.getElementById("vp-para").innerHTML = paraValue.replace(/\n/g, '<br>'); // Mantener saltos de línea
+      document.getElementById("vp-de").textContent = deValue;
+      document.getElementById("vp-nombre").innerHTML = nombreValue.replace(/\n/g, '<br>'); // Mantener saltos de línea
+      document.getElementById("vp-curso").textContent = cursoValue;
+      document.getElementById("vp-asunto").textContent = selectedAsuntos;
+      document.getElementById("vp-detalle").textContent = detalleValue;
+      document.getElementById("vp-fecha").textContent = fechaValue;
+
+      // Mostrar la sección de vista previa
       document.getElementById("vistaPrevia").classList.remove("hidden");
-      // Scroll hacia la vista previa para mejor UX en móviles
+      // Desplazarse hacia la vista previa para una mejor experiencia de usuario en móviles
       document.getElementById("vistaPrevia").scrollIntoView({ behavior: 'smooth' });
     }
 
     /**
-     * Función central para generar el contenido del PDF.
+     * Función central para añadir contenido al documento PDF.
      * @param {jsPDF} doc Instancia de jsPDF.
-     * @param {string} nombre Nombre del estudiante.
+     * @param {string[]} para Nombres de los destinatarios.
+     * @param {string[]} nombres Nombres de los estudiantes.
      * @param {string} curso Curso del estudiante.
-     * @param {string} asunto Asunto del informe.
+     * @param {string} asuntos Motivos del informe (cadena separada por comas).
      * @param {string} detalle Detalle del informe.
      * @param {string} fecha Fecha del informe.
      * @param {string} deValor Valor del campo "De".
      * @param {boolean} imageLoaded Indica si la imagen del sello se cargó.
      */
-    function addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, imageLoaded) {
+    function addContentToPDF(doc, para, nombres, curso, asuntos, detalle, fecha, deValor, imageLoaded) {
       let currentY = 20; // Posición Y inicial
       const pageHeight = doc.internal.pageSize.getHeight();
       const pageWidth = doc.internal.pageSize.getWidth();
@@ -197,12 +240,9 @@
       const contentWidth = pageWidth - (2 * margin);
 
       // SELLO (si se cargó)
-      // La imagen ya fue añadida en la función llamadora (generatePDFDocument) si imageLoaded es true.
-      // El espacio para la imagen ya está considerado al ajustar currentY en generatePDFDocument.
       if (imageLoaded) {
         currentY = 15 + 25 + 10; // imageY + imageHeight + padding
       }
-
 
       // TÍTULO DE LA INSTITUCIÓN
       doc.setFont("helvetica", "bold");
@@ -216,20 +256,32 @@
       doc.line(margin, currentY, pageWidth - margin, currentY);
       currentY += 10;
 
-
       // INFORMACIÓN "PARA" Y "DE"
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      const paraText = `Para: ${document.getElementById("Para").value}`;
-      doc.text(paraText, margin, currentY);
+
+      // Destinatarios "Para"
+      doc.setFont("helvetica", "bold");
+      doc.text("Para:", margin, currentY);
+      doc.setFont("helvetica", "normal");
       currentY += 7;
+      para.forEach(line => {
+        if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
+        doc.text(line, margin + 10, currentY); // Indentar un poco
+        currentY += 7;
+      });
+      currentY += 5; // Espacio adicional
+
+      // Remitente "De"
       const deText = `De: ${deValor}`;
+      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
       doc.text(deText, margin, currentY);
       currentY += 12;
 
       // TÍTULO DEL INFORME
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
+      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
       doc.text("INFORME ESTUDIANTIL", pageWidth / 2, currentY, { align: 'center' });
       currentY += 10;
 
@@ -250,17 +302,30 @@
         doc.text(textLines, margin + fieldTitleSpacing, currentY);
         currentY += (textLines.length * 5) + 5; // Ajustar espaciado basado en líneas
       }
-      
+          
       addField("Fecha:", fecha);
-      addField("Estudiante:", nombre);
+
+      // Estudiante(s)
+      doc.setFont("helvetica", "bold");
+      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
+      doc.text("Estudiante(s):", margin, currentY);
+      doc.setFont("helvetica", "normal");
+      currentY += 7;
+      nombres.forEach(line => {
+        if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
+        doc.text(line, margin + 10, currentY); // Indentar un poco
+        currentY += 7;
+      });
+      currentY += 5; // Espacio adicional
+
       addField("Curso:", curso);
-      addField("Motivo:", asunto);
+      addField("Motivo(s):", asuntos);
       currentY += 5; // Espacio extra antes del detalle
 
       // DETALLE DEL INFORME
       if (currentY > pageHeight - margin - 20) { // Check for page break before detail
-            doc.addPage();
-            currentY = margin;
+          doc.addPage();
+          currentY = margin;
       }
       doc.setFont("helvetica", "bold");
       doc.text("Detalle del Informe:", margin, currentY);
@@ -270,16 +335,14 @@
       doc.text(detailLines, margin, currentY);
       currentY += (detailLines.length * 5) + 10;
 
-
-      // FIRMA (Ejemplo, ajustar según necesidad)
+      // FIRMA
       if (currentY > pageHeight - margin - 30) { // Check for page break before signature
-            doc.addPage();
-            currentY = margin;
+          doc.addPage();
+          currentY = margin;
       } else {
         currentY = pageHeight - margin - 30; // Posicionar firma al final
         if (currentY < margin + 150) currentY = margin + 150; // Asegurar que no se superponga mucho
       }
-
 
       doc.setLineWidth(0.3);
       doc.line(margin + 10, currentY, margin + 80, currentY); // Línea para la firma
@@ -287,9 +350,7 @@
       doc.text(deValor, margin + 10, currentY);
       doc.setFontSize(10);
       doc.text("Docente - Tutor/a", margin + 10, currentY + 5);
-
     }
-
 
     /**
      * Prepara el documento PDF y maneja la carga de la imagen.
@@ -299,9 +360,12 @@
       if (!validateForm()) return;
 
       const doc = new jsPDF();
-      const nombre = document.getElementById("nombre").value;
+      // Obtener los valores de los campos
+      const paraLines = document.getElementById("Para").value.trim().split('\n').filter(line => line.trim() !== '');
+      const nombresLines = document.getElementById("nombre").value.trim().split('\n').filter(line => line.trim() !== '');
       const curso = document.getElementById("curso").value;
-      const asunto = document.getElementById("asunto").value;
+      const asuntoSelect = document.getElementById("asunto");
+      const selectedAsuntos = Array.from(asuntoSelect.selectedOptions).map(option => option.textContent).join(', ');
       const detalle = document.getElementById("detalle").value;
       const fecha = document.getElementById("fecha").value;
       const deValor = document.getElementById("De").value;
@@ -309,7 +373,7 @@
       const img = new Image();
       // IMPORTANTE: Reemplaza esta URL con la URL de tu imagen real o un Data URI.
       // Para Data URI: img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ...';
-      img.src = 'https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO';
+      img.src = 'https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO'; // Usando un placeholder
       img.crossOrigin = "Anonymous"; // Necesario si la imagen es de otro dominio para canvas/PDF
 
       img.onload = function() {
@@ -319,20 +383,20 @@
             const imageX = (doc.internal.pageSize.getWidth() - imageWidth) / 2;
             const imageY = 15; // Posicionar imagen cerca de la parte superior
             doc.addImage(this, 'PNG', imageX, imageY, imageWidth, imageHeight); // Asumir PNG para placeholder, ajustar si es JPEG
-            addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, true);
+            addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, true);
         } catch (e) {
             console.error("Error al añadir imagen al PDF:", e);
             // Continuar sin la imagen si hay un error al añadirla (ej. formato no soportado por addImage)
-            addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, false);
+            addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, false);
         }
-        finalizePDF(doc, action, nombre);
+        finalizePDF(doc, action, nombresLines[0] || 'Informe'); // Usar el primer nombre o 'Informe'
       };
 
       img.onerror = function() {
         console.error("Error al cargar la imagen del sello. El PDF se generará sin la imagen.");
         showCustomAlert("Advertencia: No se pudo cargar la imagen del sello. El PDF se generará sin ella.");
-        addContentToPDF(doc, nombre, curso, asunto, detalle, fecha, deValor, false);
-        finalizePDF(doc, action, nombre);
+        addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, false);
+        finalizePDF(doc, action, nombresLines[0] || 'Informe');
       };
     }
 
@@ -340,31 +404,38 @@
      * Finaliza el PDF según la acción (guardar o imprimir).
      * @param {jsPDF} doc Instancia de jsPDF.
      * @param {string} action 'save' o 'print'.
-     * @param {string} nombre Nombre del estudiante para el archivo.
+     * @param {string} fileNameBase Nombre base para el archivo (ej. primer nombre del estudiante).
      */
-    function finalizePDF(doc, action, nombre) {
+    function finalizePDF(doc, action, fileNameBase) {
+        // Limpiar el nombre base para el archivo
+        const cleanFileName = fileNameBase.replace(/[^a-zA-Z0-9_]/g, '_').replace(/__+/g, '_').trim();
+        const finalFileName = `Informe_${cleanFileName}.pdf`;
+
         if (action === 'save') {
-            doc.save(`Informe_${nombre.replace(/ /g, '_')}.pdf`);
+            doc.save(finalFileName);
             showCustomAlert("Informe guardado como PDF.");
         } else if (action === 'print') {
             doc.autoPrint();
             // Abrir en una nueva ventana para la impresión. Algunos navegadores bloquean pop-ups.
-            // Considerar dar feedback al usuario si el pop-up es bloqueado.
             const pdfDataUri = doc.output('dataurlnewwindow');
             if (!pdfDataUri) { // Si el navegador bloqueó la nueva ventana
                  showCustomAlert("La ventana de impresión fue bloqueada por el navegador. Intente desactivar el bloqueador de pop-ups.");
-                 // Como fallback, se podría intentar descargar el PDF
-                 // doc.save(`Informe_${nombre.replace(/ /g, '_')}_para_imprimir.pdf`);
             } else {
                  showCustomAlert("Preparando informe para impresión...");
             }
         }
     }
 
+    /**
+     * Llama a la función para generar y guardar el PDF.
+     */
     function guardarPDF() {
       generatePDFDocument('save');
     }
 
+    /**
+     * Llama a la función para generar e imprimir el PDF.
+     */
     function imprimirPDF() {
       generatePDFDocument('print');
     }
