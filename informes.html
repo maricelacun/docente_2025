@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -6,12 +6,12 @@
   <title>Informe Estudiantil</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
   <style>
     body {
-      background: linear-gradient(to right, #1e3a8a, #facc15); /* Azul a amarillo */
-      font-family: 'Inter', sans-serif; /* Fuente Inter como sugiere la guía */
+      background: linear-gradient(to right, #1e3a8a, #facc15);
+      font-family: 'Inter', sans-serif;
     }
-    /* Estilos adicionales para mejorar la apariencia de los botones */
     .btn {
       transition: all 0.3s ease-in-out;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -20,40 +20,105 @@
       transform: translateY(-2px);
       box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
     }
-    /* Estilo para el mensaje de alerta personalizado */
     .custom-alert {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: #f8d7da; /* Color de fondo rojo claro */
-        color: #721c24; /* Color de texto oscuro */
-        padding: 15px 20px;
-        border: 1px solid #f5c6cb; /* Borde rojo claro */
-        border-radius: 8px; /* Bordes redondeados */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-        z-index: 1000; /* Asegurar que esté por encima de otros elementos */
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.3s ease, visibility 0.3s ease;
-        font-size: 0.9rem;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 15px 20px;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      font-size: 0.9rem;
     }
     .custom-alert.show {
-        opacity: 1;
-        visibility: visible;
+      opacity: 1;
+      visibility: visible;
     }
-    /* Estilo para el select múltiple */
-    select[multiple] {
-      min-height: 120px; /* Altura mínima para mostrar varias opciones */
+    .checkbox-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      background-color: #f3f4f6;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .checkbox-item:hover {
+      background-color: #e5e7eb;
+    }
+    .checkbox-item input {
+      margin-right: 8px;
+    }
+    .student-input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .student-input-container input {
+      flex-grow: 1;
+    }
+    .remove-student-btn {
+      background-color: #ef4444;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .remove-student-btn:hover {
+      background-color: #dc2626;
+    }
+    .add-student-btn {
+      background-color: #10b981;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 5px;
+    }
+    .add-student-btn:hover {
+      background-color: #059669;
+    }
+    #vistaPrevia {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .informe-content {
+      line-height: 1.6;
+    }
+    .informe-content p {
+      margin-bottom: 10px;
+    }
+    .informe-signature {
+      margin-top: 50px;
+      text-align: right;
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="min-h-screen flex flex-col items-center justify-start py-10 px-4">
 
   <div class="bg-white rounded-xl shadow-xl p-6 mb-8 w-full max-w-3xl text-center">
-    <!-- Placeholder de imagen para el sello institucional -->
-    <img src="https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO" alt="Sello Institucional" class="mx-auto mb-3 w-24 h-24 object-contain">
+    <img src="sello.jpg" alt="Sello Institucional" class="mx-auto mb-3 w-24 h-24 object-contain">
     <h1 class="text-2xl font-bold text-blue-800">Unidad Educativa "Dr. Camilo Gallegos Domínguez"</h1>
   </div>
 
@@ -61,18 +126,31 @@
     <h2 class="text-xl font-semibold text-blue-900 mb-6 text-center">Registrar Informe Estudiantil</h2>
     <form id="formulario" class="space-y-5">
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="Para">Para (ingrese nombres separados por saltos de línea):</label>
-        <textarea id="Para" rows="3" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Ej: Mgs. Darwing Toledo G. Rector&#10;Lic. Ana García (Inspector)"></textarea>
+        <label class="block text-gray-700 font-medium mb-1" for="Para">Para:</label>
+        <select id="Para" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+          <option value="Mgs. Darwing Toledo G. - Rector">Mgs. Darwing Toledo G. - Rector</option>
+          <option value="Mgs. Vanessa Tocto C.  - Vicerrectora Secc Vespertina">Mgs. Vanessa Tocto C. - Vicerrectora</option>
+          <option value="Psic. Klever Añasco, Lcda. en Trabajo Social Stefania Cuenca - Departamento de Consejería Estudiantil">Psic. Klever Añasco , Lcda. en Trabajo Social Stefania Cuenca - Departamento de Consejería Estudiantil</option>
+          <option value="Otro">Otro (especificar)</option>
+        </select>
+        <input type="text" id="ParaOtro" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none mt-2 hidden" placeholder="Especifique el destinatario">
       </div>
 
       <div>
         <label class="block text-gray-700 font-medium mb-1" for="De">De:</label>
-        <input type="text" id="De" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" value="Mgs. Maricela Cun Rueda Docente - Tutora">
+        <input type="text" id="De" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" value="Mgs. Maricela Cun Rueda - Docente Tutora">
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="nombre">Nombre(s) del estudiante (ingrese nombres separados por saltos de línea):</label>
-        <textarea id="nombre" rows="3" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required placeholder="Ej: Juan Pérez&#10;María López"></textarea>
+        <label class="block text-gray-700 font-medium mb-1">Nombre(s) del/los estudiante(s):</label>
+        <div id="students-container">
+          <div class="student-input-container">
+            <input type="text" class="student-name w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Nombre completo del estudiante" required>
+          </div>
+        </div>
+        <button type="button" id="add-student" class="add-student-btn">
+          <i class="fas fa-plus"></i> Añadir otro estudiante
+        </button>
       </div>
 
       <div>
@@ -81,27 +159,37 @@
           <option value="">Seleccione un curso</option>
           <option value='Tercero Informática "A"'>Tercero Informática "A"</option>
           <option value='Tercero Informática "B"'>Tercero Informática "B"</option>
-          <option value='Primero Contabilidad "A"'>Primero Contabilidad "A"</option>
-          <option value='Segundo Ciencias "C"'>Segundo Ciencias "C"</option>
-        </select>
+         </select>
       </div>
 
       <div>
-        <label class="block text-gray-700 font-medium mb-1" for="asunto">Motivo(s) del informe (seleccione uno o más):</label>
-        <select id="asunto" multiple class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required>
-          <option value="Bajo rendimiento">Bajo rendimiento</option>
-          <option value="Comportamiento">Comportamiento</option>
-          <option value="Acumulación de faltas">Acumulación de faltas</option>
-          <option value="Felicitaciones">Felicitaciones</option>
-          <option value="Necesidad de apoyo académico">Necesidad de apoyo académico</option>
-          <option value="Participación destacada">Participación destacada</option>
-          <option value="Otro">Otro</option>
-        </select>
+        <label class="block text-gray-700 font-medium mb-1">Motivo(s) del informe:</label>
+        <div class="checkbox-container">
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Bajo rendimiento académico"> Bajo rendimiento académico
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Problemas de comportamiento"> Problemas de comportamiento
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Acumulación de faltas"> Acumulación de faltas
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Felicitaciones"> Felicitaciones
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Situación familiar"> Situación familiar
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="motivo" value="Otro"> Otro (especificar)
+          </label>
+        </div>
+        <input type="text" id="motivoOtro" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none mt-2 hidden" placeholder="Especifique el motivo">
       </div>
 
       <div>
         <label class="block text-gray-700 font-medium mb-1" for="detalle">Detalle del informe:</label>
-        <textarea id="detalle" rows="5" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required></textarea>
+        <textarea id="detalle" rows="5" class="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" required placeholder="Describa con claridad y precisión la situación que motiva este informe..."></textarea>
       </div>
 
       <div>
@@ -110,26 +198,23 @@
       </div>
 
       <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8">
-        <button type="button" onclick="mostrarVistaPrevia()" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Vista previa</button>
-        <button type="button" onclick="guardarPDF()" class="btn bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Guardar PDF</button>
-        <button type="button" onclick="imprimirPDF()" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto">Imprimir</button>
+        <button type="button" onclick="mostrarVistaPrevia()" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto flex items-center justify-center gap-2">
+          <i class="fas fa-eye"></i> Vista previa
+        </button>
+        <button type="button" onclick="guardarPDF()" class="btn bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto flex items-center justify-center gap-2">
+          <i class="fas fa-file-pdf"></i> Guardar PDF
+        </button>
+        <button type="button" onclick="generarWord()" class="btn bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-2.5 rounded-full w-full sm:w-auto flex items-center justify-center gap-2">
+          <i class="fas fa-file-word"></i> Descargar Word
+        </button>
       </div>
     </form>
   </div>
 
-  <div id="vistaPrevia" class="bg-white rounded-xl shadow-lg p-6 mt-8 w-full max-w-3xl hidden">
+  <div id="vistaPrevia" class="bg-white rounded-xl shadow-lg p-8 mt-8 w-full max-w-3xl hidden">
     <h3 class="text-xl font-bold text-gray-800 mb-5 text-center">Vista Previa del Informe</h3>
-    <div class="text-left text-gray-700 space-y-3 text-sm">
-      <p><strong>Para:</strong> <span id="vp-para"></span></p>
-      <p><strong>De:</strong> <span id="vp-de"></span></p>
-      <hr class="my-2">
-      <p><strong>Estudiante(s):</strong> <span id="vp-nombre"></span></p>
-      <p><strong>Curso:</strong> <span id="vp-curso"></span></p>
-      <p><strong>Motivo(s):</strong> <span id="vp-asunto"></span></p>
-      <p><strong>Detalle:</strong></p>
-      <p class="pl-2 border-l-2 border-gray-200" id="vp-detalle" style="white-space: pre-wrap;"></p>
-      <hr class="my-2">
-      <p><strong>Fecha:</strong> <span id="vp-fecha"></span></p>
+    <div id="informeContent" class="informe-content text-gray-700">
+      <!-- El contenido se generará dinámicamente -->
     </div>
   </div>
 
@@ -138,194 +223,240 @@
   </div>
 
   <div class="mt-8 w-full max-w-3xl text-center">
-    <a href="index.html" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-full inline-block">INICIO</a>
+    <a href="index.html" class="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-full inline-block">
+      <i class="fas fa-home"></i> INICIO
+    </a>
   </div>
 
   <script>
-    // Inicializar jsPDF. Asegúrate de que jspdf esté definido globalmente.
+    // Inicializar jsPDF
     const { jsPDF } = window.jspdf;
+    const { docx } = window;
 
     // Fecha automática
-    document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC', { year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById("fecha").value = new Date().toLocaleDateString('es-EC', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
 
-    /**
-     * Muestra una alerta personalizada en la parte superior de la pantalla.
-     * @param {string} message - El mensaje a mostrar en la alerta.
-     */
+    // Manejar selección de destinatario
+    document.getElementById("Para").addEventListener("change", function() {
+      const paraOtroInput = document.getElementById("ParaOtro");
+      paraOtroInput.classList.toggle("hidden", this.value !== "Otro");
+      if (this.value !== "Otro") paraOtroInput.value = "";
+    });
+
+    // Manejar selección de motivo "Otro"
+    document.querySelectorAll('input[name="motivo"]').forEach(checkbox => {
+      checkbox.addEventListener("change", function() {
+        const motivoOtroInput = document.getElementById("motivoOtro");
+        const otroChecked = Array.from(document.querySelectorAll('input[name="motivo"]'))
+          .some(cb => cb.value === "Otro" && cb.checked);
+        motivoOtroInput.classList.toggle("hidden", !otroChecked);
+        if (!otroChecked) motivoOtroInput.value = "";
+      });
+    });
+
+    // Manejar múltiples estudiantes
+    document.getElementById("add-student").addEventListener("click", function() {
+      const container = document.getElementById("students-container");
+      const div = document.createElement("div");
+      div.className = "student-input-container";
+      div.innerHTML = `
+        <input type="text" class="student-name w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Nombre completo del estudiante" required>
+        <button type="button" class="remove-student-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      `;
+      container.appendChild(div);
+      
+      // Agregar evento al botón de eliminar
+      div.querySelector(".remove-student-btn").addEventListener("click", function() {
+        if (document.querySelectorAll(".student-input-container").length > 1) {
+          div.remove();
+        } else {
+          showCustomAlert("Debe haber al menos un estudiante.");
+        }
+      });
+    });
+
     function showCustomAlert(message) {
-        const alertBox = document.getElementById("customAlert");
-        const alertMessage = document.getElementById("customAlertMessage");
-        alertMessage.textContent = message;
-        alertBox.classList.add("show");
-        setTimeout(() => {
-            alertBox.classList.remove("show");
-        }, 3000); // El mensaje desaparece después de 3 segundos
+      const alertBox = document.getElementById("customAlert");
+      const alertMessage = document.getElementById("customAlertMessage");
+      alertMessage.textContent = message;
+      alertBox.classList.add("show");
+      setTimeout(() => {
+        alertBox.classList.remove("show");
+      }, 3000);
     }
 
-    /**
-     * Valida los campos del formulario para asegurar que no estén vacíos.
-     * @returns {boolean} - True si el formulario es válido, false en caso contrario.
-     */
     function validateForm() {
-      const para = document.getElementById("Para").value.trim();
-      const nombre = document.getElementById("nombre").value.trim();
+      // Validar estudiantes
+      const studentInputs = document.querySelectorAll(".student-name");
+      let studentsValid = true;
+      studentInputs.forEach(input => {
+        if (!input.value.trim()) studentsValid = false;
+      });
+      
+      if (!studentsValid) {
+        showCustomAlert("Por favor, complete el nombre de todos los estudiantes.");
+        return false;
+      }
+
+      // Validar curso
       const curso = document.getElementById("curso").value;
-      const asuntoSelect = document.getElementById("asunto");
+      if (!curso) {
+        showCustomAlert("Por favor, seleccione un curso.");
+        return false;
+      }
+
+      // Validar motivos
+      const motivos = Array.from(document.querySelectorAll('input[name="motivo"]:checked')).map(cb => cb.value);
+      if (motivos.length === 0) {
+        showCustomAlert("Por favor, seleccione al menos un motivo.");
+        return false;
+      }
+
+      // Validar motivo "Otro"
+      if (motivos.includes("Otro") && !document.getElementById("motivoOtro").value.trim()) {
+        showCustomAlert("Por favor, especifique el motivo.");
+        return false;
+      }
+
+      // Validar detalle
       const detalle = document.getElementById("detalle").value.trim();
-
-      // Verificar que los campos de texto y select no estén vacíos
-      if (!para || !nombre || !curso || !detalle) {
-        showCustomAlert("Por favor, complete todos los campos obligatorios del formulario.");
+      if (!detalle) {
+        showCustomAlert("Por favor, complete el detalle del informe.");
         return false;
       }
 
-      // Verificar que al menos una opción esté seleccionada en el select múltiple de motivos
-      if (asuntoSelect.selectedOptions.length === 0) {
-        showCustomAlert("Por favor, seleccione al menos un motivo para el informe.");
-        return false;
-      }
       return true;
     }
 
-    /**
-     * Muestra una vista previa del informe en la interfaz de usuario.
-     */
+    function getSelectedMotivos() {
+      const motivos = Array.from(document.querySelectorAll('input[name="motivo"]:checked')).map(cb => cb.value);
+      if (motivos.includes("Otro")) {
+        const otroMotivo = document.getElementById("motivoOtro").value.trim();
+        motivos[motivos.indexOf("Otro")] = `Otro: ${otroMotivo}`;
+      }
+      return motivos;
+    }
+
+    function getParaValue() {
+      const paraSelect = document.getElementById("Para");
+      return paraSelect.value === "Otro" 
+        ? document.getElementById("ParaOtro").value.trim() 
+        : paraSelect.value;
+    }
+
+    function getStudents() {
+      return Array.from(document.querySelectorAll(".student-name")).map(input => input.value.trim());
+    }
+
+    function generarInformeHTML() {
+      const para = getParaValue();
+      const de = document.getElementById("De").value;
+      const estudiantes = getStudents();
+      const curso = document.getElementById("curso").value;
+      const motivos = getSelectedMotivos();
+      const detalle = document.getElementById("detalle").value;
+      const fecha = document.getElementById("fecha").value;
+
+      let html = `
+        <p><strong>Para:</strong> ${para}</p>
+        <p><strong>De:</strong> ${de}</p>
+        <hr class="my-3 border-gray-300">
+        <p><strong>Fecha:</strong> ${fecha}</p>
+        <p><strong>Estudiante(s):</strong> ${estudiantes.join(", ")}</p>
+        <p><strong>Curso:</strong> ${curso}</p>
+        <p><strong>Motivo(s):</strong> ${motivos.join(", ")}</p>
+        <p class="mt-4"><strong>Detalle del informe:</strong></p>
+        <div class="pl-4 border-l-2 border-gray-300 my-2" style="white-space: pre-wrap;">${detalle}</div>
+        <div class="informe-signature">
+          <p class="mt-12">Atentamente,</p>
+          <p class="mt-8"><strong>${de}</strong></p>
+        </div>
+      `;
+
+      return html;
+    }
+
     function mostrarVistaPrevia() {
       if (!validateForm()) return;
 
-      // Obtener los valores de los campos
-      const paraValue = document.getElementById("Para").value.trim();
-      const deValue = document.getElementById("De").value;
-      const nombreValue = document.getElementById("nombre").value.trim();
-      const cursoValue = document.getElementById("curso").value;
-      const asuntoSelect = document.getElementById("asunto");
-      const detalleValue = document.getElementById("detalle").value;
-      const fechaValue = document.getElementById("fecha").value;
+      const informeContent = document.getElementById("informeContent");
+      informeContent.innerHTML = generarInformeHTML();
 
-      // Obtener los motivos seleccionados y unirlos con una coma
-      const selectedAsuntos = Array.from(asuntoSelect.selectedOptions).map(option => option.textContent).join(', ');
-
-      // Actualizar los elementos de la vista previa
-      document.getElementById("vp-para").innerHTML = paraValue.replace(/\n/g, '<br>'); // Mantener saltos de línea
-      document.getElementById("vp-de").textContent = deValue;
-      document.getElementById("vp-nombre").innerHTML = nombreValue.replace(/\n/g, '<br>'); // Mantener saltos de línea
-      document.getElementById("vp-curso").textContent = cursoValue;
-      document.getElementById("vp-asunto").textContent = selectedAsuntos;
-      document.getElementById("vp-detalle").textContent = detalleValue;
-      document.getElementById("vp-fecha").textContent = fechaValue;
-
-      // Mostrar la sección de vista previa
       document.getElementById("vistaPrevia").classList.remove("hidden");
-      // Desplazarse hacia la vista previa para una mejor experiencia de usuario en móviles
       document.getElementById("vistaPrevia").scrollIntoView({ behavior: 'smooth' });
     }
 
-    /**
-     * Función central para añadir contenido al documento PDF.
-     * @param {jsPDF} doc Instancia de jsPDF.
-     * @param {string[]} para Nombres de los destinatarios.
-     * @param {string[]} nombres Nombres de los estudiantes.
-     * @param {string} curso Curso del estudiante.
-     * @param {string} asuntos Motivos del informe (cadena separada por comas).
-     * @param {string} detalle Detalle del informe.
-     * @param {string} fecha Fecha del informe.
-     * @param {string} deValor Valor del campo "De".
-     * @param {boolean} imageLoaded Indica si la imagen del sello se cargó.
-     */
-    function addContentToPDF(doc, para, nombres, curso, asuntos, detalle, fecha, deValor, imageLoaded) {
-      let currentY = 20; // Posición Y inicial
+    function addContentToPDF(doc, para, de, estudiantes, curso, motivos, detalle, fecha, imageLoaded) {
+      let currentY = 20;
       const pageHeight = doc.internal.pageSize.getHeight();
       const pageWidth = doc.internal.pageSize.getWidth();
       const margin = 20;
       const contentWidth = pageWidth - (2 * margin);
 
-      // SELLO (si se cargó)
       if (imageLoaded) {
-        currentY = 15 + 25 + 10; // imageY + imageHeight + padding
+        currentY = 15 + 25 + 10;
       }
 
-      // TÍTULO DE LA INSTITUCIÓN
+      // Título de la institución
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
       doc.text('Unidad Educativa "Dr. Camilo Gallegos Domínguez"', pageWidth / 2, currentY, { align: 'center' });
       currentY += 12;
 
-      // LÍNEA HORIZONTAL
-      doc.setDrawColor(180, 180, 180); // Color gris para la línea
+      // Línea horizontal
+      doc.setDrawColor(180, 180, 180);
       doc.setLineWidth(0.5);
       doc.line(margin, currentY, pageWidth - margin, currentY);
       currentY += 10;
 
-      // INFORMACIÓN "PARA" Y "DE"
+      // Información "PARA" y "DE"
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-
-      // Destinatarios "Para"
-      doc.setFont("helvetica", "bold");
-      doc.text("Para:", margin, currentY);
-      doc.setFont("helvetica", "normal");
+      doc.text(`Para: ${para}`, margin, currentY);
       currentY += 7;
-      para.forEach(line => {
-        if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
-        doc.text(line, margin + 10, currentY); // Indentar un poco
-        currentY += 7;
-      });
-      currentY += 5; // Espacio adicional
-
-      // Remitente "De"
-      const deText = `De: ${deValor}`;
-      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
-      doc.text(deText, margin, currentY);
+      doc.text(`De: ${de}`, margin, currentY);
       currentY += 12;
 
-      // TÍTULO DEL INFORME
+      // Título del informe
       doc.setFont("helvetica", "bold");
       doc.setFontSize(14);
-      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
       doc.text("INFORME ESTUDIANTIL", pageWidth / 2, currentY, { align: 'center' });
       currentY += 10;
 
-      // DATOS DEL ESTUDIANTE
+      // Datos del informe
       doc.setFont("helvetica", "normal");
       doc.setFontSize(12);
-      const fieldTitleSpacing = 40; // Espacio para el título del campo
+      const fieldTitleSpacing = 40;
 
       function addField(label, value) {
-        if (currentY > pageHeight - margin - 10) { // Check for page break
-            doc.addPage();
-            currentY = margin;
+        if (currentY > pageHeight - margin - 10) {
+          doc.addPage();
+          currentY = margin;
         }
         doc.setFont("helvetica", "bold");
         doc.text(label, margin, currentY);
         doc.setFont("helvetica", "normal");
         const textLines = doc.splitTextToSize(value, contentWidth - fieldTitleSpacing - 5);
         doc.text(textLines, margin + fieldTitleSpacing, currentY);
-        currentY += (textLines.length * 5) + 5; // Ajustar espaciado basado en líneas
+        currentY += (textLines.length * 5) + 5;
       }
-          
+
       addField("Fecha:", fecha);
-
-      // Estudiante(s)
-      doc.setFont("helvetica", "bold");
-      if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
-      doc.text("Estudiante(s):", margin, currentY);
-      doc.setFont("helvetica", "normal");
-      currentY += 7;
-      nombres.forEach(line => {
-        if (currentY > pageHeight - margin - 10) { doc.addPage(); currentY = margin; }
-        doc.text(line, margin + 10, currentY); // Indentar un poco
-        currentY += 7;
-      });
-      currentY += 5; // Espacio adicional
-
+      addField("Estudiante(s):", estudiantes.join(", "));
       addField("Curso:", curso);
-      addField("Motivo(s):", asuntos);
-      currentY += 5; // Espacio extra antes del detalle
+      addField("Motivo(s):", motivos.join(", "));
+      currentY += 5;
 
-      // DETALLE DEL INFORME
-      if (currentY > pageHeight - margin - 20) { // Check for page break before detail
-          doc.addPage();
-          currentY = margin;
+      // Detalle del informe
+      if (currentY > pageHeight - margin - 20) {
+        doc.addPage();
+        currentY = margin;
       }
       doc.setFont("helvetica", "bold");
       doc.text("Detalle del Informe:", margin, currentY);
@@ -335,111 +466,200 @@
       doc.text(detailLines, margin, currentY);
       currentY += (detailLines.length * 5) + 10;
 
-      // FIRMA
-      if (currentY > pageHeight - margin - 30) { // Check for page break before signature
-          doc.addPage();
-          currentY = margin;
+      // Firma
+      if (currentY > pageHeight - margin - 30) {
+        doc.addPage();
+        currentY = margin;
       } else {
-        currentY = pageHeight - margin - 30; // Posicionar firma al final
-        if (currentY < margin + 150) currentY = margin + 150; // Asegurar que no se superponga mucho
+        currentY = pageHeight - margin - 30;
+        if (currentY < margin + 150) currentY = margin + 150;
       }
 
       doc.setLineWidth(0.3);
-      doc.line(margin + 10, currentY, margin + 80, currentY); // Línea para la firma
+      doc.line(margin + 10, currentY, margin + 80, currentY);
       currentY += 5;
-      doc.text(deValor, margin + 10, currentY);
+      doc.text(de, margin + 10, currentY);
       doc.setFontSize(10);
       doc.text("Docente - Tutor/a", margin + 10, currentY + 5);
     }
 
-    /**
-     * Prepara el documento PDF y maneja la carga de la imagen.
-     * @param {string} action - 'save' o 'print'.
-     */
     function generatePDFDocument(action) {
       if (!validateForm()) return;
 
       const doc = new jsPDF();
-      // Obtener los valores de los campos
-      const paraLines = document.getElementById("Para").value.trim().split('\n').filter(line => line.trim() !== '');
-      const nombresLines = document.getElementById("nombre").value.trim().split('\n').filter(line => line.trim() !== '');
+      const para = getParaValue();
+      const de = document.getElementById("De").value;
+      const estudiantes = getStudents();
       const curso = document.getElementById("curso").value;
-      const asuntoSelect = document.getElementById("asunto");
-      const selectedAsuntos = Array.from(asuntoSelect.selectedOptions).map(option => option.textContent).join(', ');
+      const motivos = getSelectedMotivos();
       const detalle = document.getElementById("detalle").value;
       const fecha = document.getElementById("fecha").value;
-      const deValor = document.getElementById("De").value;
 
       const img = new Image();
-      // IMPORTANTE: Reemplaza esta URL con la URL de tu imagen real o un Data URI.
-      // Para Data URI: img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ...';
-      img.src = 'https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO'; // Usando un placeholder
-      img.crossOrigin = "Anonymous"; // Necesario si la imagen es de otro dominio para canvas/PDF
+      img.src = 'https://placehold.co/100x100/1e3a8a/ffffff?text=SELLO';
+      img.crossOrigin = "Anonymous";
 
       img.onload = function() {
         try {
-            const imageWidth = 25;
-            const imageHeight = 25;
-            const imageX = (doc.internal.pageSize.getWidth() - imageWidth) / 2;
-            const imageY = 15; // Posicionar imagen cerca de la parte superior
-            doc.addImage(this, 'PNG', imageX, imageY, imageWidth, imageHeight); // Asumir PNG para placeholder, ajustar si es JPEG
-            addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, true);
+          const imageWidth = 25;
+          const imageHeight = 25;
+          const imageX = (doc.internal.pageSize.getWidth() - imageWidth) / 2;
+          const imageY = 15;
+          doc.addImage(this, 'PNG', imageX, imageY, imageWidth, imageHeight);
+          addContentToPDF(doc, para, de, estudiantes, curso, motivos, detalle, fecha, true);
         } catch (e) {
-            console.error("Error al añadir imagen al PDF:", e);
-            // Continuar sin la imagen si hay un error al añadirla (ej. formato no soportado por addImage)
-            addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, false);
+          console.error("Error al añadir imagen al PDF:", e);
+          addContentToPDF(doc, para, de, estudiantes, curso, motivos, detalle, fecha, false);
         }
-        finalizePDF(doc, action, nombresLines[0] || 'Informe'); // Usar el primer nombre o 'Informe'
+        finalizePDF(doc, action, estudiantes[0]);
       };
 
       img.onerror = function() {
-        console.error("Error al cargar la imagen del sello. El PDF se generará sin la imagen.");
-        showCustomAlert("Advertencia: No se pudo cargar la imagen del sello. El PDF se generará sin ella.");
-        addContentToPDF(doc, paraLines, nombresLines, curso, selectedAsuntos, detalle, fecha, deValor, false);
-        finalizePDF(doc, action, nombresLines[0] || 'Informe');
+        console.error("Error al cargar la imagen del sello.");
+        showCustomAlert("Advertencia: No se pudo cargar la imagen del sello.");
+        addContentToPDF(doc, para, de, estudiantes, curso, motivos, detalle, fecha, false);
+        finalizePDF(doc, action, estudiantes[0]);
       };
     }
 
-    /**
-     * Finaliza el PDF según la acción (guardar o imprimir).
-     * @param {jsPDF} doc Instancia de jsPDF.
-     * @param {string} action 'save' o 'print'.
-     * @param {string} fileNameBase Nombre base para el archivo (ej. primer nombre del estudiante).
-     */
-    function finalizePDF(doc, action, fileNameBase) {
-        // Limpiar el nombre base para el archivo
-        const cleanFileName = fileNameBase.replace(/[^a-zA-Z0-9_]/g, '_').replace(/__+/g, '_').trim();
-        const finalFileName = `Informe_${cleanFileName}.pdf`;
-
-        if (action === 'save') {
-            doc.save(finalFileName);
-            showCustomAlert("Informe guardado como PDF.");
-        } else if (action === 'print') {
-            doc.autoPrint();
-            // Abrir en una nueva ventana para la impresión. Algunos navegadores bloquean pop-ups.
-            const pdfDataUri = doc.output('dataurlnewwindow');
-            if (!pdfDataUri) { // Si el navegador bloqueó la nueva ventana
-                 showCustomAlert("La ventana de impresión fue bloqueada por el navegador. Intente desactivar el bloqueador de pop-ups.");
-            } else {
-                 showCustomAlert("Preparando informe para impresión...");
-            }
+    function finalizePDF(doc, action, nombreEstudiante) {
+      if (action === 'save') {
+        doc.save(`Informe_${nombreEstudiante.replace(/ /g, '_')}.pdf`);
+        showCustomAlert("Informe guardado como PDF.");
+      } else if (action === 'print') {
+        doc.autoPrint();
+        const pdfDataUri = doc.output('dataurlnewwindow');
+        if (!pdfDataUri) {
+          showCustomAlert("La ventana de impresión fue bloqueada. Intente desactivar el bloqueador de pop-ups.");
+        } else {
+          showCustomAlert("Preparando informe para impresión...");
         }
+      }
     }
 
-    /**
-     * Llama a la función para generar y guardar el PDF.
-     */
     function guardarPDF() {
       generatePDFDocument('save');
     }
 
-    /**
-     * Llama a la función para generar e imprimir el PDF.
-     */
     function imprimirPDF() {
       generatePDFDocument('print');
     }
 
+    function generarWord() {
+      if (!validateForm()) return;
+
+      const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
+      
+      const para = getParaValue();
+      const de = document.getElementById("De").value;
+      const estudiantes = getStudents();
+      const curso = document.getElementById("curso").value;
+      const motivos = getSelectedMotivos();
+      const detalle = document.getElementById("detalle").value;
+      const fecha = document.getElementById("fecha").value;
+
+      const doc = new Document({
+        sections: [{
+          properties: {},
+          children: [
+            new Paragraph({
+              text: 'Unidad Educativa "Dr. Camilo Gallegos Domínguez"',
+              heading: HeadingLevel.HEADING_1,
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 200 }
+            }),
+            new Paragraph({
+              text: 'INFORME ESTUDIANTIL',
+              heading: HeadingLevel.HEADING_2,
+              alignment: AlignmentType.CENTER,
+              spacing: { after: 200 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'Para: ', bold: true }),
+                new TextRun(para)
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'De: ', bold: true }),
+                new TextRun(de)
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              text: '_____________________________________________________________________________',
+              spacing: { after: 200 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'Fecha: ', bold: true }),
+                new TextRun(fecha)
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'Estudiante(s): ', bold: true }),
+                new TextRun(estudiantes.join(", "))
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'Curso: ', bold: true }),
+                new TextRun(curso)
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({ text: 'Motivo(s): ', bold: true }),
+                new TextRun(motivos.join(", "))
+              ],
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              text: 'Detalle del informe:',
+              bold: true,
+              spacing: { after: 100 }
+            }),
+            new Paragraph({
+              text: detalle,
+              spacing: { after: 400 }
+            }),
+            new Paragraph({
+              text: 'Atentamente,',
+              alignment: AlignmentType.RIGHT,
+              spacing: { before: 600 }
+            }),
+            new Paragraph({
+              text: de,
+              bold: true,
+              alignment: AlignmentType.RIGHT
+            }),
+            new Paragraph({
+              text: 'Docente - Tutor/a',
+              alignment: AlignmentType.RIGHT
+            })
+          ]
+        }]
+      });
+
+      // Generar el documento Word
+      docx.Packer.toBlob(doc).then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Informe_${estudiantes[0].replace(/ /g, '_')}.docx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showCustomAlert("Informe descargado en formato Word.");
+      });
+    }
   </script>
 </body>
 </html>
