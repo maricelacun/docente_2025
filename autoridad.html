@@ -3,168 +3,379 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Informe Educativo</title>
+    <title>Informe Educativo - Sistema de Tutorías</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        :root {
+            --color-primary: #1a365d; /* Azul institucional oscuro */
+            --color-secondary: #d69e2e; /* Amarillo institucional */
+            --color-accent: #4299e1; /* Azul claro para acentos */
+        }
+        
         body {
             font-family: 'Inter', sans-serif;
-            /* Fondo degradado circular azul y amarillo */
-            background: radial-gradient(circle at center, #FFEB3B, #2196F3);
+              background: radial-gradient(circle at center, #FFEB3B, #2196F3);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 1rem;
         }
-        /* Estilo para el contenedor principal del informe */
+        
         .report-container {
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 1.5rem; /* Bordes más redondeados */
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             padding: 2.5rem;
-            max-width: 900px; /* Ancho máximo del contenedor principal */
+            max-width: 900px;
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-            animation: fadeIn 1s ease-out;
+            border-top: 8px solid var(--color-primary);
+            position: relative;
         }
-
-        /* Animación de entrada */
+        
+        .report-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .header-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .seal-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .institution-seal {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+            padding: 8px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .institution-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .institution-subtitle {
+            font-size: 1rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-field {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            transition: all 0.3s ease;
+            background-color: #f8fafc;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+            background-color: white;
+        }
+        
+        textarea.input-field {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2c5282;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #b7791f;
+            transform: translateY(-2px);
+        }
+        
+        .btn-tertiary {
+            background-color: #38a169;
+            color: white;
+        }
+        
+        .btn-tertiary:hover {
+            background-color: #2f855a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+        
+        /* Modal styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+        
+        .modal-close:hover {
+            color: var(--color-primary);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Estilos para los campos de formulario */
-        .input-field {
-            @apply block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out;
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
         }
-
-        /* Estilos para los botones */
-        .btn {
-            @apply px-4 py-2 rounded-lg font-semibold text-white shadow-md transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center gap-2;
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .report-container {
+                padding: 1.5rem;
+            }
+            
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
         }
-        .btn-primary {
-            @apply bg-blue-600 hover:bg-blue-700;
-        }
-        .btn-secondary {
-            @apply bg-yellow-600 hover:bg-yellow-700;
-        }
-        .btn-tertiary {
-            @apply bg-green-600 hover:bg-green-700;
-        }
-        .btn img {
-            width: 24px; /* Tamaño de los iconos en los botones */
-            height: 24px;
-            filter: invert(1); /* Para que los iconos se vean blancos */
-        }
-
-        /* Estilo para el área de texto del informe */
-        textarea {
-            @apply resize-y min-h-[400px] input-field; /* Aumentado el tamaño mínimo y ocupa el ancho completo */
-        }
-
-        /* Estilo para el modal de vista previa */
-        .modal {
-            @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center z-50 p-4;
-        }
-        .modal-content {
-            @apply bg-white rounded-lg shadow-xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative;
-        }
-        .modal-close-btn {
-            @apply absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl font-bold;
+        
+        /* Custom select arrow */
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
     </style>
 </head>
 <body>
-    <div class="report-container" id="reportContainer">
-        <div class="text-center mb-6">
-            <img src="https://placehold.co/150x150/ADD8E6/000000?text=Sello+Colegio" alt="Sello del Colegio" class="mx-auto rounded-full shadow-lg">
-        </div>
-
-        <div class="space-y-4">
-            <div>
-                <label for="reportDate" class="block text-gray-700 text-sm font-bold mb-2">Fecha: Arenillas y</label>
-                <input type="date" id="reportDate" class="input-field" value="">
+    <div class="report-container animate-fade-in" id="reportContainer">
+        <div class="header-section">
+            <div class="seal-container">
+                <img src="https://via.placeholder.com/120x120/1a365d/FFFFFF?text=COLEGIO" alt="Sello del Colegio" class="institution-seal">
             </div>
-            <div>
-                <label for="paraSelect" class="block text-gray-700 text-sm font-bold mb-2">Para:</label>
+            <h1 class="institution-name">UNIDAD EDUCATIVA "NOMBRE DEL COLEGIO"</h1>
+            <p class="institution-subtitle">Sistema de Informes de Tutoría - Departamento de Orientación y Bienestar Estudiantil</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="form-field">
+                <label for="reportDate" class="form-label">Fecha:</label>
+                <input type="date" id="reportDate" class="input-field">
+            </div>
+            
+            <div class="form-field">
+                <label for="paraSelect" class="form-label">Para:</label>
                 <select id="paraSelect" class="input-field">
                     <option value="">Seleccione un destinatario</option>
-                    <option value="Mgs. Darwing Toledo G. Rector">Mgs. Darwing Toledo G. Rector</option>
-                    <option value="Mgs. Vanessa Tocto C. Vicerrectora secc vespertina">Mgs. Vanessa Tocto C. Vicerrectora secc vespertina</option>
-                    <option value="Mgs. Maria Ricchac Betun subinspectora">Mgs. Maria Ricchac Betun subinspectora</option>
-                    <option value="Psic. Educ. Klever Añasco Departamento del DECE">Psic. Educ. Klever Añasco Departamento del DECE</option>
+                    <option value="Mgs. Darwing Toledo G. - Rector">Mgs. Darwing Toledo G. - Rector</option>
+                    <option value="Mgs. Vanessa Tocto C. - Vicerrectora secc. vespertina">Mgs. Vanessa Tocto C. - Vicerrectora secc. vespertina</option>
+                    <option value="Mgs. Maria Ricchac Betun - Subinspectora">Mgs. Maria Ricchac Betun - Subinspectora</option>
+                    <option value="Psic. Educ. Klever Añasco - Departamento del DECE">Psic. Educ. Klever Añasco - Departamento del DECE</option>
                 </select>
             </div>
-            <div class="mb-4">
-                <label for="deText" class="block text-gray-700 text-sm font-bold mb-2">De:</label>
-                <input type="text" id="deText" class="input-field" value="Mgs. Maricela Cun Rueda Docente del área Tic" readonly>
+            
+            <div class="form-field">
+                <label for="deText" class="form-label">De:</label>
+                <input type="text" id="deText" class="input-field" value="Mgs. Maricela Cun Rueda - Docente del área TIC" readonly>
             </div>
-            <div>
-                <label for="asuntoSelect" class="block text-gray-700 text-sm font-bold mb-2">Asunto:</label>
+            
+            <div class="form-field">
+                <label for="asuntoSelect" class="form-label">Asunto:</label>
                 <select id="asuntoSelect" class="input-field">
                     <option value="">Seleccione un asunto</option>
-                    <option value="Expediente">Expediente</option>
-                    <option value="Inasistencia de alumnos">Inasistencia de alumnos</option>
-                    <option value="Bajo rendimiento">Bajo rendimiento</option>
+                    <option value="Expediente académico">Expediente académico</option>
+                    <option value="Inasistencia de alumno">Inasistencia de alumno</option>
+                    <option value="Bajo rendimiento académico">Bajo rendimiento académico</option>
                     <option value="Comportamiento estudiantil">Comportamiento estudiantil</option>
-                    <option value="Solicitud de material">Solicitud de material</option>
-                    <option value="Reunión de padres">Reunión de padres</option>
+                    <option value="Situación socioemocional">Situación socioemocional</option>
+                    <option value="Solicitud de apoyo">Solicitud de apoyo</option>
+                    <option value="Recomendación especial">Recomendación especial</option>
                 </select>
             </div>
-            <div>
-                <label for="studentSelect" class="block text-gray-700 text-sm font-bold mb-2">Estudiante:</label>
+            
+            <div class="form-field">
+                <label for="studentSelect" class="form-label">Estudiante:</label>
                 <select id="studentSelect" class="input-field">
                     <option value="">Seleccione un estudiante</option>
-                    </select>
+                </select>
             </div>
         </div>
-
-        <div class="mb-6">
-            <label for="reportContent" class="block text-gray-700 text-sm font-bold mb-2">Informe:</label>
-            <textarea id="reportContent" placeholder="Escriba aquí la descripción de lo sucedido..." class="input-field"></textarea>
+        
+        <div class="form-field">
+            <label for="reportContent" class="form-label">Informe detallado:</label>
+            <textarea id="reportContent" class="input-field" placeholder="Redacte aquí el informe completo, incluyendo observaciones relevantes, acciones tomadas y recomendaciones..."></textarea>
         </div>
-
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
+        
+        <div class="btn-group">
+            <button id="previewBtn" class="btn btn-tertiary">
+                <i class="fas fa-eye btn-icon"></i> Vista Previa
+            </button>
             <button id="downloadWordBtn" class="btn btn-primary">
-                <img src="https://placehold.co/24x24/FFFFFF/000000?text=Word" alt="Descargar Word"> Descargar Word
+                <i class="fas fa-file-word btn-icon"></i> Descargar Word
             </button>
             <button id="downloadPdfBtn" class="btn btn-secondary">
-                <img src="https://placehold.co/24x24/FFFFFF/000000?text=PDF" alt="Descargar PDF"> Descargar PDF
-            </button>
-            <button id="previewBtn" class="btn btn-tertiary">
-                <img src="https://placehold.co/24x24/FFFFFF/000000?text=👁️" alt="Vista Previa"> Vista Previa
+                <i class="fas fa-file-pdf btn-icon"></i> Descargar PDF
             </button>
         </div>
     </div>
-
-    <div id="previewModal" class="modal hidden">
+    
+    <div id="previewModal" class="modal">
         <div class="modal-content">
-            <button class="modal-close-btn" onclick="closeModal()">&times;</button>
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Vista Previa del Informe</h2>
-            <div id="previewContent" class="prose max-w-none">
-                </div>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 class="modal-title">Vista Previa del Informe</h2>
+            <div id="previewContent"></div>
         </div>
     </div>
-
+    
     <script>
         // Establecer la fecha actual en el campo de fecha
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Meses son 0-index
+            const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
             document.getElementById('reportDate').value = `${year}-${month}-${day}`;
 
-            // Lista de estudiantes obtenida del PDF y otros añadidos
+            // Lista de estudiantes
             const studentNames = [
-                "AGILA GUTIERREZ BRITTANY PAOLA",
+                "AGUILA GUTIERREZ BRITTANY PAOLA",
                 "CAJAMARCA PEÑAFIEL DARWIN ALEXANDER",
                 "CAMACHO RODRIGUEZ LUZ MARIA",
                 "CASTILLO SARITAMA LUIS ALEXANDER",
@@ -193,14 +404,7 @@
                 "SARANGO NARVAEZ DILAN JOSUE",
                 "SOTO PUCHA ESNEIDER ANDRES",
                 "VIVANCO SARITAMA JENNER ANDRY",
-                "ZUMBA ESPINOZA LUIS FERNANDO",
-                // Aquí puedes añadir más estudiantes
-                "NUEVO ESTUDIANTE UNO",
-                "OTRO ESTUDIANTE MAS",
-                "ALUMNO DE EJEMPLO",
-                "ESTUDIANTE ADICIONAL A",
-                "ESTUDIANTE ADICIONAL B",
-                "ESTUDIANTE ADICIONAL C"
+                "ZUMBA ESPINOZA LUIS FERNANDO"
             ];
 
             // Cargar estudiantes en el select
@@ -223,16 +427,9 @@
             const de = document.getElementById('deText').value;
             const asunto = document.getElementById('asuntoSelect').value;
             const reportContent = document.getElementById('reportContent').value;
+            const selectedStudent = document.getElementById('studentSelect').value;
 
-            // Obtener el estudiante seleccionado (ahora es selección única)
-            const studentSelectElement = document.getElementById('studentSelect');
-            const selectedStudent = studentSelectElement.value; // Obtiene el valor de la opción seleccionada
-            const studentsText = selectedStudent && selectedStudent !== "" ? studentSelectElement.options[studentSelectElement.selectedIndex].textContent : 'N/A';
-
-
-            // Formatear la fecha para la presentación: "Arenillas, lunes 19 de mayo del 2025"
-            // Se añade 'T00:00:00' para asegurar que la fecha se interprete en la zona horaria local
-            // y evitar posibles desfases de un día debido a la zona horaria del sistema.
+            // Formatear la fecha: "Arenillas, lunes 19 de mayo del 2025"
             const dateObj = new Date(reportDateInput + 'T00:00:00');
             const options = {
                 weekday: 'long',
@@ -243,18 +440,54 @@
             const formattedDate = dateObj.toLocaleDateString('es-ES', options);
 
             return `
-                <div style="font-family: 'Inter', sans-serif; padding: 2rem; color: #333;">
+                <div style="font-family: 'Inter', sans-serif; color: #2d3748; max-width: 800px; margin: 0 auto;">
                     <div style="text-align: center; margin-bottom: 2rem;">
-                        <img src="https://placehold.co/150x150/ADD8E6/000000?text=Sello+Colegio" alt="Sello del Colegio" style="margin: 0 auto; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <img src="https://via.placeholder.com/120x120/1a365d/FFFFFF?text=COLEGIO" alt="Sello del Colegio" style="width: 120px; height: 120px; border: 2px solid #1a365d; border-radius: 50%; padding: 8px; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <h1 style="font-size: 1.5rem; font-weight: 700; color: #1a365d; margin-top: 1rem; text-transform: uppercase;">UNIDAD EDUCATIVA "NOMBRE DEL COLEGIO"</h1>
+                        <p style="font-size: 0.875rem; color: #4a5568; margin-bottom: 1.5rem;">Sistema de Informes de Tutoría</p>
                     </div>
-                    <p style="text-align: right; margin-bottom: 1rem;"><strong>Fecha:</strong> Arenillas, ${formattedDate}</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>Para:</strong> ${para || 'N/A'}</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>De:</strong> ${de}</p>
-                    <p style="margin-bottom: 0.5rem;"><strong>Asunto:</strong> ${asunto || 'N/A'}</p>
-                    <p style="margin-bottom: 1.5rem;"><strong>Estudiante:</strong> ${studentsText}</p>
-                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #2196F3;">Informe:</h3>
-                    <div style="background-color: #f9f9f9; border: 1px solid #eee; border-radius: 0.5rem; padding: 1.5rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">
-                        ${reportContent || 'No se ha ingresado contenido para el informe.'}
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <p style="text-align: right; margin-bottom: 1rem;"><strong>Fecha:</strong> Arenillas, ${formattedDate}</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><strong>Para:</strong></p>
+                                <p style="background-color: #f8fafc; padding: 0.5rem; border-radius: 4px; border-left: 4px solid #1a365d;">${para || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p style="margin-bottom: 0.5rem;"><strong>De:</strong></p>
+                                <p style="background-color: #f8fafc; padding: 0.5rem; border-radius: 4px; border-left: 4px solid #d69e2e;">${de}</p>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <p style="margin-bottom: 0.5rem;"><strong>Asunto:</strong></p>
+                            <p style="background-color: #f8fafc; padding: 0.5rem; border-radius: 4px; border-left: 4px solid #4299e1;">${asunto || 'N/A'}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <p style="margin-bottom: 0.5rem;"><strong>Estudiante:</strong></p>
+                            <p style="background-color: #f8fafc; padding: 0.5rem; border-radius: 4px; border-left: 4px solid #38a169;">${selectedStudent || 'N/A'}</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1a365d; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0;">INFORME DETALLADO</h3>
+                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; line-height: 1.6; white-space: pre-wrap;">
+                            ${reportContent || 'No se ha ingresado contenido para el informe.'}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 3rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="text-align: center; width: 45%;">
+                            <div style="height: 1px; background-color: #e2e8f0; margin: 1rem 0;"></div>
+                            <p style="font-size: 0.875rem; color: #4a5568;">Firma del Tutor</p>
+                        </div>
+                        <div style="text-align: center; width: 45%;">
+                            <div style="height: 1px; background-color: #e2e8f0; margin: 1rem 0;"></div>
+                            <p style="font-size: 0.875rem; color: #4a5568;">Sello y Firma de Recepción</p>
+                        </div>
                     </div>
                 </div>
             `;
@@ -266,98 +499,118 @@
         function openModal() {
             const previewContentDiv = document.getElementById('previewContent');
             previewContentDiv.innerHTML = generateReportHtml();
-            document.getElementById('previewModal').classList.remove('hidden');
+            document.getElementById('previewModal').classList.add('active');
         }
 
         /**
          * Cierra el modal de vista previa.
          */
         function closeModal() {
-            document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('previewModal').classList.remove('active');
         }
 
         // Asignar eventos a los botones
         document.getElementById('previewBtn').addEventListener('click', openModal);
 
         document.getElementById('downloadWordBtn').addEventListener('click', () => {
-            console.log("DEBUG: Iniciando descarga de Word...");
+            console.log("Iniciando descarga de Word...");
             try {
-                // Generar el contenido HTML
                 const htmlContent = generateReportHtml();
-                // Añadir las cabeceras específicas para que Word lo interprete como HTML
                 const content = `
 <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-<head><meta charset='utf-8'><title>Informe</title></head>
+<head>
+    <meta charset='utf-8'>
+    <title>Informe de Tutoría</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #2d3748;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1cm;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .seal {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .institution-name {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #1a365d;
+            margin-top: 10px;
+        }
+        .content-section {
+            margin-bottom: 1.5rem;
+        }
+        .signature-area {
+            margin-top: 3rem;
+        }
+    </style>
+</head>
 <body>
 ${htmlContent}
 </body>
 </html>`;
-                console.log("DEBUG: Contenido HTML para Word generado.");
                 const blob = new Blob([content], { type: 'application/msword;charset=utf-8' });
-                console.log("DEBUG: Blob de Word creado. Intentando saveAs...");
-                saveAs(blob, 'informe.doc');
-                console.log("DEBUG: Función saveAs para Word llamada.");
+                saveAs(blob, 'Informe_Tutoria.doc');
             } catch (error) {
-                console.error("ERROR: Error al descargar Word:", error);
-                showErrorMessage('Hubo un error al descargar el archivo Word. Por favor, inténtelo de nuevo.');
+                console.error("Error al descargar Word:", error);
+                showErrorMessage('Error al generar el documento Word. Por favor intente nuevamente.');
             }
         });
 
         document.getElementById('downloadPdfBtn').addEventListener('click', async () => {
-            console.log("DEBUG: Iniciando descarga de PDF...");
-            // Crear un div temporal y oculto para renderizar el contenido del informe para html2canvas
+            console.log("Iniciando generación de PDF...");
+            
+            // Crear un div temporal para renderizar el contenido
             const tempDiv = document.createElement('div');
             tempDiv.style.position = 'absolute';
-            tempDiv.style.left = '-9999px'; // Moverlo fuera de la pantalla
-            tempDiv.style.width = '800px'; // Darle un ancho fijo para una renderización consistente
-            tempDiv.style.padding = '2rem'; // Añadir padding para que el contenido no esté pegado a los bordes
-            tempDiv.style.backgroundColor = 'white'; // Fondo blanco para el PDF
-            tempDiv.innerHTML = generateReportHtml(); // Generar el HTML del informe
-            document.body.appendChild(tempDiv); // Añadirlo al DOM
-            console.log("DEBUG: Div temporal para PDF creado y añadido al DOM.");
+            tempDiv.style.left = '-9999px';
+            tempDiv.style.width = '800px';
+            tempDiv.style.padding = '2rem';
+            tempDiv.style.backgroundColor = 'white';
+            tempDiv.innerHTML = generateReportHtml();
+            document.body.appendChild(tempDiv);
 
             try {
-                console.log("DEBUG: Generando canvas para PDF con html2canvas...");
                 const canvas = await html2canvas(tempDiv, {
-                    scale: 2, // Aumentar la escala para mejor calidad
-                    useCORS: true, // Habilitar CORS para imágenes si es necesario
-                    logging: true // Habilitar logs de html2canvas para depuración
+                    scale: 2,
+                    useCORS: true,
+                    logging: true,
+                    backgroundColor: 'white'
                 });
-                console.log("DEBUG: Canvas generado.");
 
                 const imgData = canvas.toDataURL('image/png');
-                console.log("DEBUG: Datos de imagen del canvas obtenidos.");
-
-                // Asegurarse de que jsPDF esté disponible globalmente
+                
                 if (typeof window.jspdf === 'undefined') {
-                    console.error("ERROR: jsPDF no está cargado. Asegúrate de que la librería jspdf.umd.min.js esté correctamente enlazada.");
-                    showErrorMessage('Error: La librería de PDF no se cargó correctamente. Por favor, recargue la página.');
-                    return; // Salir si jsPDF no está disponible
+                    console.error("jsPDF no está disponible");
+                    showErrorMessage('Error: La librería de PDF no se cargó correctamente.');
+                    return;
                 }
 
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF({
                     orientation: 'portrait',
-                    unit: 'px',
+                    unit: 'mm',
                     format: 'a4'
                 });
-                console.log("DEBUG: Instancia de jsPDF creada.");
 
-                const imgWidth = pdf.internal.pageSize.getWidth();
+                const imgWidth = pdf.internal.pageSize.getWidth() - 20;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-                console.log("DEBUG: Imagen añadida al PDF. Intentando guardar...");
-                pdf.save('informe.pdf');
-                console.log("DEBUG: PDF guardado.");
+                
+                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                pdf.save('Informe_Tutoria.pdf');
             } catch (error) {
-                console.error("ERROR: Error al generar el PDF:", error);
-                showErrorMessage('Hubo un error al generar el PDF. Por favor, inténtelo de nuevo. Verifique la consola para más detalles.');
+                console.error("Error al generar PDF:", error);
+                showErrorMessage('Error al generar el PDF. Por favor intente nuevamente.');
             } finally {
-                // Limpiar el div temporal del DOM
                 if (tempDiv.parentNode) {
                     tempDiv.parentNode.removeChild(tempDiv);
-                    console.log("DEBUG: Div temporal de PDF eliminado del DOM.");
                 }
             }
         });
@@ -367,11 +620,24 @@ ${htmlContent}
          * @param {string} message - El mensaje de error a mostrar.
          */
         function showErrorMessage(message) {
-            const errorMessage = document.createElement('div');
-            errorMessage.textContent = message;
-            errorMessage.style.cssText = 'position: fixed; top: 20px; right: 20px; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; z-index: 1000;';
-            document.body.appendChild(errorMessage);
-            setTimeout(() => errorMessage.remove(), 7000); // Eliminar el mensaje después de 7 segundos
+            const errorDiv = document.createElement('div');
+            errorDiv.textContent = message;
+            errorDiv.style.position = 'fixed';
+            errorDiv.style.bottom = '20px';
+            errorDiv.style.right = '20px';
+            errorDiv.style.backgroundColor = '#feb2b2';
+            errorDiv.style.color = '#9b2c2c';
+            errorDiv.style.padding = '12px 16px';
+            errorDiv.style.borderRadius = '8px';
+            errorDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            errorDiv.style.zIndex = '1000';
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.style.transition = 'opacity 0.5s ease';
+                errorDiv.style.opacity = '0';
+                setTimeout(() => errorDiv.remove(), 500);
+            }, 5000);
         }
     </script>
 </body>
