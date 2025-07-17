@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'], // Corrección de la fuente
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
                         brand: {
@@ -46,51 +46,85 @@
         .text-shadow {
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
-        .menu-container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            background-color: #ffffff;
-            padding: 10px;
+        
+        /* Nuevo diseño de menú en cuadrícula */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .menu-card {
+            background: white;
             border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 91, 187, 0.15);
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
         }
-        .menu-item {
-            padding: 12px 20px;
+        
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 91, 187, 0.2);
+            border-color: #005BBB;
+        }
+        
+        .menu-card-header {
+            background: #005BBB;
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
             text-transform: uppercase;
-            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-card-content {
+            padding: 15px;
+        }
+        
+        .menu-link {
+            display: block;
+            padding: 10px 12px;
+            margin: 5px 0;
+            border-radius: 6px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .menu-link:hover {
+            background: #EFF6FF;
             color: #005BBB;
-            text-decoration: none;
-            position: relative;
-            transition: background-color 0.3s ease;
+            padding-left: 15px;
         }
-        .menu-item:hover {
-            background-color: #3B82F6;
-            color: white;
+        
+        .menu-link i {
+            width: 20px;
+            text-align: center;
         }
-        .submenu {
-            display: none;
-            position: absolute;
-            background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            top: 100%;
-            left: 0;
-            width: 200px;
-            border-radius: 5px;
+        
+        .exit-card {
+            border-color: #FECACA;
         }
-        .menu-item:hover .submenu {
-            display: block;
+        
+        .exit-card .menu-card-header {
+            background: #DC2626;
         }
-        .submenu a {
-            display: block;
-            padding: 10px 20px;
-            color: #333333;
-            text-decoration: none;
-        }
-        .submenu a:hover {
-            background-color: #3B82F6;
-            color: white;
+        
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -108,103 +142,166 @@
         </div>
       </header>
 
-     <nav class="menu-container">
-    <a href="asistencia_2025.html" class="menu-item">Asistencia</a>
-    <a href="formulario_estudiante.html" class="menu-item">Ficha Estudiante</a>
-    <a href="ficha.html" class="menu-item">Seguimiento</a>
-    <a href="acta.html" class="menu-item">Acta</a>
-    <a href="informe_semanal.html" class="menu-item">Informe_Semanal</a>
-    <div class="menu-item">
-       Infomes
-        <div class="submenu">
-            <a href="informes.html">Estudiantes</a>
-            <a href="autoridad.html">Autoridades</a>
+      <!-- Nuevo menú en formato de tarjetas -->
+      <div class="menu-grid">
+        <!-- Tarjeta 1: Asistencia y Fichas -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="fas fa-clipboard-check"></i>
+            <span>Registros Académicos</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="asistencia_2025.html" class="menu-link">
+              <i class="fas fa-clipboard-list"></i>
+              Asistencia
+            </a>
+            <a href="formulario_estudiante.html" class="menu-link">
+              <i class="fas fa-user-edit"></i>
+              Ficha Estudiante
+            </a>
+            <a href="ficha.html" class="menu-link">
+              <i class="fas fa-chart-line"></i>
+              Seguimiento
+            </a>
+          </div>
+        </div>
         
+        <!-- Tarjeta 2: Documentos -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="fas fa-file-alt"></i>
+            <span>Documentos</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="acta.html" class="menu-link">
+              <i class="fas fa-file-signature"></i>
+              Acta
+            </a>
+            <a href="informe_semanal.html" class="menu-link">
+              <i class="fas fa-file-alt"></i>
+              Informe Semanal
+            </a>
+          </div>
         </div>
-    </div>
-    <div class="menu-item">
-       Tutora
-        <div class="submenu">
-            <a href="tercero.html">Nómina</a>
-            <a href="tutorias.html">Tutorías</a>
+        
+        <!-- Tarjeta 3: Informes -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="fas fa-file-invoice"></i>
+            <span>Informes</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="informes.html" class="menu-link">
+              <i class="fas fa-user-graduate"></i>
+              Estudiantes
+            </a>
+            <a href="autoridad.html" class="menu-link">
+              <i class="fas fa-user-tie"></i>
+              Autoridades
+            </a>
+          </div>
         </div>
-    </div>
-
-
-         
-    <a href="directivas.html" class="menu-item">Directivas</a>
-
-    <div class="menu-item">
-        Reuniones
-        <div class="submenu">
-            <a href="padres.html">Padres de familia</a>
-            <a href="individual.html">Estudiantes</a>
+        
+        <!-- Tarjeta 4: Tutora -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span>Tutora</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="tercero.html" class="menu-link">
+              <i class="fas fa-list-ol"></i>
+              Nómina
+            </a>
+            <a href="tutorias.html" class="menu-link">
+              <i class="fas fa-hands-helping"></i>
+              Tutorías
+            </a>
+          </div>
         </div>
-    </div>
-
-    <div class="menu-item">
-        Horarios
-        <div class="submenu">
-            <a href="horario_clase.html">Clases</a>
-            <a href="hola.html">Brigada</a>
+        
+        <!-- Tarjeta 5: Directivas y Reuniones -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="fas fa-users"></i>
+            <span>Organización</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="directivas.html" class="menu-link">
+              <i class="fas fa-users"></i>
+              Directivas
+            </a>
+            <a href="padres.html" class="menu-link">
+              <i class="fas fa-user-friends"></i>
+              Reunión Padres
+            </a>
+            <a href="individual.html" class="menu-link">
+              <i class="fas fa-user"></i>
+              Reunión Estudiantes
+            </a>
+          </div>
         </div>
-    </div>
-
-    <div class="menu-item">
-        Calendario
-        <div class="submenu">
-            <a href="agenda.html">Agenda</a>
-            <a href="calendario.html">Calendario</a>
+        
+        <!-- Tarjeta 6: Horarios -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="far fa-clock"></i>
+            <span>Horarios</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="horario_clase.html" class="menu-link">
+              <i class="fas fa-school"></i>
+              Clases
+            </a>
+            <a href="hola.html" class="menu-link">
+              <i class="fas fa-users-cog"></i>
+              Brigada
+            </a>
+          </div>
         </div>
-    </div> <!-- ← AQUÍ se cierra correctamente -->
-
-    <a href="salir.html" class="menu-item">Salir</a>
-</nav>
-
+        
+        <!-- Tarjeta 7: Calendario -->
+        <div class="menu-card">
+          <div class="menu-card-header">
+            <i class="far fa-calendar-alt"></i>
+            <span>Calendario</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="agenda.html" class="menu-link">
+              <i class="fas fa-tasks"></i>
+              Agenda
+            </a>
+            <a href="calendario.html" class="menu-link">
+              <i class="fas fa-calendar-day"></i>
+              Calendario
+            </a>
+          </div>
+        </div>
+        
+        <!-- Tarjeta 8: Salir -->
+        <div class="menu-card exit-card">
+          <div class="menu-card-header">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sistema</span>
+          </div>
+          <div class="menu-card-content">
+            <a href="salir.html" class="menu-link">
+              <i class="fas fa-sign-out-alt"></i>
+              Salir
+            </a>
+          </div>
+        </div>
+      </div>
       
-     <div class="flex justify-center items-center py-8">
+      <div class="flex justify-center items-center py-8">
         <img src="https://i.makeagif.com/media/3-31-2020/ikcA_O.gif" alt="Tic"
             class="w-[600px] h-auto rounded-lg shadow-lg">
       </div>
-
     </div>
   </main>
 
   <footer class="text-center py-4 border-t border-white border-opacity-30">
     <p class="text-green text-opacity-80 text-sm text-shadow">&copy; 2025 Unidad Educativa "Dr. Camilo Gallegos Domínguez" Autora: Mgs. Maricela Cun Rueda - Todos los derechos reservados.</p>
   </footer>
-
-  <script>
-    const menuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    const hamburgerIcon = menuButton.querySelector('svg:first-child');
-    const closeIcon = menuButton.querySelector('svg:last-child');
-
-    menuButton.addEventListener('click', () => {
-      const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', !isExpanded);
-      hamburgerIcon.classList.toggle('hidden');
-      closeIcon.classList.toggle('hidden');
-
-      if (!isExpanded) {
-        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
-        mobileMenu.classList.add('py-2');
-      } else {
-        mobileMenu.style.maxHeight = "0";
-        mobileMenu.classList.remove('py-2');
-      }
-    });
-
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        menuButton.setAttribute('aria-expanded', 'false');
-        hamburgerIcon.classList.remove('hidden');
-        closeIcon.classList.add('hidden');
-        mobileMenu.style.maxHeight = "0";
-        mobileMenu.classList.remove('py-2');
-      });
-    });
-  </script>
 </body>
 </html>
-
