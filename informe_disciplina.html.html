@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Comportamiento Estudiantil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --amarillo: #FFD700;
+            --amarillo-claro: #FFF9C4;
+            --azul: #1E88E5;
+            --azul-oscuro: #0D47A1;
+            --rojo: #E53935;
+            --rojo-claro: #FFEBEE;
+            --blanco: #FFFFFF;
+            --gris-claro: #F5F5F5;
+            --gris: #757575;
+            --sombra: rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--amarillo-claro) 0%, var(--blanco) 50%, #E3F2FD 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--azul-oscuro), var(--azul));
+            color: white;
+            padding: 25px;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 5px 15px var(--sombra);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--amarillo);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .info-bar {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info-item i {
+            color: var(--amarillo);
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .form-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--blanco);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px var(--sombra);
+            border-top: 5px solid var(--rojo);
+        }
+        
+        .records-container {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--blanco);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px var(--sombra);
+            border-top: 5px solid var(--azul);
+        }
+        
+        h2 {
+            color: var(--azul-oscuro);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--amarillo);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2 i {
+            color: var(--rojo);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--azul-oscuro);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        label i {
+            color: var(--azul);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--azul);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 25px;
+            background: linear-gradient(to right, var(--azul), var(--azul-oscuro));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(to right, var(--gris), #616161);
+            margin-top: 15px;
+        }
+        
+        .btn-reset:hover {
+            box-shadow: 0 5px 15px rgba(97, 97, 97, 0.3);
+        }
+        
+        .btn-excel {
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            margin-top: 15px;
+        }
+        
+        .btn-excel:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .records-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .record-card {
+            background-color: var(--gris-claro);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--rojo);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .record-card:hover {
+            transform: translateX(5px);
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .student-name {
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            font-size: 1.1rem;
+        }
+        
+        .record-date {
+            background-color: var(--amarillo);
+            color: var(--azul-oscuro);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .record-module {
+            color: var(--rojo);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .record-desc {
+            color: var(--gris);
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+        
+        .record-teacher {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--azul);
+            text-align: right;
+            font-size: 0.9rem;
+        }
+        
+        .empty-records {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gris);
+        }
+        
+        .empty-records i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gris);
+            font-size: 0.9rem;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background-color: var(--blanco);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            flex: 1;
+            min-width: 180px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--azul);
+        }
+        
+        .stat-card:nth-child(2) {
+            border-top-color: var(--amarillo);
+        }
+        
+        .stat-card:nth-child(3) {
+            border-top-color: var(--rojo);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--azul-oscuro);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--gris);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .info-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+        
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--azul);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--azul-oscuro);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-school"></i>
+                <div>
+                    <h1>COLEGIO "DR. CAMILO GALLEGOS DOMÍNGUEZ"</h1>
+                    <div class="subtitle">Sistema de Registro de Comportamiento Estudiantil</div>
+                </div>
+            </div>
+            
+            <div class="info-bar">
+                <div class="info-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Docente: <strong>Mgrt. Maricela Cun Rueda</strong></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="current-date">Fecha: Cargando...</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Registros: <strong id="total-records">0</strong></span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="stat-today">0</div>
+                <div class="stat-label">Registros Hoy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-month">0</div>
+                <div class="stat-label">Registros este Mes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="stat-total">0</div>
+                <div class="stat-label">Total de Registros</div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-container">
+                <h2><i class="fas fa-edit"></i> Registrar Indisciplina</h2>
+                
+                <form id="behavior-form">
+                    <div class="form-group">
+                        <label for="student-name"><i class="fas fa-user"></i> Nombre del Estudiante</label>
+                        <input type="text" id="student-name" placeholder="Ej: Juan Pérez" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="student-grade"><i class="fas fa-graduation-cap"></i> Curso</label>
+                        <select id="student-grade" required>
+                            <option value="">Seleccione un curso</option>
+                            <option value="Tercero Informatica A">Tercero Informática A</option>
+                            <option value="Tercero Informatica B">Tercero Informática B</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="module"><i class="fas fa-book"></i> Módulo</label>
+                        <select id="module" required>
+                            <option value="">Seleccione un módulo</option>
+                            <option value="Programación y bases de datos">Programación y bases de datos</option>
+                            <option value="Sistema Operativo y redes">Sistema Operativo y redes</option>
+                            <option value="Soporte técnico">Soporte técnico</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date"><i class="fas fa-calendar"></i> Fecha del incidente</label>
+                        <input type="date" id="date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="behavior-type"><i class="fas fa-exclamation-triangle"></i> Tipo de Indisciplina</label>
+                        <select id="behavior-type" required>
+                            <option value="">Seleccione un tipo</option>
+                            <option value="Falta leve">Falta leve (Retraso, falta de material)</option>
+                            <option value="Falta moderada">Falta moderada (Interrupciones, desorden)</option>
+                            <option value="Falta grave">Falta grave (Agresión verbal, desacato)</option>
+                            <option value="Falta muy grave">Falta muy grave (Agresión física, vandalismo)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description"><i class="fas fa-file-alt"></i> Descripción detallada</label>
+                        <textarea id="description" placeholder="Describa el incidente con detalles: hora, lugar, personas involucradas, acciones tomadas..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn">
+                        <i class="fas fa-save"></i> Guardar Registro
+                    </button>
+                    
+                    <button type="button" id="reset-btn" class="btn btn-reset">
+                        <i class="fas fa-redo"></i> Limpiar Formulario
+                    </button>
+                </form>
+            </div>
+            
+            <div class="records-container">
+                <h2><i class="fas fa-list"></i> Registros Recientes</h2>
+                
+                <div class="records-list" id="records-list">
+                    <!-- Los registros se cargarán aquí dinámicamente -->
+                    <div class="empty-records">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No hay registros aún</h3>
+                        <p>Los registros de comportamiento aparecerán aquí</p>
+                    </div>
+                </div>
+                
+                <button id="export-excel-btn" class="btn btn-excel">
+                    <i class="fas fa-file-excel"></i> Exportar a Excel
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Sistema de Registro de Comportamiento Estudiantil - Colegio "Dr. Camilo Gallegos Domínguez"</p>
+            <p>© 2023 - Diseñado para el seguimiento educativo y formativo de los estudiantes</p>
+            <p><i class="fas fa-exclamation-circle"></i> Esta herramienta tiene fines educativos y formativos</p>
+        </footer>
+    </div>
+
+    <script>
+        // Cargar la fecha actual
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('es-ES', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('current-date').textContent = `Fecha: ${formattedDate}`;
+            
+            // Establecer la fecha actual como valor por defecto en el formulario
+            const dateInput = document.getElementById('date');
+            const today = now.toISOString().split('T')[0];
+            dateInput.value = today;
+            
+            // Cargar registros del localStorage
+            loadRecords();
+            updateStats();
+        });
+        
+        // Array para almacenar registros
+        let behaviorRecords = JSON.parse(localStorage.getItem('behaviorRecords')) || [];
+        
+        // Manejar el envío del formulario
+        document.getElementById('behavior-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const studentName = document.getElementById('student-name').value;
+            const studentGrade = document.getElementById('student-grade').value;
+            const module = document.getElementById('module').value;
+            const date = document.getElementById('date').value;
+            const behaviorType = document.getElementById('behavior-type').value;
+            const description = document.getElementById('description').value;
+            
+            // Crear nuevo registro
+            const newRecord = {
+                id: Date.now(),
+                studentName,
+                studentGrade,
+                module,
+                date,
+                behaviorType,
+                description,
+                teacher: "Mgrt. Maricela Cun Rueda",
+                timestamp: new Date().toISOString()
+            };
+            
+            // Agregar al array de registros
+            behaviorRecords.unshift(newRecord);
+            
+            // Guardar en localStorage
+            localStorage.setItem('behaviorRecords', JSON.stringify(behaviorRecords));
+            
+            // Actualizar la interfaz
+            loadRecords();
+            updateStats();
+            
+            // Resetear formulario
+            document.getElementById('behavior-form').reset();
+            
+            // Restaurar la fecha actual y curso por defecto
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            
+            // Mostrar confirmación
+            alert('Registro guardado exitosamente');
+        });
+        
+        // Botón para resetear formulario
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            document.getElementById('behavior-form').reset();
+            
+            // Restaurar la fecha actual
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+        });
+        
+        // Botón para exportar a Excel
+        document.getElementById('export-excel-btn').addEventListener('click', function() {
+            if (behaviorRecords.length === 0) {
+                alert('No hay registros para exportar');
+                return;
+            }
+            
+            exportToExcel();
+        });
+        
+        // Función para exportar a Excel
+        function exportToExcel() {
+            // Crear contenido CSV (que puede abrirse en Excel)
+            let csvContent = "ID,Nombre del Estudiante,Curso,Módulo,Fecha,Tipo de Indisciplina,Descripción,Docente\n";
+            
+            behaviorRecords.forEach(record => {
+                const row = [
+                    record.id,
+                    `"${record.studentName}"`,
+                    `"${record.studentGrade}"`,
+                    `"${record.module}"`,
+                    record.date,
+                    `"${record.behaviorType}"`,
+                    `"${record.description.replace(/"/g, '""')}"`,
+                    `"${record.teacher}"`
+                ].join(',');
+                
+                csvContent += row + '\n';
+            });
+            
+            // Crear un blob con el contenido CSV
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            
+            // Crear un enlace de descarga
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `registros_comportamiento_${new Date().toISOString().slice(0,10)}.csv`);
+            link.style.visibility = 'hidden';
+            
+            // Añadir al documento, hacer clic y eliminar
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('Archivo Excel descargado exitosamente');
+        }
+        
+        // Función para cargar y mostrar registros
+        function loadRecords() {
+            const recordsList = document.getElementById('records-list');
+            
+            if (behaviorRecords.length === 0) {
+                recordsList.innerHTML = `
+                    <div class="empty-records">
+                        <i class="fas fa-clipboard-list"></i>
+                        <h3>No hay registros aún</h3>
+                        <p>Los registros de comportamiento aparecerán aquí</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Limpiar lista
+            recordsList.innerHTML = '';
+            
+            // Ordenar registros por fecha (más recientes primero)
+            const sortedRecords = [...behaviorRecords].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            
+            // Mostrar solo los 10 más recientes
+            const recentRecords = sortedRecords.slice(0, 10);
+            
+            // Crear elementos para cada registro
+            recentRecords.forEach(record => {
+                const recordDate = new Date(record.date);
+                const formattedDate = recordDate.toLocaleDateString('es-ES');
+                
+                // Determinar color según el tipo de falta
+                let borderColor = '#E53935'; // Rojo por defecto
+                if (record.behaviorType === 'Falta leve') borderColor = '#FFD700'; // Amarillo
+                if (record.behaviorType === 'Falta moderada') borderColor = '#FF9800'; // Naranja
+                
+                const recordElement = document.createElement('div');
+                recordElement.className = 'record-card';
+                recordElement.style.borderLeftColor = borderColor;
+                
+                recordElement.innerHTML = `
+                    <div class="record-header">
+                        <div class="student-name">${record.studentName}</div>
+                        <div class="record-date">${formattedDate}</div>
+                    </div>
+                    <div class="record-module">
+                        <i class="fas fa-graduation-cap"></i> ${record.studentGrade} | <i class="fas fa-book"></i> ${record.module}
+                    </div>
+                    <div class="record-module">
+                        <i class="fas fa-exclamation-triangle"></i> ${record.behaviorType}
+                    </div>
+                    <div class="record-desc">
+                        <strong>Descripción:</strong> ${record.description}
+                    </div>
+                    <div class="record-teacher">
+                        <i class="fas fa-chalkboard-teacher"></i> ${record.teacher}
+                    </div>
+                `;
+                
+                recordsList.appendChild(recordElement);
+            });
+            
+            // Actualizar contador de registros
+            document.getElementById('total-records').textContent = behaviorRecords.length;
+        }
+        
+        // Función para actualizar estadísticas
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+            
+            // Calcular registros de hoy
+            const todayRecords = behaviorRecords.filter(record => {
+                const recordDate = new Date(record.date).toISOString().split('T')[0];
+                return recordDate === today;
+            });
+            
+            // Calcular registros del mes actual
+            const monthRecords = behaviorRecords.filter(record => {
+                const recordDate = new Date(record.date);
+                return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+            });
+            
+            // Actualizar estadísticas en la interfaz
+            document.getElementById('stat-today').textContent = todayRecords.length;
+            document.getElementById('stat-month').textContent = monthRecords.length;
+            document.getElementById('stat-total').textContent = behaviorRecords.length;
+        }
+        
+        // Función para generar datos de ejemplo (solo para demostración)
+        function generateSampleData() {
+            // Solo generar datos si no hay registros existentes
+            if (behaviorRecords.length === 0) {
+                const sampleRecords = [
+                    {
+                        id: 1,
+                        studentName: "Carlos Rodríguez",
+                        studentGrade: "Tercero Informatica A",
+                        module: "Programación y bases de datos",
+                        date: new Date().toISOString().split('T')[0],
+                        behaviorType: "Falta moderada",
+                        description: "Interrumpió constantemente la clase con comentarios fuera de lugar, afectando el desarrollo normal de la lección sobre SQL.",
+                        teacher: "Mgrt. Maricela Cun Rueda",
+                        timestamp: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    {
+                        id: 2,
+                        studentName: "Ana Sánchez",
+                        studentGrade: "Tercero Informatica B",
+                        module: "Sistema Operativo y redes",
+                        date: new Date(Date.now() - 2*86400000).toISOString().split('T')[0],
+                        behaviorType: "Falta leve",
+                        description: "Llegó 15 minutos tarde a clase sin justificación durante la práctica de configuración de red.",
+                        teacher: "Mgrt. Maricela Cun Rueda",
+                        timestamp: new Date(Date.now() - 2*86400000).toISOString()
+                    },
+                    {
+                        id: 3,
+                        studentName: "Luis Torres",
+                        studentGrade: "Tercero Informatica A",
+                        module: "Soporte técnico",
+                        date: new Date(Date.now() - 5*86400000).toISOString().split('T')[0],
+                        behaviorType: "Falta grave",
+                        description: "Agresión verbal a un compañero durante la práctica de ensamblaje de computadoras.",
+                        teacher: "Mgrt. Maricela Cun Rueda",
+                        timestamp: new Date(Date.now() - 5*86400000).toISOString()
+                    }
+                ];
+                
+                behaviorRecords = sampleRecords;
+                localStorage.setItem('behaviorRecords', JSON.stringify(behaviorRecords));
+                loadRecords();
+                updateStats();
+            }
+        }
+        
+        // Generar datos de ejemplo después de 2 segundos (solo para demostración)
+        setTimeout(generateSampleData, 2000);
+    </script>
+</body>
+</html>
